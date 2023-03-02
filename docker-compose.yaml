@@ -1,22 +1,31 @@
-version: '3.8'
+version: '3'
 services:
-  php:
+  api:
     build:
       context: .
-      dockerfile: dockerfiles/php.Dockerfile
+      dockerfile: ./dockerfiles/php.Dockerfile
     env_file: .env
     ports:
-      - "8080:80"
-    volumes:
-      - ./:/back
-  postgres:
-    image: postgres:9.6
-    ports:
-      - ${POSTGRES_PORT}:5432
+      - "8080:8080"
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-# POUR LA MEMOIRE EN CACHE
-  redis:
-    image: redis:3.2.10
+      MYSQL_HOST: db
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - .:/var/www/back
+    links:
+      - db
+  db:
+    image: mariadb:latest
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./scripts/initialize_db_insert_data_set.sql:/docker-entrypoint-initdb.d
+volumes:
+  db_data:
