@@ -38,7 +38,6 @@ class DbConnector
                 'port' => $this->dbPort,
                 'logging' => true,
                 'error' => PDO::ERRMODE_SILENT,
-
             ]);
         } catch (PDOException $e) {
             HttpHelper::setResponse(500, 'Server Error', true);

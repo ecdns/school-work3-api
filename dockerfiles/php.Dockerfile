@@ -5,9 +5,9 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 
 EXPOSE 8080
 
-COPY . /var/www/back
-
 WORKDIR /var/www/back
+
+COPY . /var/www/back
 
 # git, unzip & zip are for composer
 RUN apt-get update -qq && \
@@ -17,8 +17,8 @@ RUN apt-get update -qq && \
     git \
     gnupg \
     unzip \
-    zip \
-    && docker-php-ext-install pdo_mysql zip
+    zip && \
+    && docker-php-ext-install pdo_mysql
 
 # Install composer dependencies
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
@@ -26,11 +26,15 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php -r "unlink('composer-setup.php');" \
     && composer install --no-dev -d /var/www/back
 
-# Apache
+# PHP configuration
+COPY conf/php.ini /usr/local/etc/php/conf.d/app.ini
+
+# Apache configuration
 COPY conf/vhost.conf /etc/apache2/sites-available/000-default.conf
 
-RUN a2enmod rewrite remoteip && \
+# Enable apache modules and site
+RUN a2enmod headers rewrite remoteip && \
     a2ensite 000-default
 
+# Restart apache
 RUN service apache2 restart
-
