@@ -15,9 +15,7 @@ class UserController
     private Medoo $dbConnection;
     private UserModel $userModel;
     private string $jwtKey;
-
     private array $headers;
-
     private string|false $jwt;
 
     public function __construct($dbConnection, $jwtKey, $headers)
@@ -27,6 +25,122 @@ class UserController
         $this->jwtKey = $jwtKey;
         $this->headers = $headers;
         $this->jwt = HttpHelper::getAuthHeaderValue($this->headers);
+    }
+
+    public function createToken(): void
+    {
+
+        $payload = json_decode(file_get_contents("php://input"), true);
+
+        if ($this->authenticateUser(true)) {
+
+            try {
+                $jwt = AuthHelper::encodeJWT($payload['userEmail'], $this->jwtKey);
+            } catch (Exception $e) {
+                HttpHelper::setResponse(500, 'Server Error', true);
+                exit;
+            }
+
+            try {
+                $this->userModel->addJWT($jwt, $payload);
+                HttpHelper::setResponse(200, 'Token Created', false);
+                echo json_encode(['token' => $jwt]);
+            } catch (Exception $e) {
+                HttpHelper::setResponse(500, "Server Error", true);
+            }
+        } else {
+            HttpHelper::setResponse(403, "Wrong Credentials", true);
+            exit;
+        }
+    }
+
+    private function authenticateRequest(): void
+    {
+        try {
+            AuthHelper::authenticateRequestToken($this->jwtKey, $this->jwt);
+        } catch (Exception $e) {
+            HttpHelper::setResponse(403, "Missing or Invalid Token", true);
+            exit;
+        }
+
+        if (empty($this->userModel->getEmailFromToken($this->jwt))) {
+            HttpHelper::setResponse(403, "Token Doesn't match any profile", true);
+            exit;
+        }
+    }
+
+    public function authenticateUser(bool $isForJwtCreation = false)
+    {
+        $payload = json_decode(file_get_contents("php://input"), true);
+
+        if (isset($payload['userEmail']) && isset($payload['userPassword'])) {
+            try {
+                $results = $this->userModel->getUserByEmail($payload['userEmail']);
+                if (empty($results)) {
+                    HttpHelper::setResponse(404, 'User Not Found', true);
+                    exit;
+                }
+                $userPassword = $payload['userPassword'];
+                $hashedPassword = $results[0]['userPassword'];
+                if (AuthHelper::isValidPassword($userPassword, $hashedPassword)) {
+                    if (!$isForJwtCreation) HttpHelper::setResponse(200, 'Authenticated', true);
+                    return true;
+                } else {
+                    if (!$isForJwtCreation) HttpHelper::setResponse(403, 'Wrong Credentials', true);
+                    return false;
+                }
+            } catch (Exception $e) {
+                HttpHelper::setResponse(500, "Server Error", true);
+            }
+        } else {
+            HttpHelper::setResponse(400, "Invalid or Missing Parameters", true);
+        }
+    }
+
+    public function getUserById($id): void
+    {
+        $this->authenticateRequest();
+
+        if (!is_numeric($id)) {
+            HttpHelper::setResponse(400, 'Invalid ID', true);
+            exit();
+        }
+
+        try {
+            $results = $this->userModel->getUserById($id);
+            if (empty($results)) {
+                HttpHelper::setResponse(404, "User Not Found", true);
+                exit();
+            }
+            HttpHelper::setResponse(200, "Success", false);
+            echo json_encode($results);
+        } catch (Exception $e) {
+            HttpHelper::setResponse(500, "Server Error", true);
+        }
+
+    }
+
+    public function getUserByEmail($email): void
+    {
+        $this->authenticateRequest();
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            HttpHelper::setResponse(400, 'Invalid Email', true);
+            exit();
+        }
+
+        try {
+            $results = $this->userModel->getUserByEmail($email);
+            if (empty($results)) {
+                HttpHelper::setResponse(404, "User Not Found", true);
+                exit();
+            }
+            HttpHelper::setResponse(200, "Success", false);
+            echo json_encode($results);
+        } catch (Exception $e) {
+            HttpHelper::setResponse(500, "Server Error", true);
+        }
+
     }
 
     public function addUser(): void
@@ -68,21 +182,6 @@ class UserController
 
     }
 
-    private function authenticateRequest(): void
-    {
-        try {
-            AuthHelper::authenticateRequestToken($this->jwtKey, $this->jwt);
-        } catch (Exception $e) {
-            HttpHelper::setResponse(403, "Missing or Invalid Token", true);
-            exit;
-        }
-
-        if (empty($this->userModel->getEmailFromToken($this->jwt))) {
-            HttpHelper::setResponse(403, "Token Doesn't match any profile", true);
-            exit;
-        }
-    }
-
     public function deleteUser($email): void
     {
         $this->authenticateRequest();
@@ -100,84 +199,4 @@ class UserController
         }
 
     }
-
-    public function createToken(): void
-    {
-
-        $payload = json_decode(file_get_contents("php://input"), true);
-
-        if ($this->authenticateUser(true)) {
-
-            try {
-                $jwt = AuthHelper::encodeJWT($payload['userEmail'], $this->jwtKey);
-            } catch (Exception $e) {
-                HttpHelper::setResponse(500, 'Server Error', true);
-                exit;
-            }
-
-            try {
-                $this->userModel->addJWT($jwt, $payload);
-                HttpHelper::setResponse(200, 'Token Created', false);
-                echo json_encode(['token' => $jwt]);
-            } catch (Exception $e) {
-                HttpHelper::setResponse(500, "Server Error", true);
-            }
-        } else {
-            HttpHelper::setResponse(403, "Wrong Credentials", true);
-            exit;
-        }
-    }
-
-    public function authenticateUser(bool $isForJwtCreation = false)
-    {
-        $payload = json_decode(file_get_contents("php://input"), true);
-
-        if (isset($payload['userEmail']) && isset($payload['userPassword'])) {
-            try {
-                $results = $this->userModel->getUserByEmail($payload['userEmail']);
-                if (empty($results)) {
-                    HttpHelper::setResponse(404, 'User Not Found', true);
-                    exit;
-                }
-                $userPassword = $payload['userPassword'];
-                $hashedPassword = $results[0]['userPassword'];
-                if (AuthHelper::isValidPassword($userPassword, $hashedPassword)) {
-                    if (!$isForJwtCreation) HttpHelper::setResponse(200, 'Authenticated', true);
-                    return true;
-                } else {
-                    if (!$isForJwtCreation) HttpHelper::setResponse(403, 'Wrong Credentials', true);
-                    return false;
-                }
-            } catch (Exception $e) {
-                HttpHelper::setResponse(500, "Server Error", true);
-            }
-        } else {
-            HttpHelper::setResponse(400, "Invalid or Missing Parameters", true);
-        }
-    }
-
-    public function getUserByEmail($email): void
-    {
-        $this->authenticateRequest();
-
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            HttpHelper::setResponse(400, 'Invalid Email', true);
-            exit();
-        }
-
-        try {
-            $results = $this->userModel->getUserByEmail($email);
-            if (empty($results)) {
-                HttpHelper::setResponse(404, "User Not Found", true);
-                exit();
-            }
-            HttpHelper::setResponse(200, "Success", false);
-            echo json_encode($results);
-        } catch (Exception $e) {
-            HttpHelper::setResponse(500, "Server Error", true);
-        }
-
-    }
-
-
 }

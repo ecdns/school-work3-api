@@ -15,6 +15,11 @@ class UserModel
         $this->dbConnection = $dbConnection;
     }
 
+    public function getUserById(int $id): ?array
+    {
+        return $this->dbConnection->select(self::TABLE_NAME, "*", ["userId" => $id]);
+    }
+
     public function getUserByEmail(string $email): ?array
     {
         return $this->dbConnection->select(self::TABLE_NAME, "*", ["userEmail" => $email]);
