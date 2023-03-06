@@ -26,6 +26,5 @@ services:
       MYSQL_DATABASE: ${DB_NAME}
     volumes:
       - db_data:/var/lib/mysql
-      - ./scripts/initialize_db_insert_data_set.sql:/docker-entrypoint-initdb.d
 volumes:
   db_data:
