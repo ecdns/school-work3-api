@@ -17,7 +17,7 @@ RUN apt-get update -qq && \
     git \
     gnupg \
     unzip \
-    zip && \
+    zip \
     && docker-php-ext-install pdo_mysql
 
 # Install composer dependencies
