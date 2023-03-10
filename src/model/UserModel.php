@@ -2,77 +2,248 @@
 
 namespace Model;
 
-use Medoo\Medoo;
-use Utility\AuthHelper;
-
-class UserModel
+class UserModel implements ModelInterface
 {
-    private const TABLE_NAME = 'USER';
-    private Medoo $dbConnection;
 
-    public function __construct(Medoo $dbConnection)
+    private int $id;
+    private string $firstName;
+    private string $lastName;
+    private string $email;
+    private string $password;
+    private string $role;
+    private string $job;
+    private string $phone;
+    private int $companyId;
+    private string $createdAt;
+    private string $updatedAt;
+    private string $passwordConfirmedAt;
+    private int $settingsId;
+    private bool $isEnabled;
+
+
+    public function __construct(int $id, string $firstName, string $lastName, string $email, string $password, string $role, string $job, string $phone, int $companyId, string $createdAt, string $updatedAt, string $passwordConfirmedAt, int $settingsId, bool $isEnabled)
     {
-        $this->dbConnection = $dbConnection;
+        $this->id = $id;
+        $this->firstName = $firstName;
+        $this->lastName = $lastName;
+        $this->email = $email;
+        $this->password = $password;
+        $this->role = $role;
+        $this->job = $job;
+        $this->phone = $phone;
+        $this->companyId = $companyId;
+        $this->createdAt = $createdAt;
+        $this->updatedAt = $updatedAt;
+        $this->passwordConfirmedAt = $passwordConfirmedAt;
+        $this->settingsId = $settingsId;
+        $this->isEnabled = $isEnabled;
     }
 
-    public function getUserById(int $id): ?array
+    public function getId(): int
     {
-        return $this->dbConnection->select(self::TABLE_NAME, "*", ["userId" => $id]);
+        return $this->id;
     }
 
-    public function getUserByEmail(string $email): ?array
+    public function setId(int $id): void
     {
-        return $this->dbConnection->select(self::TABLE_NAME, "*", ["userEmail" => $email]);
+        $this->id = $id;
     }
 
-    public function addUser($payload): void
+    public function getFirstName(): string
     {
-
-        $userName = $payload['userName'];
-        $userEmail = $payload['userEmail'];
-        $userPassword = $payload['userPassword'];
-        $hashedPassword = AuthHelper::hashPassword($userPassword);
-
-        $this->dbConnection->insert(self::TABLE_NAME, [
-            "userName" => $userName,
-            "userEmail" => $userEmail,
-            "userPassword" => $hashedPassword
-        ]);
+        return $this->firstName;
     }
 
-    public function addJWT($jwt, $payload): void
+    public function setFirstName(string $firstName): void
     {
-
-        $email = $payload['userEmail'];
-
-        $this->dbConnection->update(self::TABLE_NAME, [
-            "token" => $jwt,
-        ], ["userEmail" => $email]);
+        $this->firstName = $firstName;
     }
 
-    public function updateUser(string $email, $payload): void
+    public function getLastName(): string
     {
-        $userName = $payload['userName'];
-        $userEmail = $payload['userEmail'];
-        $userPassword = $payload['userPassword'];
-        $hashedPassword = AuthHelper::hashPassword($userPassword);
-
-        $this->dbConnection->update(self::TABLE_NAME, [
-            "userName" => $userName,
-            "userEmail" => $userEmail,
-            "userPassword" => $hashedPassword
-        ], ["userEmail" => $email]);
+        return $this->lastName;
     }
 
-    public function deleteUser(string $email): void
+    public function setLastName(string $lastName): void
     {
-        $this->dbConnection->delete(self::TABLE_NAME, ["userEmail" => $email]);
+        $this->lastName = $lastName;
     }
 
-    public function getEmailFromToken(string $jwt): array
+    public function getEmail(): string
     {
-        return $this->dbConnection->select(self::TABLE_NAME, (array)"userEmail", ["token" => $jwt]);
+        return $this->email;
     }
+
+    public function setEmail(string $email): void
+    {
+        $this->email = $email;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): void
+    {
+        $this->password = $password;
+    }
+
+    public function getRole(): string
+    {
+        return $this->role;
+    }
+
+    public function setRole(string $role): void
+    {
+        $this->role = $role;
+    }
+
+    public function getJob(): string
+    {
+        return $this->job;
+    }
+
+    public function setJob(string $job): void
+    {
+        $this->job = $job;
+    }
+
+    public function getPhone(): string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(string $phone): void
+    {
+        $this->phone = $phone;
+    }
+
+    public function getCompanyId(): int
+    {
+        return $this->companyId;
+    }
+
+    public function setCompanyId(int $companyId): void
+    {
+        $this->companyId = $companyId;
+    }
+
+    public function getCreatedAt(): string
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(string $createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    public function getUpdatedAt(): string
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(string $updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    public function getPasswordConfirmedAt(): string
+    {
+        return $this->passwordConfirmedAt;
+    }
+
+    public function setPasswordConfirmedAt(string $passwordConfirmedAt): void
+    {
+        $this->passwordConfirmedAt = $passwordConfirmedAt;
+    }
+
+    public function getSettingsId(): int
+    {
+        return $this->settingsId;
+    }
+
+    public function setSettingsId(int $settingsId): void
+    {
+        $this->settingsId = $settingsId;
+    }
+
+    public function getIsEnabled(): bool
+    {
+        return $this->isEnabled;
+    }
+
+    public function setIsEnabled(bool $isEnabled): void
+    {
+        $this->isEnabled = $isEnabled;
+    }
+
+    public function getFullName(): string
+    {
+        return $this->firstName . ' ' . $this->lastName;
+    }
+
+    public function getRoleName(): string
+    {
+        return $this->role === 'admin' ? 'Administrateur' : 'Utilisateur';
+    }
+
+
+    public function getIsEnabledName(): string
+    {
+        return $this->isEnabled ? 'Activé' : 'Désactivé';
+    }
+
+    public function fromArray(array $data): self
+    {
+        return new self(
+            $data['id'],
+            $data['firstName'],
+            $data['lastName'],
+            $data['email'],
+            $data['password'],
+            $data['role'],
+            $data['job'],
+            $data['phone'],
+            $data['companyId'],
+            $data['createdAt'],
+            $data['updatedAt'],
+            $data['passwordConfirmedAt'],
+            $data['settingsId'],
+            $data['isEnabled'],
+        );
+    }
+
+    public function toArray (): array
+    {
+        return [
+            'id' => $this->id,
+            'firstName' => $this->firstName,
+            'lastName' => $this->lastName,
+            'email' => $this->email,
+            'password' => $this->password,
+            'role' => $this->role,
+            'job' => $this->job,
+            'phone' => $this->phone,
+            'companyId' => $this->companyId,
+            'createdAt' => $this->createdAt,
+            'updatedAt' => $this->updatedAt,
+            'passwordConfirmedAt' => $this->passwordConfirmedAt,
+            'settingsId' => $this->settingsId,
+            'isEnabled' => $this->isEnabled,
+        ];
+    }
+
+    public function toJson(): string
+    {
+        return json_encode($this->toArray());
+    }
+
 }
+
+
+
+
 
 
