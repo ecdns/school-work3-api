@@ -7,12 +7,13 @@ require_once "vendor/autoload.php";
 use Dotenv\Dotenv;
 use Router\Router;
 use Service\DbManager;
+use Service\HttpHelper;
 
 // Récupération de la méthode et de l'URI
 $requestMethod = $_SERVER["REQUEST_METHOD"];
 $uri = $_SERVER["REQUEST_URI"];
 
-$dotenv = Dotenv::createImmutable(__DIR__ . "/../");
+$dotenv = Dotenv::createImmutable(__DIR__ );
 $dotenv->load();
 
 // Récupération des informations de connexion à la base de données
@@ -31,12 +32,14 @@ $dbManager = new DbManager($dbHost, $dbName, $dbUser, $dbPassword, $dbPort, $ent
 try {
     $connexion = $dbManager->getConnexion();
 } catch (Exception $e) {
+    HttpHelper::setResponse(500, 'Internal Error', true);
     exit(1);
 }
 
 try {
     $entityManager = $dbManager->getEntityManager($connexion);
 } catch (Exception $e) {
+    HttpHelper::setResponse(500, 'Internal Error', true);
     exit(1);
 }
 

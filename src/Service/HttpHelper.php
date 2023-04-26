@@ -13,6 +13,12 @@ abstract class HttpHelper
         }
     }
 
+    public static function setResponseData(mixed $data): void
+    {
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
+
     public static function getAuthHeaderValue(array $headers): string|false
     {
         if (isset($headers['Authorization'])) {

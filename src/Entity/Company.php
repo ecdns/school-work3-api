@@ -235,16 +235,16 @@ class Company implements EntityInterface
         $this->language = $language;
     }
 
-    #[ORM\PrePersist]
+
     public function getCreatedAt(): DateTime
     {
         return $this->created_at;
     }
 
-    #[ORM\PreUpdate]
-    public function setCreatedAt(DateTime $created_at): void
+    #[ORM\PrePersist]
+    public function setCreatedAt(): void
     {
-        $this->created_at = $created_at;
+        $this->created_at = new DateTime();
     }
 
     public function getUpdatedAt(): DateTime|null
@@ -252,9 +252,10 @@ class Company implements EntityInterface
         return $this->updated_at;
     }
 
-    public function setUpdatedAt(DateTime|null $updated_at): void
+    #[ORM\PreUpdate]
+    public function setUpdatedAt(): void
     {
-        $this->updated_at = $updated_at;
+        $this->updated_at = new DateTime();
     }
 
     public function getIsEnabled(): bool
@@ -381,22 +382,13 @@ class Company implements EntityInterface
             'phone' => $this->getPhone(),
             'slogan' => $this->getSlogan(),
             'logoPath' => $this->getLogoPath(),
-            'license' => $this->getLicense(),
+            'license' => $this->getLicense()->toArray(),
             'licenseExpirationDate' => $this->getLicenseExpirationDate(),
             'language' => $this->getLanguage(),
             'created_at' => $this->getCreatedAt(),
             'updated_at' => $this->getUpdatedAt(),
             'isEnabled' => $this->getIsEnabled(),
-            'users' => $this->getUsers(),
-            'customers' => $this->getCustomers(),
-            'suppliers' => $this->getSuppliers(),
-            'products' => $this->getProducts(),
-            'orderForms' => $this->getOrderForms(),
-            'invoices' => $this->getInvoices(),
-            'estimates' => $this->getEstimates(),
-            'contracts' => $this->getContracts(),
-            'companySettings' => $this->getCompanySettings(),
-            'projects' => $this->getProjects(),
+            'users' => isset($this->users) ? $this->getUsers()->toArray() : null,
         ];
     }
 

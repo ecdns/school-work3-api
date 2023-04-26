@@ -2,6 +2,9 @@
 
 namespace Router;
 
+use Controller\CompanyController;
+use Controller\LicenseController;
+use Controller\RoleController;
 use Controller\UserController;
 use Doctrine\ORM\EntityManager;
 use FastRoute\Dispatcher;
@@ -23,7 +26,11 @@ class Router
     {
         return simpleDispatcher(function (RouteCollector $r) {
 
-            $r->addRoute('GET', '/', 'test');
+            $r->addRoute('POST', '/user', 'addUser');
+            $r->addRoute('POST', '/license', 'addLicense');
+            $r->addRoute('POST', '/company', 'addCompany');
+            $r->addRoute('POST', '/role', 'addRole');
+            $r->addRoute('GET', '/company/{id:\d+}', 'getCompanyById');
 
         });
     }
@@ -33,7 +40,7 @@ class Router
         return $this->dispatcher->dispatch($requestMethod, $route);
     }
 
-    public function setController(string $route, $entityManager): object
+    public function setController(string $route, EntityManager $entityManager): object
     {
 
         $uri = "/" . explode('/', $route)[1];
@@ -42,12 +49,16 @@ class Router
 
             case "/user":
                 return new UserController($entityManager);
-                break;
-
+            case "/license":
+                return new LicenseController($entityManager);
+            case "/company":
+                return new CompanyController($entityManager);
+            case "/role":
+                return new RoleController($entityManager);
             default:
                 HttpHelper::setResponse(500, 'Internal Error', true);
+                exit(1);
         }
-
 
     }
 

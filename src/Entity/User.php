@@ -96,7 +96,7 @@ class User implements EntityInterface
     #[ORM\Column(type: 'boolean')]
     private bool $isEnabled;
 
-    public function __construct(string $firstName, string $lastName, string $email, string $password, Role $role, string $job, string $phone, Company $company, DateTime $createdAt, bool $isEnabled)
+    public function __construct(string $firstName, string $lastName, string $email, string $password, Role $role, string $job, string $phone, Company $company)
     {
         $this->firstName = $firstName;
         $this->lastName = $lastName;
@@ -200,9 +200,9 @@ class User implements EntityInterface
     }
 
     #[ORM\PrePersist]
-    public function setCreatedAt(DateTime $createdAt): void
+    public function setCreatedAt(): void
     {
-        $this->createdAt = $createdAt;
+        $this->createdAt = new DateTime();
     }
 
     public function getUpdatedAt(): DateTime|null
@@ -211,9 +211,9 @@ class User implements EntityInterface
     }
 
     #[ORM\PreUpdate]
-    public function setUpdatedAt(DateTime $updatedAt): void
+    public function setUpdatedAt(): void
     {
-        $this->updatedAt = $updatedAt;
+        $this->updatedAt = new DateTime();
     }
 
     public function getPasswordConfirmedAt(): DateTime|null
