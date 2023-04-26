@@ -25,7 +25,7 @@ $dbParams = [
     'host'     => $dbHost,
     'port'     => $dbPort,
     'password' => $dbPassword,
-    'dbname'   => $dbName,
+    'dbname'   => $dbName
 ];
 
 $config = ORMSetup::createAttributeMetadataConfiguration($paths, $isDevMode);

@@ -3,6 +3,7 @@
 namespace Router;
 
 use Controller\UserController;
+use Doctrine\ORM\EntityManager;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use Service\HttpHelper;
@@ -32,7 +33,7 @@ class Router
         return $this->dispatcher->dispatch($requestMethod, $route);
     }
 
-    public function setController(string $route): object
+    public function setController(string $route, $entityManager): object
     {
 
         $uri = "/" . explode('/', $route)[1];
@@ -40,12 +41,17 @@ class Router
         switch ($uri) {
 
             case "/user":
-                return new UserController();
+                return new UserController($entityManager);
                 break;
+
+            default:
+                HttpHelper::setResponse(500, 'Internal Error', true);
         }
+
+
     }
 
-    public function trigRequest(array $routeInfo, string $route): void
+    public function trigRequest(array $routeInfo, string $route, EntityManager $entityManager): void
     {
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
@@ -57,7 +63,7 @@ class Router
             case Dispatcher::FOUND:
                 $handler = $routeInfo[1];
                 $vars = $routeInfo[2];
-                $controller = $this->setController($route);
+                $controller = $this->setController($route, $entityManager);
                 call_user_func_array([$controller, $handler], $vars);
                 break;
             default:
