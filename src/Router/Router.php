@@ -3,6 +3,7 @@
 namespace Router;
 
 use Controller\CompanyController;
+use Controller\CompanySettingsController;
 use Controller\LicenseController;
 use Controller\RoleController;
 use Controller\UserController;
@@ -27,11 +28,12 @@ class Router
         return simpleDispatcher(function (RouteCollector $r) {
 
             $r->addRoute('POST', '/user', 'addUser');
-            $r->addRoute('POST', '/license', 'addLicense');
+            $r->addRoute('GET', '/user/{id:\d+}', 'getUserById');
             $r->addRoute('POST', '/company', 'addCompany');
-            $r->addRoute('POST', '/role', 'addRole');
             $r->addRoute('GET', '/company/{id:\d+}', 'getCompanyById');
-
+            $r->addRoute('POST', '/company-settings', 'addCompanySettings');
+            $r->addRoute('POST', '/license', 'addLicense');
+            $r->addRoute('POST', '/role', 'addRole');
         });
     }
 
@@ -55,6 +57,8 @@ class Router
                 return new CompanyController($entityManager);
             case "/role":
                 return new RoleController($entityManager);
+            case "/company-settings":
+                return new CompanySettingsController($entityManager);
             default:
                 HttpHelper::setResponse(500, 'Internal Error', true);
                 exit(1);

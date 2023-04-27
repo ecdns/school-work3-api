@@ -83,9 +83,9 @@ class CompanySettings implements EntityInterface
     }
 
     #[ORM\PrePersist]
-    public function setCreatedAt(DateTime $created_at): void
+    public function setCreatedAt(): void
     {
-        $this->created_at = $created_at;
+        $this->created_at = new DateTime();
     }
 
     public function getUpdatedAt(): DateTime|null
@@ -94,9 +94,9 @@ class CompanySettings implements EntityInterface
     }
 
     #[ORM\PreUpdate]
-    public function setUpdatedAt(DateTime $updated_at): void
+    public function setUpdatedAt(): void
     {
-        $this->updated_at = $updated_at;
+        $this->updated_at = new DateTime();
     }
 
     public function getCompany(): Company
@@ -109,6 +109,11 @@ class CompanySettings implements EntityInterface
         $this->company = $company;
     }
 
+    public function __toString(): string
+    {
+        return $this->toJson();
+    }
+
     public function toArray(): array
     {
         return [
@@ -118,7 +123,7 @@ class CompanySettings implements EntityInterface
             'tertiaryColor' => $this->tertiaryColor,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
-            'company' => $this->company->toArray()
+            'company' => $this->company->getName(),
         ];
     }
 

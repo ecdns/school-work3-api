@@ -151,7 +151,7 @@ class License implements EntityInterface
         return $this->companies->contains($company);
     }
 
-    public function __toString(): string
+    public function toString(): string
     {
         return $this->name;
     }

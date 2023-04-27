@@ -111,8 +111,6 @@ class CompanyController
             exit(1);
         }
 
-
-
         // set the response
         HttpHelper::setResponse(200, 'Company added successfully', true);
 
@@ -144,11 +142,15 @@ class CompanyController
         }
 
         // construct the response with the company data
-        $response = $company->toArray();
+        $response = $company->toFullArrayWithUsers();
 
         // set the response
         HttpHelper::setResponse(200, 'Company found', false);
         HttpHelper::setResponseData($response);
+
+        // add a log
+        $logMessage = LogManager::getContext() . ' - Company found';
+        LogManager::addInfoLog($logMessage);
 
     }
 

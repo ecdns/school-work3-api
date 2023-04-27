@@ -134,6 +134,11 @@ class User implements EntityInterface
         $this->lastName = $lastName;
     }
 
+    public function getFullName(): string
+    {
+        return $this->firstName . ' ' . $this->lastName;
+    }
+
     public function getEmail(): string
     {
         return $this->email;
@@ -333,10 +338,10 @@ class User implements EntityInterface
             'firstName' => $this->getFirstName(),
             'lastName' => $this->getLastName(),
             'email' => $this->getEmail(),
-            'role' => $this->getRole()->toArray(),
+            'role' => $this->getRole()->getName(),
             'job' => $this->getJob(),
             'phone' => $this->getPhone(),
-            'company' => $this->getCompany()->toArray(),
+            'company' => $this->getCompany()->getName(),
             'createdAt' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
             'updatedAt' => $this->getUpdatedAt()?->format('Y-m-d H:i:s'),
             'passwordConfirmedAt' => $this->getPasswordConfirmedAt()?->format('Y-m-d H:i:s'),

@@ -14,8 +14,8 @@ abstract class LogManager
             $context = $_SERVER['REQUEST_URI'];
         }
 
-        if (isset($_SERVER['HTTP_METHOD'])) {
-            $context .= ' - ' . $_SERVER['HTTP_METHOD'];
+        if (isset($_SERVER['REQUEST_METHOD'])) {
+            $context .= ' - ' . $_SERVER['REQUEST_METHOD'];
         }
 
         if (isset($_SERVER['HTTP_REFERER'])) {

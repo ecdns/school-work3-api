@@ -97,6 +97,39 @@ class UserController
         LogManager::addInfoLog($logMessage);
     }
 
+    public function getUserById(int $id): void
+    {
+        // get the user from the database by its id
+        try {
+            $user = $this->entityManager->getRepository(User::class)->find($id);
+        } catch (ORMException $e) {
+            $error = $e->getMessage();
+            HttpHelper::setResponse(500, $error, true);
+            $logMessage = LogManager::getContext() . ' - ' . $error;
+            LogManager::addErrorLog($logMessage);
+            exit(1);
+        }
+
+        // if the user doesn't exist
+        if (!$user) {
+            HttpHelper::setResponse(404, 'User not found', true);
+            $logMessage = LogManager::getContext() . ' - User not found';
+            LogManager::addInfoLog($logMessage);
+            exit(1);
+        }
+
+        // get the user data
+        $userData = $user->toArray();
+
+        // set the response
+        HttpHelper::setResponse(200, 'User found', false);
+        HttpHelper::setResponseData($userData);
+
+        // add a log
+        $logMessage = LogManager::getContext() . ' - User found';
+        LogManager::addInfoLog($logMessage);
+    }
+
 
 
 }

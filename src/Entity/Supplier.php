@@ -52,11 +52,16 @@ class Supplier implements EntityInterface
     #[ORM\OneToMany(mappedBy: 'supplier', targetEntity: Product::class)]
     private Collection $products;
 
+    #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'suppliers')]
+    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    private Company $company;
+
     #[ORM\Column(type: 'string')]
     private string $supplierCompanyName;
 
 
-    public function __construct(string $name, string $firstName, string $lastName, string $email, string $address, string $city, string $country, string $zipCode, string $phone, string $supplierCompanyName)
+    public function __construct(string $name, string $firstName, string $lastName, string $email, string $address, string $city, string $country, string $zipCode, string $phone, Company $company, string $supplierCompanyName)
     {
         $this->name = $name;
         $this->firstName = $firstName;
@@ -67,6 +72,7 @@ class Supplier implements EntityInterface
         $this->country = $country;
         $this->zipCode = $zipCode;
         $this->phone = $phone;
+        $this->company = $company;
         $this->supplierCompanyName = $supplierCompanyName;
     }
 
@@ -203,6 +209,16 @@ class Supplier implements EntityInterface
         $this->supplierCompanyName = $supplierCompanyName;
     }
 
+    public function getCompany(): Company
+    {
+        return $this->company;
+    }
+
+    public function setCompany(Company $company): void
+    {
+        $this->company = $company;
+    }
+
     public function setProducts(Collection $products): void
     {
         $this->products = $products;
@@ -234,7 +250,8 @@ class Supplier implements EntityInterface
             'name' => $this->name,
             'firstName' => $this->firstName,
             'lastName' => $this->lastName,
-            'company' => $this->supplierCompanyName,
+            'company' => $this->company->getName(),
+            'supplierCompanyName' => $this->supplierCompanyName,
             'email' => $this->email,
             'address' => $this->address,
             'city' => $this->city,

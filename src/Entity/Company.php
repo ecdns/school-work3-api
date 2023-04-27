@@ -268,9 +268,13 @@ class Company implements EntityInterface
         $this->isEnabled = $isEnabled;
     }
 
-    public function getUsers(): Collection
+    public function getUsers(): array
     {
-        return $this->users;
+        $users = [];
+        foreach ($this->users as $user) {
+            $users[] = $user->getFullName();
+        }
+        return $users;
     }
 
     public function setUsers(Collection $users): void
@@ -278,9 +282,13 @@ class Company implements EntityInterface
         $this->users = $users;
     }
 
-    public function getCustomers(): Collection
+    public function getCustomers(): array
     {
-        return $this->customers;
+        $customers = [];
+        foreach ($this->customers as $customer) {
+            $customers[] = $customer->getFullName();
+        }
+        return $customers;
     }
 
     public function setCustomers(Collection $customers): void
@@ -288,9 +296,13 @@ class Company implements EntityInterface
         $this->customers = $customers;
     }
 
-    public function getSuppliers(): Collection
+    public function getSuppliers(): array
     {
-        return $this->suppliers;
+        $suppliers = [];
+        foreach ($this->suppliers as $supplier) {
+            $suppliers[] = $supplier->getFullName();
+        }
+        return $suppliers;
     }
 
     public function setSuppliers(Collection $suppliers): void
@@ -298,9 +310,13 @@ class Company implements EntityInterface
         $this->suppliers = $suppliers;
     }
 
-    public function getProducts(): Collection
+    public function getProducts(): array
     {
-        return $this->products;
+        $products = [];
+        foreach ($this->products as $product) {
+            $products[] = $product->getName();
+        }
+        return $products;
     }
 
     public function setProducts(Collection $products): void
@@ -308,9 +324,13 @@ class Company implements EntityInterface
         $this->products = $products;
     }
 
-    public function getOrderForms(): Collection
+    public function getOrderForms(): array
     {
-        return $this->orderForms;
+        $orderForms = [];
+        foreach ($this->orderForms as $orderForm) {
+            $orderForms[] = $orderForm->getName();
+        }
+        return $orderForms;
     }
 
     public function setOrderForms(Collection $orderForms): void
@@ -318,9 +338,13 @@ class Company implements EntityInterface
         $this->orderForms = $orderForms;
     }
 
-    public function getInvoices(): Collection
+    public function getInvoices(): array
     {
-        return $this->invoices;
+        $invoices = [];
+        foreach ($this->invoices as $invoice) {
+            $invoices[] = $invoice->getNumber();
+        }
+        return $invoices;
     }
 
     public function setInvoices(Collection $invoices): void
@@ -328,9 +352,13 @@ class Company implements EntityInterface
         $this->invoices = $invoices;
     }
 
-    public function getEstimates(): Collection
+    public function getEstimates(): array
     {
-        return $this->estimates;
+        $estimates = [];
+        foreach ($this->estimates as $estimate) {
+            $estimates[] = $estimate->getNumber();
+        }
+        return $estimates;
     }
 
     public function setEstimates(Collection $estimates): void
@@ -338,9 +366,13 @@ class Company implements EntityInterface
         $this->estimates = $estimates;
     }
 
-    public function getContracts(): Collection
+    public function getContracts(): array
     {
-        return $this->contracts;
+        $contracts = [];
+        foreach ($this->contracts as $contract) {
+            $contracts[] = $contract->getName();
+        }
+        return $contracts;
     }
 
     public function setContracts(Collection $contracts): void
@@ -348,9 +380,9 @@ class Company implements EntityInterface
         $this->contracts = $contracts;
     }
 
-    public function getCompanySettings(): CompanySettings
+    public function getCompanySettings(): array
     {
-        return $this->companySettings;
+        return isset($this->companySettings) ? $this->companySettings->toArray() : array();
     }
 
     public function setCompanySettings(CompanySettings $companySettings): void
@@ -358,9 +390,13 @@ class Company implements EntityInterface
         $this->companySettings = $companySettings;
     }
 
-    public function getProjects(): Collection
+    public function getProjects(): array
     {
-        return $this->projects;
+        $projects = [];
+        foreach ($this->projects as $project) {
+            $projects[] = $project->getName();
+        }
+        return $projects;
     }
 
     public function setProjects(Collection $projects): void
@@ -387,17 +423,12 @@ class Company implements EntityInterface
             'language' => $this->getLanguage(),
             'created_at' => $this->getCreatedAt(),
             'updated_at' => $this->getUpdatedAt(),
-            'isEnabled' => $this->getIsEnabled(),
-            'users' => isset($this->users) ? $this->getUsers()->toArray() : null,
+            'isEnabled' => $this->getIsEnabled()
         ];
     }
 
     public function toFullArrayWithUsers(): array
     {
-        $users = [];
-        foreach ($this->getUsers() as $user) {
-            $users[] = $user->toArray();
-        }
         return [
             'id' => $this->getId(),
             'name' => $this->getName(),
@@ -408,13 +439,13 @@ class Company implements EntityInterface
             'phone' => $this->getPhone(),
             'slogan' => $this->getSlogan(),
             'logoPath' => $this->getLogoPath(),
-            'license' => $this->getLicense(),
+            'license' => $this->getLicense()->toString(),
             'licenseExpirationDate' => $this->getLicenseExpirationDate(),
             'language' => $this->getLanguage(),
             'created_at' => $this->getCreatedAt(),
             'updated_at' => $this->getUpdatedAt(),
             'isEnabled' => $this->getIsEnabled(),
-            'users' => $users,
+            'users' => $this->getUsers(),
             'customers' => $this->getCustomers(),
             'suppliers' => $this->getSuppliers(),
             'products' => $this->getProducts(),
@@ -422,9 +453,14 @@ class Company implements EntityInterface
             'invoices' => $this->getInvoices(),
             'estimates' => $this->getEstimates(),
             'contracts' => $this->getContracts(),
-            'companySettings' => $this->getCompanySettings(),
+            'companySettings' => $this->getCompanySettings() ? $this->getCompanySettings() : null,
             'projects' => $this->getProjects(),
         ];
+    }
+
+    public function toString(): string
+    {
+        return $this->getName();
     }
 
     public function toJson(): string
