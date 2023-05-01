@@ -27,13 +27,36 @@ class Router
     {
         return simpleDispatcher(function (RouteCollector $r) {
 
+            // user routes
+            $r->addRoute('POST', '/user/login', 'loginUser');
             $r->addRoute('POST', '/user', 'addUser');
             $r->addRoute('GET', '/user/{id:\d+}', 'getUserById');
+            $r->addRoute('PUT', '/user/{id:\d+}', 'updateUser');
+            $r->addRoute('DELETE', '/user/{id:\d+}', 'deleteUser');
+
+            // company routes
             $r->addRoute('POST', '/company', 'addCompany');
             $r->addRoute('GET', '/company/{id:\d+}', 'getCompanyById');
+            $r->addRoute('PUT', '/company/{id:\d+}', 'updateCompany');
+            $r->addRoute('DELETE', '/company/{id:\d+}', 'deleteCompany');
+
+            // company settings routes
             $r->addRoute('POST', '/company-settings', 'addCompanySettings');
+            $r->addRoute('GET', '/company-settings/{id:\d+}', 'getCompanySettingsById');
+            $r->addRoute('PUT', '/company-settings/{id:\d+}', 'updateCompanySettings');
+            $r->addRoute('DELETE', '/company-settings/{id:\d+}', 'deleteCompanySettings');
+
+            // license routes
             $r->addRoute('POST', '/license', 'addLicense');
+            $r->addRoute('GET', '/license/{id:\d+}', 'getLicenseById');
+            $r->addRoute('PUT', '/license/{id:\d+}', 'updateLicense');
+            $r->addRoute('DELETE', '/license/{id:\d+}', 'deleteLicense');
+
+            // role routes
             $r->addRoute('POST', '/role', 'addRole');
+            $r->addRoute('GET', '/role/{id:\d+}', 'getRoleById');
+            $r->addRoute('PUT', '/role/{id:\d+}', 'updateRole');
+            $r->addRoute('DELETE', '/role/{id:\d+}', 'deleteRole');
         });
     }
 

@@ -86,4 +86,139 @@ class CompanySettingsController
         LogManager::addInfoLog($logMessage);
 
     }
+
+    public function getCompanySettingsById(int $id): void
+    {
+        // get the company settings from the database by its id
+        try {
+            $companySettings = $this->entityManager->getRepository(CompanySettings::class)->find($id);
+        } catch (ORMException $e) {
+            $error = $e->getMessage();
+            HttpHelper::setResponse(404, 'Company settings not found', true);
+            $logMessage = LogManager::getContext() . ' - ' . $error;
+            LogManager::addErrorLog($logMessage);
+            exit(1);
+        }
+
+        // set the response
+        $response = $companySettings->toArray();
+
+        HttpHelper::setResponse(200, 'Company settings found', false);
+        HttpHelper::setResponseData($response);
+
+        // log the event
+        $logMessage = LogManager::getContext() . ' - Company settings found';
+        LogManager::addInfoLog($logMessage);
+    }
+
+    public function updateCompanySettings(int $id): void
+    {
+        // get the request body
+        $requestBody = file_get_contents('php://input');
+
+        // it will look like this:
+        // {
+        //     "primaryColor": "#000000",
+        //     "secondaryColor": "#000000",
+        //     "tertiaryColor": "#000000",
+        //     "company": "Cube 3"
+        // }
+
+        // decode the json
+        $requestBody = json_decode($requestBody, true);
+
+        // get the user data from the request body
+        $primaryColor = $requestBody['primaryColor'];
+        $secondaryColor = $requestBody['secondaryColor'];
+        $tertiaryColor = $requestBody['tertiaryColor'];
+        $company = $requestBody['company'];
+
+        // get the company settings from the database by its id
+        try {
+            $companySettings = $this->entityManager->getRepository(CompanySettings::class)->find($id);
+        } catch (ORMException $e) {
+            $error = $e->getMessage();
+            HttpHelper::setResponse(404, 'Company settings not found', true);
+            $logMessage = LogManager::getContext() . ' - ' . $error;
+            LogManager::addErrorLog($logMessage);
+            exit(1);
+        }
+
+        // update the company settings
+        $companySettings->setPrimaryColor($primaryColor);
+        $companySettings->setSecondaryColor($secondaryColor);
+        $companySettings->setTertiaryColor($tertiaryColor);
+
+        // persist
+        try {
+            $this->entityManager->persist($companySettings);
+        } catch (ORMException $e) {
+            $error = $e->getMessage();
+            HttpHelper::setResponse(500, $error, true);
+            $logMessage = LogManager::getContext() . ' - ' . $error;
+            LogManager::addErrorLog($logMessage);
+            exit(1);
+        }
+
+        // flush the entity manager
+        try {
+            $this->entityManager->flush();
+        } catch (ORMException $e) {
+            $error = $e->getMessage();
+            HttpHelper::setResponse(500, $error, true);
+            $logMessage = LogManager::getContext() . ' - ' . $error;
+            LogManager::addErrorLog($logMessage);
+            exit(1);
+        }
+
+        // set the response
+        HttpHelper::setResponse(200, 'Company settings updated', true);
+
+        // log the event
+        $logMessage = LogManager::getContext() . ' - Company settings updated';
+        LogManager::addInfoLog($logMessage);
+    }
+
+    public function deleteCompanySettings(int $id): void
+    {
+        // get the company settings from the database by its id
+        try {
+            $companySettings = $this->entityManager->getRepository(CompanySettings::class)->find($id);
+        } catch (ORMException $e) {
+            $error = $e->getMessage();
+            HttpHelper::setResponse(404, 'Company settings not found', true);
+            $logMessage = LogManager::getContext() . ' - ' . $error;
+            LogManager::addErrorLog($logMessage);
+            exit(1);
+        }
+
+        // remove the company settings
+        try {
+            $this->entityManager->remove($companySettings);
+        } catch (ORMException $e) {
+            $error = $e->getMessage();
+            HttpHelper::setResponse(500, $error, true);
+            $logMessage = LogManager::getContext() . ' - ' . $error;
+            LogManager::addErrorLog($logMessage);
+            exit(1);
+        }
+
+        // flush the entity manager
+        try {
+            $this->entityManager->flush();
+        } catch (ORMException $e) {
+            $error = $e->getMessage();
+            HttpHelper::setResponse(500, $error, true);
+            $logMessage = LogManager::getContext() . ' - ' . $error;
+            LogManager::addErrorLog($logMessage);
+            exit(1);
+        }
+
+        // set the response
+        HttpHelper::setResponse(200, 'Company settings deleted', true);
+
+        // log the event
+        $logMessage = LogManager::getContext() . ' - Company settings deleted';
+        LogManager::addInfoLog($logMessage);
+    }
 }
