@@ -38,10 +38,17 @@ class Log
 
         $context = self::getContext();
 
-        // get the actual script name and the line number and add it to the context
-
+        // get the whole backtrace and add it to the context
         $backtrace = debug_backtrace();
-        $context .= ' - ' . $backtrace[0]['file'] . ' on line ' . $backtrace[0]['line'];
+
+        foreach ($backtrace as $trace) {
+            if (isset($trace['file'])) {
+                $context .= ' - ' . $trace['file'];
+            }
+            if (isset($trace['line'])) {
+                $context .= ' on line ' . $trace['line'];
+            }
+        }
 
         return $context;
     }
