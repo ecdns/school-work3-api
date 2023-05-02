@@ -31,8 +31,10 @@ class CompanySettings implements EntityInterface
     #[ORM\Column(type: 'datetime', nullable: true)]
     private DateTime|null $updated_at = null;
 
-    #[ORM\OneToOne(targetEntity: Company::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'companySettings', targetEntity: Company::class)]
+    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
     private Company $company;
+
 
     public function __construct(string $primaryColor, string $secondaryColor, string $tertiaryColor, Company $company)
     {

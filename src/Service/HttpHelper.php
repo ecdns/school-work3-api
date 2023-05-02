@@ -4,17 +4,17 @@ namespace Service;
 
 abstract class HttpHelper
 {
-    public static function setResponse(int $httpCode, mixed $state, bool $sendRequestResultState): void
+    public static function sendRequestState(int $httpCode, mixed $state): void
     {
         http_response_code($httpCode);
         header('Content-Type: application/json');
-        if ($sendRequestResultState) {
-            echo json_encode(['result' => $state]);
-        }
+        echo json_encode(['result' => $state]);
+
     }
 
-    public static function setResponseData(mixed $data): void
+    public static function sendRequestData(int $httpCode, mixed $data): void
     {
+        http_response_code($httpCode);
         header('Content-Type: application/json');
         echo json_encode($data);
     }

@@ -1,0 +1,55 @@
+// Company
+{
+    "name": "Apple",
+    "address": "57, Valley Road",
+    "city": "San Francisco",
+    "country": "USA",
+    "zipCode": "12345",
+    "phone": "0123456789",
+    "slogan": "Think different",
+    "logoPath": "apple.png",
+    "license": "premium",
+    "language": "en"
+}
+ 
+// License
+{
+    "name": "premium",
+    "description": "Premium account for 10 users for 1 year",
+    "price": 1000,
+    "maxUsers": 10,
+    "validityPeriod": 1
+}
+ 
+// Role
+{
+    "name": "Admin",
+    "description": "Administrator"
+}
+
+// User
+{
+    "firstName": "Mark",
+    "lastName": "Smith",
+    "email": "mark.smith@gmail.com",
+    "password": "password",
+    "job": "ceo",
+    "phone": "0123456789",
+    "role": "User",
+    "company": "Apple",
+}
+
+
+// Company Settings
+{
+    "primaryColor": "#000000",
+    "secondaryColor": "#000000",
+    "tertiaryColor": "#000000",
+    "company": "Apple"
+}
+
+// User Settings
+{
+    "theme": "dark",
+    "language": "en"
+}

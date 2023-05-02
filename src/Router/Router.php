@@ -7,6 +7,7 @@ use Controller\CompanySettingsController;
 use Controller\LicenseController;
 use Controller\RoleController;
 use Controller\UserController;
+use Controller\UserSettingsController;
 use Doctrine\ORM\EntityManager;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
@@ -30,13 +31,23 @@ class Router
             // user routes
             $r->addRoute('POST', '/user/login', 'loginUser');
             $r->addRoute('POST', '/user', 'addUser');
+            $r->addRoute('GET', '/user', 'getUsers');
             $r->addRoute('GET', '/user/{id:\d+}', 'getUserById');
+            $r->addRoute('GET','/user/{email}', 'getUserByEmail');
             $r->addRoute('PUT', '/user/{id:\d+}', 'updateUser');
             $r->addRoute('DELETE', '/user/{id:\d+}', 'deleteUser');
 
+            // user settings routes
+            $r->addRoute('POST', '/user-settings', 'addUserSettings');
+            $r->addRoute('GET', '/user-settings/{id:\d+}', 'getUserSettingsById');
+            $r->addRoute('PUT', '/user-settings/{id:\d+}', 'updateUserSettings');
+            $r->addRoute('DELETE', '/user-settings/{id:\d+}', 'deleteUserSettings');
+
             // company routes
             $r->addRoute('POST', '/company', 'addCompany');
+            $r->addRoute('GET', '/company', 'getCompanies');
             $r->addRoute('GET', '/company/{id:\d+}', 'getCompanyById');
+            $r->addRoute('GET', '/company/{name}', 'getCompanyByName');
             $r->addRoute('PUT', '/company/{id:\d+}', 'updateCompany');
             $r->addRoute('DELETE', '/company/{id:\d+}', 'deleteCompany');
 
@@ -48,12 +59,14 @@ class Router
 
             // license routes
             $r->addRoute('POST', '/license', 'addLicense');
+            $r->addRoute('GET', '/license', 'getLicenses');
             $r->addRoute('GET', '/license/{id:\d+}', 'getLicenseById');
             $r->addRoute('PUT', '/license/{id:\d+}', 'updateLicense');
             $r->addRoute('DELETE', '/license/{id:\d+}', 'deleteLicense');
 
             // role routes
             $r->addRoute('POST', '/role', 'addRole');
+            $r->addRoute('GET', '/role', 'getRoles');
             $r->addRoute('GET', '/role/{id:\d+}', 'getRoleById');
             $r->addRoute('PUT', '/role/{id:\d+}', 'updateRole');
             $r->addRoute('DELETE', '/role/{id:\d+}', 'deleteRole');
@@ -82,8 +95,10 @@ class Router
                 return new RoleController($entityManager);
             case "/company-settings":
                 return new CompanySettingsController($entityManager);
+            case "/user-settings":
+                return new UserSettingsController($entityManager);
             default:
-                HttpHelper::setResponse(500, 'Internal Error', true);
+                HttpHelper::sendRequestState(500, 'No Implementation Found');
                 exit(1);
         }
 
@@ -93,10 +108,10 @@ class Router
     {
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
-                HttpHelper::setResponse(404, 'Route Not Found', true);
+                HttpHelper::sendRequestState(404, 'Route Not Found');
                 break;
             case Dispatcher::METHOD_NOT_ALLOWED:
-                HttpHelper::setResponse(405, 'Method Not Allowed', true);
+                HttpHelper::sendRequestState(405, 'Method Not Allowed');
                 break;
             case Dispatcher::FOUND:
                 $handler = $routeInfo[1];
@@ -105,7 +120,7 @@ class Router
                 call_user_func_array([$controller, $handler], $vars);
                 break;
             default:
-                HttpHelper::setResponse(400, 'Unexpected Error', true);
+                HttpHelper::sendRequestState(400, 'Unexpected Error');
         }
     }
 }

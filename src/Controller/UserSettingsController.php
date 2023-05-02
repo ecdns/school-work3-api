@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Controller;
 
 use Doctrine\ORM\EntityManager;
-use Entity\Company;
-use Entity\CompanySettings;
+use Entity\UserSettings;
 use Exception;
 use Service\HttpHelper;
 use Service\LogManager;
 
-class CompanySettingsController
+class UserSettingsController
 {
+
     private EntityManager $entityManager;
 
     public function __construct(EntityManager $entityManager)
@@ -18,58 +20,65 @@ class CompanySettingsController
         $this->entityManager = $entityManager;
     }
 
-    public function addCompanySettings(): void
+    public function addUserSettings(): void
     {
-
         // get the request body
         $requestBody = file_get_contents('php://input');
 
         // it will look like this:
         // {
-        //     "primaryColor": "#000000",
-        //     "secondaryColor": "#000000",
-        //     "tertiaryColor": "#000000",
-        //     "company": "Cube 3"
+        //     "theme": "dark",
+        //     "language": "en",
+        //     "user-email": "user@user"
         // }
 
         // decode the json
         $requestBody = json_decode($requestBody, true);
 
-        // get the user data from the request body
-        $primaryColor = $requestBody['primaryColor'];
-        $secondaryColor = $requestBody['secondaryColor'];
-        $tertiaryColor = $requestBody['tertiaryColor'];
-        $company = $requestBody['company'];
+        // get the user settings data from the request body
+        $theme = $requestBody['theme'];
+        $language = $requestBody['language'];
+        $id = $requestBody['user-id'];
 
-        // get the company from the database by its name
+        // get the user by its id
         try {
-            $company = $this->entityManager->getRepository(Company::class)->findOneBy(['name' => $company]);
+            $user = $this->entityManager->find('Entity\User', $id);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(404, $error);
+            HttpHelper::sendRequestState(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
         }
 
-        // if the company is not found`
-        if (!$company) {
-            HttpHelper::sendRequestState(404, 'Company not found');
-            $logMessage = LogManager::getFullContext() . ' - Company not found';
+        // if the user is not found
+        if (!$user) {
+            HttpHelper::sendRequestState(404, 'User not found');
+            $logMessage = LogManager::getFullContext() . ' - User not found';
             LogManager::addErrorLog($logMessage);
             exit(1);
         }
 
-        // create a new companySettings object
-        $companySettings = new CompanySettings($primaryColor, $secondaryColor, $tertiaryColor, $company);
+        // create a new user settings
+        $userSettings = new UserSettings($theme, $language, $user);
 
-        // update the company settings field in the company object
-        $company->setCompanySettings($companySettings);
-
-        // persist
+        // persist the user settings
         try {
-            $this->entityManager->persist($companySettings);
-            $this->entityManager->persist($company);
+            $this->entityManager->persist($userSettings);
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            HttpHelper::sendRequestState(500, $error);
+            $logMessage = LogManager::getFullContext() . ' - ' . $error;
+            LogManager::addErrorLog($logMessage);
+            exit(1);
+        }
+
+        // update the user
+        $user->setUserSettings($userSettings);
+
+        // persist the user
+        try {
+            $this->entityManager->persist($user);
         } catch (Exception $e) {
             $error = $e->getMessage();
             HttpHelper::sendRequestState(500, $error);
@@ -95,110 +104,104 @@ class CompanySettingsController
             exit(1);
         }
 
-        // set the response
-        HttpHelper::sendRequestState(201, 'Company settings created');
+        // send the response
+        HttpHelper::sendRequestState(200, 'User settings added successfully');
 
         // log the event
-        $logMessage = LogManager::getContext() . ' - Company settings created';
+        $logMessage = LogManager::getContext() . ' - User settings added successfully';
         LogManager::addInfoLog($logMessage);
 
     }
 
-    public function getCompanySettingsById(int $id): void
+    public function getUserSettingsById(int $id): void
     {
-        // get the company settings from the database by its id
+        // get the user settings
         try {
-            $companySettings = $this->entityManager->getRepository(CompanySettings::class)->find($id);
+            $userSettings = $this->entityManager->find('Entity\UserSettings', $id);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(404, $error);
+            HttpHelper::sendRequestState(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
         }
 
-        // if the company settings are not found
-        if (!$companySettings) {
-            HttpHelper::sendRequestState(404, 'Company settings not found');
-            $logMessage = LogManager::getFullContext() . ' - Company settings not found';
+        // if the user settings are not found
+        if (!$userSettings) {
+            HttpHelper::sendRequestState(404, 'User settings not found');
+            $logMessage = LogManager::getFullContext() . ' - User settings not found';
             LogManager::addErrorLog($logMessage);
             exit(1);
         }
 
-        // set the response
-        $response = $companySettings->toArray();
+        // prepare the user settings data
+        $userSettings = $userSettings->toArray();
 
-        HttpHelper::sendRequestData(200, $response);
+        // send the response
+        HttpHelper::sendRequestData(200, $userSettings);
 
         // log the event
-        $logMessage = LogManager::getContext() . ' - Company settings found';
+        $logMessage = LogManager::getContext() . ' - User settings retrieved successfully';
         LogManager::addInfoLog($logMessage);
     }
 
-    public function updateCompanySettings(int $id): void
+    public function updateUserSettings(int $id): void
     {
         // get the request body
         $requestBody = file_get_contents('php://input');
 
         // it will look like this:
         // {
-        //     "primaryColor": "#000000",
-        //     "secondaryColor": "#000000",
-        //     "tertiaryColor": "#000000",
-        //     "company": "Cube 3"
+        //     "theme": "dark",
+        //     "language": "en"
         // }
 
         // decode the json
         $requestBody = json_decode($requestBody, true);
 
-        // get the user data from the request body
-        $primaryColor = $requestBody['primaryColor'] ?? false;
-        $secondaryColor = $requestBody['secondaryColor'] ?? false;
-        $tertiaryColor = $requestBody['tertiaryColor'] ?? false;
+        // get the user settings data from the request body
+        $theme = $requestBody['theme'] ?? false;
+        $language = $requestBody['language'] ?? false;
 
-        // get the company settings from the database by its id
+        // get the user settings
         try {
-            $companySettings = $this->entityManager->getRepository(CompanySettings::class)->find($id);
+            $userSettings = $this->entityManager->find('Entity\UserSettings', $id);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(404, $error);
+            HttpHelper::sendRequestState(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
         }
 
-        // if the company settings are not found
-        if (!$companySettings) {
-            HttpHelper::sendRequestState(404, 'Company settings not found');
-            $logMessage = LogManager::getFullContext() . ' - Company settings not found';
+        // if the user settings are not found
+        if (!$userSettings) {
+            HttpHelper::sendRequestState(404, 'User settings not found');
+            $logMessage = LogManager::getFullContext() . ' - User settings not found';
             LogManager::addErrorLog($logMessage);
             exit(1);
         }
 
-        // update the company settings
-        if ($primaryColor) {
-            $companySettings->setPrimaryColor($primaryColor);
+        // update the user settings
+        if ($theme) {
+            $userSettings->setTheme($theme);
         }
 
-        if ($secondaryColor) {
-            $companySettings->setSecondaryColor($secondaryColor);
-        }
-
-        if ($tertiaryColor) {
-            $companySettings->setTertiaryColor($tertiaryColor);
+        if ($language) {
+            $userSettings->setLanguage($language);
         }
 
         // if no data was provided
-        if (!$primaryColor && !$secondaryColor && !$tertiaryColor) {
+        if (!$theme && !$language) {
             HttpHelper::sendRequestState(400, 'No valid data provided');
             $logMessage = LogManager::getFullContext() . ' - No valid data provided';
             LogManager::addErrorLog($logMessage);
             exit(1);
         }
 
-        // persist
+        // persist the user settings
         try {
-            $this->entityManager->persist($companySettings);
+            $this->entityManager->persist($userSettings);
         } catch (Exception $e) {
             $error = $e->getMessage();
             HttpHelper::sendRequestState(500, $error);
@@ -218,44 +221,43 @@ class CompanySettingsController
             exit(1);
         }
 
-        // set the response
-        HttpHelper::sendRequestState(200, 'Company settings updated');
+        // send the response
+        HttpHelper::sendRequestState(200, 'User settings updated successfully');
 
         // log the event
-        $logMessage = LogManager::getContext() . ' - Company settings updated';
+        $logMessage = LogManager::getContext() . ' - User settings updated successfully';
         LogManager::addInfoLog($logMessage);
     }
 
-    public function deleteCompanySettings(int $id): void
+    public function deleteUserSettings(int $id): void
     {
-        // get the company settings from the database by its id
+        // get the user settings
         try {
-            $companySettings = $this->entityManager->getRepository(CompanySettings::class)->find($id);
-        } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendRequestState(404, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
-        }
-
-        // if the company settings are not found
-        if (!$companySettings) {
-            HttpHelper::sendRequestState(404, 'Company settings not found');
-            $logMessage = LogManager::getFullContext() . ' - Company settings not found';
-            LogManager::addErrorLog($logMessage);
-            exit(1);
-        }
-
-        // remove the company settings
-        try {
-            $this->entityManager->remove($companySettings);
+            $userSettings = $this->entityManager->find('Entity\UserSettings', $id);
         } catch (Exception $e) {
             $error = $e->getMessage();
             HttpHelper::sendRequestState(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
+        }
+
+        // if the user settings are not found
+        if (!$userSettings) {
+            HttpHelper::sendRequestState(404, 'User settings not found');
+            $logMessage = LogManager::getFullContext() . ' - User settings not found';
+            LogManager::addErrorLog($logMessage);
+            exit(1);
+        }
+
+        // remove the user settings
+        try {
+            $this->entityManager->remove($userSettings);
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            HttpHelper::sendRequestState(500, $error);
+            $logMessage = LogManager::getFullContext() . ' - ' . $error;
+            LogManager::addErrorLog($logMessage);
         }
 
         // flush the entity manager
@@ -263,17 +265,15 @@ class CompanySettingsController
             $this->entityManager->flush();
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
-            exit(1);
         }
 
-        // set the response
-        HttpHelper::sendRequestState(200, 'Company settings deleted');
+        // send the response
+        HttpHelper::sendRequestState(200, 'User settings deleted successfully');
 
         // log the event
-        $logMessage = LogManager::getContext() . ' - Company settings deleted';
+        $logMessage = LogManager::getContext() . ' - User settings deleted successfully';
         LogManager::addInfoLog($logMessage);
     }
 }

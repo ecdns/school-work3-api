@@ -33,6 +33,19 @@ abstract class LogManager
         return $context;
     }
 
+    public static function getFullContext(): string
+    {
+
+        $context = self::getContext();
+
+        // get the actual script name and the line number and add it to the context
+
+        $backtrace = debug_backtrace();
+        $context .= ' - ' . $backtrace[0]['file'] . ' on line ' . $backtrace[0]['line'];
+
+        return $context;
+    }
+
     public static function addInfoLog(string $message): void
     {
         $file = fopen('log/info.log', 'a+');

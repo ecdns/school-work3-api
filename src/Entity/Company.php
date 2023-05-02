@@ -42,9 +42,6 @@ class Company implements EntityInterface
     private string $logoPath;
 
     #[ORM\ManyToOne(targetEntity: License::class, inversedBy: 'companies')]
-    #[ORM\JoinColumn(name: 'license_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private License $license;
 
     #[ORM\Column(type: 'datetime')]
@@ -89,8 +86,8 @@ class Company implements EntityInterface
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Project::class)]
     private Collection $projects;
 
-    #[ORM\OneToOne(targetEntity: CompanySettings::class, cascade: ['persist', 'remove'])]
-    private CompanySettings $companySettings;
+    #[ORM\OneToOne(mappedBy: 'company', targetEntity: CompanySettings::class, cascade: ['persist', 'remove'])]
+    private CompanySettings|null $companySettings;
 
     public function __construct(
         string $name,
@@ -385,7 +382,7 @@ class Company implements EntityInterface
         return isset($this->companySettings) ? $this->companySettings->toArray() : array();
     }
 
-    public function setCompanySettings(CompanySettings $companySettings): void
+    public function setCompanySettings(CompanySettings|null $companySettings): void
     {
         $this->companySettings = $companySettings;
     }
