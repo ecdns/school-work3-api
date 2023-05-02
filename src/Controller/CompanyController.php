@@ -8,10 +8,7 @@ use Doctrine\ORM\EntityManager;
 use Entity\Company;
 use Entity\License;
 use Exception;
-use Service\RequestManager;
-use Service\HttpHelper;
-use Service\LogManager;
-use Twig\Error\Error;
+use Service\Request;
 
 class CompanyController implements ControllerInterface
 {
@@ -67,7 +64,7 @@ class CompanyController implements ControllerInterface
 
         // check if the data is valid
         if (!$this->validateData($requestBody)) {
-            RequestManager::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 
         // get the user data from the request body
@@ -86,12 +83,12 @@ class CompanyController implements ControllerInterface
         try {
             $license = $this->entityManager->getRepository(License::class)->findOneBy(['name' => $licenseName]);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the license is not found
         if (!$license) {
-            RequestManager::handleErrorAndQuit(new Exception('License not found'), 404);
+            Request::handleErrorAndQuit(new Exception('License not found'), 404);
         }
 
         // get the license expiration date knowing it will be in years
@@ -103,9 +100,9 @@ class CompanyController implements ControllerInterface
             $error = $e->getMessage();
             // if the error mentions a constraint violation, it means the license already exists
             if (str_contains($error, 'constraint violation')) {
-                RequestManager::handleErrorAndQuit(new Exception('License already exists'), 409);
+                Request::handleErrorAndQuit(new Exception('License already exists'), 409);
             }
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // check if the license is expired, if it is, return set $isEnable to false
@@ -121,7 +118,7 @@ class CompanyController implements ControllerInterface
         try {
             $this->entityManager->persist($company);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
@@ -129,11 +126,11 @@ class CompanyController implements ControllerInterface
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // set the response
-        RequestManager::handleSuccessAndQuit(201, 'Company created');
+        Request::handleSuccessAndQuit(201, 'Company created');
 
     }
 
@@ -143,7 +140,7 @@ class CompanyController implements ControllerInterface
         try {
             $companies = $this->entityManager->getRepository(Company::class)->findAll();
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // construct the response with the companies data
@@ -153,7 +150,7 @@ class CompanyController implements ControllerInterface
         }
 
         // set the response
-        RequestManager::handleSuccessAndQuit(200, 'Companies found', $response);
+        Request::handleSuccessAndQuit(200, 'Companies found', $response);
 
     }
 
@@ -163,19 +160,19 @@ class CompanyController implements ControllerInterface
         try {
             $company = $this->entityManager->getRepository(Company::class)->find($id);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the company is not found, return an error
         if (!$company) {
-            RequestManager::handleErrorAndQuit(new Exception('Company not found'), 404);
+            Request::handleErrorAndQuit(new Exception('Company not found'), 404);
         }
 
         // construct the response with the company data
         $response = $company->toFullArrayWithUsers();
 
         // set the response
-        RequestManager::handleSuccessAndQuit(200, 'Company found', $response);
+        Request::handleSuccessAndQuit(200, 'Company found', $response);
 
     }
 
@@ -185,19 +182,19 @@ class CompanyController implements ControllerInterface
         try {
             $company = $this->entityManager->getRepository(Company::class)->findOneBy(['name' => $name]);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the company is not found, return an error
         if (!$company) {
-            RequestManager::handleErrorAndQuit(new Exception('Company not found'), 404);
+            Request::handleErrorAndQuit(new Exception('Company not found'), 404);
         }
 
         // construct the response with the company data
         $response = $company->toFullArrayWithUsers();
 
         // set the response
-        RequestManager::handleSuccessAndQuit(200, 'Company found', $response);
+        Request::handleSuccessAndQuit(200, 'Company found', $response);
 
     }
 
@@ -225,7 +222,7 @@ class CompanyController implements ControllerInterface
 
         // validate the request body
         if ($this->validateData($requestBody, false) === false) {
-            RequestManager::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 
         // get the user data from the request body
@@ -244,24 +241,24 @@ class CompanyController implements ControllerInterface
         try {
             $company = $this->entityManager->getRepository(Company::class)->find($id);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the company is not found, return an error
         if (!$company) {
-            RequestManager::handleErrorAndQuit(new Exception('Company not found'), 404);
+            Request::handleErrorAndQuit(new Exception('Company not found'), 404);
         }
 
         // get the license from the database by its name
         try {
             $license = $this->entityManager->getRepository(License::class)->findOneBy(['name' => $company->getLicense()->getName()]);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the license is not found, return an error
         if (!$license) {
-            RequestManager::handleErrorAndQuit(new Exception('License not found'), 404);
+            Request::handleErrorAndQuit(new Exception('License not found'), 404);
         }
 
         // get the license expiration date knowing it will be in years
@@ -270,7 +267,7 @@ class CompanyController implements ControllerInterface
         try {
             $licenseExpirationDate->add(new DateInterval('P' . $license->getValidityPeriod() . 'Y'));
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // check if the license is expired, if it is, return set $isEnable to false
@@ -297,18 +294,18 @@ class CompanyController implements ControllerInterface
         try {
             $this->entityManager->persist($company);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // set the response
-        RequestManager::handleSuccessAndQuit(200, 'Company updated successfully');
+        Request::handleSuccessAndQuit(200, 'Company updated successfully');
 
     }
 
@@ -318,30 +315,30 @@ class CompanyController implements ControllerInterface
         try {
             $company = $this->entityManager->getRepository(Company::class)->find($id);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the company is not found, return an error
         if (!$company) {
-            RequestManager::handleErrorAndQuit(new Exception('Company not found'), 404);
+            Request::handleErrorAndQuit(new Exception('Company not found'), 404);
         }
 
         // remove the company
         try {
             $this->entityManager->remove($company);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // handle the response
-        RequestManager::handleSuccessAndQuit(200, 'Company deleted successfully');
+        Request::handleSuccessAndQuit(200, 'Company deleted successfully');
 
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Service;
 
-abstract class HttpHelper
+abstract class Http
 {
     public static function sendStatusResponse(int $httpCode, mixed $state): void
     {

@@ -9,7 +9,7 @@ use Entity\Company;
 use Entity\Role;
 use Entity\User;
 use Exception;
-use Service\RequestManager;
+use Service\Request;
 
 class UserController implements ControllerInterface
 {
@@ -65,7 +65,7 @@ class UserController implements ControllerInterface
 
         // if the data is not valid
         if (!$dataIsValid) {
-            RequestManager::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 
         // get the user data from the request body
@@ -85,17 +85,17 @@ class UserController implements ControllerInterface
             $role = $this->entityManager->getRepository(Role::class)->findOneBy(['name' => $role]);
             $company = $this->entityManager->getRepository(Company::class)->findOneBy(['name' => $companyName]);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the role is not found
         if (!$role) {
-            RequestManager::handleErrorAndQuit(new Exception('Role not found'), 404);
+            Request::handleErrorAndQuit(new Exception('Role not found'), 404);
         }
 
         // if the company is not found
         if (!$company) {
-            RequestManager::handleErrorAndQuit(new Exception('Company not found'), 404);
+            Request::handleErrorAndQuit(new Exception('Company not found'), 404);
         }
 
         // create a new user
@@ -105,7 +105,7 @@ class UserController implements ControllerInterface
         try {
             $this->entityManager->persist($user);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
@@ -114,13 +114,13 @@ class UserController implements ControllerInterface
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                RequestManager::handleErrorAndQuit(new Exception('User already exists'), 409);
+                Request::handleErrorAndQuit(new Exception('User already exists'), 409);
             }
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // handle the response
-        RequestManager::handleSuccessAndQuit(201, 'User created');
+        Request::handleSuccessAndQuit(201, 'User created');
     }
 
     public function getUsers(): void
@@ -129,12 +129,12 @@ class UserController implements ControllerInterface
         try {
             $users = $this->entityManager->getRepository(User::class)->findAll();
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if there are no users
         if (!$users) {
-            RequestManager::handleErrorAndQuit(new Exception('No users found'), 404);
+            Request::handleErrorAndQuit(new Exception('No users found'), 404);
         }
 
         // get the users data
@@ -144,7 +144,7 @@ class UserController implements ControllerInterface
         }
 
         // handle the response
-        RequestManager::handleSuccessAndQuit(200, 'Users found', $usersData);
+        Request::handleSuccessAndQuit(200, 'Users found', $usersData);
     }
 
     public function getUserById(int $id): void
@@ -153,19 +153,19 @@ class UserController implements ControllerInterface
         try {
             $user = $this->entityManager->getRepository(User::class)->find($id);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the user doesn't exist
         if (!$user) {
-            RequestManager::handleErrorAndQuit(new Exception('User not found'), 404);
+            Request::handleErrorAndQuit(new Exception('User not found'), 404);
         }
 
         // get the user data
         $userData = $user->toArray();
 
         // handle the response
-        RequestManager::handleSuccessAndQuit(200, 'User found', $userData);
+        Request::handleSuccessAndQuit(200, 'User found', $userData);
     }
 
     public function updateUser(int $id): void
@@ -190,7 +190,7 @@ class UserController implements ControllerInterface
 
         // validate the data
         if (!$this->validateData($requestBody, false)) {
-            RequestManager::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 
 
@@ -208,12 +208,12 @@ class UserController implements ControllerInterface
         try {
             $user = $this->entityManager->getRepository(User::class)->find($id);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the user doesn't exist
         if (!$user) {
-            RequestManager::handleErrorAndQuit(new Exception('User not found'), 404);
+            Request::handleErrorAndQuit(new Exception('User not found'), 404);
         }
 
         // get the company and role from the database
@@ -221,17 +221,17 @@ class UserController implements ControllerInterface
             $role = $this->entityManager->getRepository(Role::class)->findOneBy(['name' => $user->getRole()->getName()]);
             $company = $this->entityManager->getRepository(Company::class)->findOneBy(['name' => $user->getCompany()->getName()]);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the role doesn't exist
         if (!$role) {
-            RequestManager::handleErrorAndQuit(new Exception('Role not found'), 404);
+            Request::handleErrorAndQuit(new Exception('Role not found'), 404);
         }
 
         // if the company doesn't exist
         if (!$company) {
-            RequestManager::handleErrorAndQuit(new Exception('Company not found'), 404);
+            Request::handleErrorAndQuit(new Exception('Company not found'), 404);
         }
 
         // update the user data
@@ -248,18 +248,18 @@ class UserController implements ControllerInterface
         try {
             $this->entityManager->persist($user);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // handle the response
-        RequestManager::handleSuccessAndQuit(200, 'User updated');
+        Request::handleSuccessAndQuit(200, 'User updated');
     }
 
     public function deleteUser(int $id): void
@@ -268,30 +268,30 @@ class UserController implements ControllerInterface
         try {
             $user = $this->entityManager->getRepository(User::class)->find($id);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the user doesn't exist
         if (!$user) {
-            RequestManager::handleErrorAndQuit(new Exception('User not found'), 404);
+            Request::handleErrorAndQuit(new Exception('User not found'), 404);
         }
 
         // remove the user
         try {
             $this->entityManager->remove($user);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // handle the response
-        RequestManager::handleSuccessAndQuit(200, 'User deleted');
+        Request::handleSuccessAndQuit(200, 'User deleted');
     }
 
     public function loginUser(): void
@@ -316,26 +316,26 @@ class UserController implements ControllerInterface
         try {
             $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the user doesn't exist
         if (!$user) {
-            RequestManager::handleErrorAndQuit(new Exception('User not found'), 404);
+            Request::handleErrorAndQuit(new Exception('User not found'), 404);
         }
 
         // if the password is incorrect
         if (!password_verify($password, $user->getPassword())) {
-            RequestManager::handleErrorAndQuit(new Exception('Incorrect password'), 401);
+            Request::handleErrorAndQuit(new Exception('Incorrect password'), 401);
         }
 
         // check if the user company is active
         if (!$user->getCompany()->getIsEnabled()) {
-            RequestManager::handleErrorAndQuit(new Exception('Company is not active'), 401);
+            Request::handleErrorAndQuit(new Exception('Company is not active'), 401);
         }
 
         // handle the response
-        RequestManager::handleSuccessAndQuit(200, 'User logged in');
+        Request::handleSuccessAndQuit(200, 'User logged in');
     }
 
 }

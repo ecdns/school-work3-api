@@ -7,9 +7,7 @@ namespace Controller;
 use Doctrine\ORM\EntityManager;
 use Entity\UserSettings;
 use Exception;
-use Service\HttpHelper;
-use Service\LogManager;
-use Service\RequestManager;
+use Service\Request;
 
 class UserSettingsController implements ControllerInterface
 {
@@ -55,7 +53,7 @@ class UserSettingsController implements ControllerInterface
 
         // validate the data
         if (!$this->validateData($requestBody)) {
-            RequestManager::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 
         // get the user settings data from the request body
@@ -67,12 +65,12 @@ class UserSettingsController implements ControllerInterface
         try {
             $user = $this->entityManager->find('Entity\User', $id);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the user is not found
         if (!$user) {
-            RequestManager::handleErrorAndQuit(new Exception('User not found'), 404);
+            Request::handleErrorAndQuit(new Exception('User not found'), 404);
         }
 
         // create a new user settings
@@ -82,7 +80,7 @@ class UserSettingsController implements ControllerInterface
         try {
             $this->entityManager->persist($userSettings);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // update the user
@@ -92,7 +90,7 @@ class UserSettingsController implements ControllerInterface
         try {
             $this->entityManager->persist($user);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
@@ -101,17 +99,13 @@ class UserSettingsController implements ControllerInterface
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                RequestManager::handleErrorAndQuit(new Exception('User settings already exist'), 409);
+                Request::handleErrorAndQuit(new Exception('User settings already exist'), 409);
             }
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
-        // send the response
-        HttpHelper::sendStatusResponse(200, 'User settings added successfully');
-
-        // log the event
-        $logMessage = LogManager::getContext() . ' - User settings added successfully';
-        LogManager::addInfoLog($logMessage);
+        // handle the response
+        Request::handleSuccessAndQuit(201, 'User settings created successfully');
 
     }
 
@@ -121,23 +115,19 @@ class UserSettingsController implements ControllerInterface
         try {
             $userSettings = $this->entityManager->find('Entity\UserSettings', $id);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the user settings are not found
         if (!$userSettings) {
-            RequestManager::handleErrorAndQuit(new Exception('User settings not found'), 404);
+            Request::handleErrorAndQuit(new Exception('User settings not found'), 404);
         }
 
         // prepare the user settings data
         $userSettings = $userSettings->toArray();
 
-        // send the response
-        HttpHelper::sendDataResponse(200, $userSettings);
-
-        // log the event
-        $logMessage = LogManager::getContext() . ' - User settings retrieved successfully';
-        LogManager::addInfoLog($logMessage);
+        // handle the response
+        Request::handleSuccessAndQuit(200, 'User settings found', $userSettings);
     }
 
     public function updateUserSettings(int $id): void
@@ -156,7 +146,7 @@ class UserSettingsController implements ControllerInterface
 
         // validate the data
         if (!$this->validateData($requestBody, false)) {
-            RequestManager::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 
         // get the user settings data from the request body
@@ -167,12 +157,12 @@ class UserSettingsController implements ControllerInterface
         try {
             $userSettings = $this->entityManager->find('Entity\UserSettings', $id);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the user settings are not found
         if (!$userSettings) {
-            RequestManager::handleErrorAndQuit(new Exception('User settings not found'), 404);
+            Request::handleErrorAndQuit(new Exception('User settings not found'), 404);
         }
 
         // update the user settings
@@ -183,22 +173,18 @@ class UserSettingsController implements ControllerInterface
         try {
             $this->entityManager->persist($userSettings);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
-        // send the response
-        HttpHelper::sendStatusResponse(200, 'User settings updated successfully');
-
-        // log the event
-        $logMessage = LogManager::getContext() . ' - User settings updated successfully';
-        LogManager::addInfoLog($logMessage);
+        // handle the response
+        Request::handleSuccessAndQuit(200, 'User settings updated successfully');
     }
 
     public function deleteUserSettings(int $id): void
@@ -207,33 +193,29 @@ class UserSettingsController implements ControllerInterface
         try {
             $userSettings = $this->entityManager->find('Entity\UserSettings', $id);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the user settings are not found
         if (!$userSettings) {
-            RequestManager::handleErrorAndQuit(new Exception('User settings not found'), 404);
+            Request::handleErrorAndQuit(new Exception('User settings not found'), 404);
         }
 
         // remove the user settings
         try {
             $this->entityManager->remove($userSettings);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
-        // send the response
-        HttpHelper::sendStatusResponse(200, 'User settings deleted successfully');
-
-        // log the event
-        $logMessage = LogManager::getContext() . ' - User settings deleted successfully';
-        LogManager::addInfoLog($logMessage);
+        // handle the response
+        Request::handleSuccessAndQuit(200, 'User settings deleted successfully');
     }
 }

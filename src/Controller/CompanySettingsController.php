@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Entity\Company;
 use Entity\CompanySettings;
 use Exception;
-use Service\RequestManager;
+use Service\Request;
 
 class CompanySettingsController implements ControllerInterface
 {
@@ -53,7 +53,7 @@ class CompanySettingsController implements ControllerInterface
 
         // validate the data
         if (!$this->validateData($requestBody)) {
-            RequestManager::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 
         // get the user data from the request body
@@ -66,12 +66,12 @@ class CompanySettingsController implements ControllerInterface
         try {
             $company = $this->entityManager->getRepository(Company::class)->findOneBy(['name' => $company]);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the company is not found`
         if (!$company) {
-            RequestManager::handleErrorAndQuit(new Exception('Company not found'), 404);
+            Request::handleErrorAndQuit(new Exception('Company not found'), 404);
         }
 
         // create a new companySettings object
@@ -85,7 +85,7 @@ class CompanySettingsController implements ControllerInterface
             $this->entityManager->persist($companySettings);
             $this->entityManager->persist($company);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
@@ -94,13 +94,13 @@ class CompanySettingsController implements ControllerInterface
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                RequestManager::handleErrorAndQuit(new Exception('Company settings already exist'), 409);
+                Request::handleErrorAndQuit(new Exception('Company settings already exist'), 409);
             }
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // handle the response
-        RequestManager::handleSuccessAndQuit(201, 'Company settings created');
+        Request::handleSuccessAndQuit(201, 'Company settings created');
 
     }
 
@@ -110,19 +110,19 @@ class CompanySettingsController implements ControllerInterface
         try {
             $companySettings = $this->entityManager->getRepository(CompanySettings::class)->find($id);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the company settings are not found
         if (!$companySettings) {
-            RequestManager::handleErrorAndQuit(new Exception('Company settings not found'), 404);
+            Request::handleErrorAndQuit(new Exception('Company settings not found'), 404);
         }
 
         // set the response
         $response = $companySettings->toArray();
 
         // handle the response
-        RequestManager::handleSuccessAndQuit(200, 'Company settings found', $response);
+        Request::handleSuccessAndQuit(200, 'Company settings found', $response);
     }
 
     public function updateCompanySettings(int $id): void
@@ -143,7 +143,7 @@ class CompanySettingsController implements ControllerInterface
 
         // validate the data
         if (!$this->validateData($requestBody, false)) {
-            RequestManager::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 
         // get the user data from the request body
@@ -155,12 +155,12 @@ class CompanySettingsController implements ControllerInterface
         try {
             $companySettings = $this->entityManager->getRepository(CompanySettings::class)->find($id);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the company settings are not found
         if (!$companySettings) {
-            RequestManager::handleErrorAndQuit(new Exception('Company settings not found'), 404);
+            Request::handleErrorAndQuit(new Exception('Company settings not found'), 404);
         }
 
         // update the company settings
@@ -172,18 +172,18 @@ class CompanySettingsController implements ControllerInterface
         try {
             $this->entityManager->persist($companySettings);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // handle the response
-        RequestManager::handleSuccessAndQuit(200, 'Company settings updated');
+        Request::handleSuccessAndQuit(200, 'Company settings updated');
     }
 
     public function deleteCompanySettings(int $id): void
@@ -192,29 +192,29 @@ class CompanySettingsController implements ControllerInterface
         try {
             $companySettings = $this->entityManager->getRepository(CompanySettings::class)->find($id);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the company settings are not found
         if (!$companySettings) {
-            RequestManager::handleErrorAndQuit(new Exception('Company settings not found'), 404);
+            Request::handleErrorAndQuit(new Exception('Company settings not found'), 404);
         }
 
         // remove the company settings
         try {
             $this->entityManager->remove($companySettings);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // handle the response
-        RequestManager::handleSuccessAndQuit(200, 'Company settings deleted');
+        Request::handleSuccessAndQuit(200, 'Company settings deleted');
     }
 }

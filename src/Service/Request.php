@@ -7,15 +7,15 @@ namespace Service;
 use JetBrains\PhpStorm\NoReturn;
 use Throwable;
 
-class RequestManager
+class Request
 {
     #[NoReturn] public static function handleErrorAndQuit(Throwable $e, int $httpCode): void
     {
         $message = $e->getMessage();
-        $context = LogManager::getFullContext();
+        $context = Log::getFullContext();
         $error = $message . ' - ' . $context;
-        LogManager::addErrorLog($error);
-        HttpHelper::sendStatusResponse($httpCode, $message);
+        Log::addErrorLog($error);
+        Http::sendStatusResponse($httpCode, $message);
         exit(1);
     }
 
@@ -23,11 +23,11 @@ class RequestManager
     {
 
         if ($data !== null) {
-            HttpHelper::sendDataResponse($httpCode, $data);
+            Http::sendDataResponse($httpCode, $data);
         } else {
-            HttpHelper::sendStatusResponse($httpCode, $status);
+            Http::sendStatusResponse($httpCode, $status);
         }
-        LogManager::addInfoLog($status);
+        Log::addInfoLog($status);
         exit(0);
     }
 }

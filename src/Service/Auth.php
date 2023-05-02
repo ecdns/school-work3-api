@@ -5,7 +5,7 @@ namespace Service;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-abstract class AuthHelper
+abstract class Auth
 {
     public static function hashPassword(string $password): string
     {

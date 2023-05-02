@@ -5,7 +5,7 @@ namespace Controller;
 use Doctrine\ORM\EntityManager;
 use Entity\Role;
 use Exception;
-use Service\RequestManager;
+use Service\Request;
 
 class RoleController implements ControllerInterface
 {
@@ -49,7 +49,7 @@ class RoleController implements ControllerInterface
 
         // validate the data
         if (!$this->validateData($requestBody)) {
-            RequestManager::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 
         // get the user data from the request body
@@ -63,7 +63,7 @@ class RoleController implements ControllerInterface
         try {
             $this->entityManager->persist($role);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
@@ -72,13 +72,13 @@ class RoleController implements ControllerInterface
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                RequestManager::handleErrorAndQuit(new Exception('Role already exists'), 409);
+                Request::handleErrorAndQuit(new Exception('Role already exists'), 409);
             }
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // handle the response
-        RequestManager::handleSuccessAndQuit(201, 'Role created');
+        Request::handleSuccessAndQuit(201, 'Role created');
     }
 
     public function getRoles(): void
@@ -87,7 +87,7 @@ class RoleController implements ControllerInterface
         try {
             $roles = $this->entityManager->getRepository(Role::class)->findAll();
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // set the response
@@ -97,7 +97,7 @@ class RoleController implements ControllerInterface
         }
 
         // handle the response
-        RequestManager::handleSuccessAndQuit(200, 'Roles found', $response);
+        Request::handleSuccessAndQuit(200, 'Roles found', $response);
     }
 
     public function getRoleById(int $id): void
@@ -106,19 +106,19 @@ class RoleController implements ControllerInterface
         try {
             $role = $this->entityManager->find(Role::class, $id);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the role is not found
         if (!$role) {
-            RequestManager::handleErrorAndQuit(new Exception('Role not found'), 404);
+            Request::handleErrorAndQuit(new Exception('Role not found'), 404);
         }
 
         // set the response
         $response = $role->toArray();
 
         // handle the response
-        RequestManager::handleSuccessAndQuit(200, 'Role found', $response);
+        Request::handleSuccessAndQuit(200, 'Role found', $response);
     }
 
     public function updateRole(int $id): void
@@ -127,12 +127,12 @@ class RoleController implements ControllerInterface
         try {
             $role = $this->entityManager->find(Role::class, $id);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the role is not found
         if (!$role) {
-            RequestManager::handleErrorAndQuit(new Exception('Role not found'), 404);
+            Request::handleErrorAndQuit(new Exception('Role not found'), 404);
         }
 
         // get the request body
@@ -140,7 +140,7 @@ class RoleController implements ControllerInterface
 
         // validate the data
         if (!$this->validateData($requestBody, false)) {
-            RequestManager::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 
         // it will look like this:
@@ -164,18 +164,18 @@ class RoleController implements ControllerInterface
         try {
             $this->entityManager->persist($role);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // handle the response
-        RequestManager::handleSuccessAndQuit(200, 'Role updated');
+        Request::handleSuccessAndQuit(200, 'Role updated');
 
     }
 
@@ -185,29 +185,29 @@ class RoleController implements ControllerInterface
         try {
             $role = $this->entityManager->find(Role::class, $id);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the role is not found
         if (!$role) {
-            RequestManager::handleErrorAndQuit(new Exception('Role not found'), 404);
+            Request::handleErrorAndQuit(new Exception('Role not found'), 404);
         }
 
         // remove the role
         try {
             $this->entityManager->remove($role);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // handle the response
-        RequestManager::handleSuccessAndQuit(200, 'Role deleted');
+        Request::handleSuccessAndQuit(200, 'Role deleted');
     }
 }

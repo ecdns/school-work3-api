@@ -11,7 +11,7 @@ use Controller\UserSettingsController;
 use Doctrine\ORM\EntityManager;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
-use Service\HttpHelper;
+use Service\Http;
 use function FastRoute\simpleDispatcher;
 
 class Router
@@ -97,7 +97,7 @@ class Router
             case "/user-settings":
                 return new UserSettingsController($entityManager);
             default:
-                HttpHelper::sendStatusResponse(500, 'No Implementation Found');
+                Http::sendStatusResponse(500, 'No Implementation Found');
                 exit(1);
         }
 
@@ -107,10 +107,10 @@ class Router
     {
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
-                HttpHelper::sendStatusResponse(404, 'Route Not Found');
+                Http::sendStatusResponse(404, 'Route Not Found');
                 break;
             case Dispatcher::METHOD_NOT_ALLOWED:
-                HttpHelper::sendStatusResponse(405, 'Method Not Allowed');
+                Http::sendStatusResponse(405, 'Method Not Allowed');
                 break;
             case Dispatcher::FOUND:
                 $handler = $routeInfo[1];
@@ -119,7 +119,7 @@ class Router
                 call_user_func_array([$controller, $handler], $vars);
                 break;
             default:
-                HttpHelper::sendStatusResponse(400, 'Unexpected Error');
+                Http::sendStatusResponse(400, 'Unexpected Error');
         }
     }
 }

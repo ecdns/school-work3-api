@@ -7,7 +7,7 @@ namespace Controller;
 use Doctrine\ORM\EntityManager;
 use Entity\License;
 use Exception;
-use Service\RequestManager;
+use Service\Request;
 
 class LicenseController implements ControllerInterface
 {
@@ -54,7 +54,7 @@ class LicenseController implements ControllerInterface
 
         // check if the data is valid
         if (!$this->validateData($requestBody)) {
-            RequestManager::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 
         // get the user data from the request body
@@ -71,7 +71,7 @@ class LicenseController implements ControllerInterface
         try {
             $this->entityManager->persist($license);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
@@ -80,13 +80,13 @@ class LicenseController implements ControllerInterface
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                RequestManager::handleErrorAndQuit(new Exception('License already exists'), 409);
+                Request::handleErrorAndQuit(new Exception('License already exists'), 409);
             }
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // handle the response
-        RequestManager::handleSuccessAndQuit(201, 'License created');
+        Request::handleSuccessAndQuit(201, 'License created');
     }
 
     public function getLicenses(): void
@@ -95,7 +95,7 @@ class LicenseController implements ControllerInterface
         try {
             $licenses = $this->entityManager->getRepository(License::class)->findAll();
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // set the response
@@ -105,7 +105,7 @@ class LicenseController implements ControllerInterface
         }
 
         // handle the response
-        RequestManager::handleSuccessAndQuit(200, 'Licenses found', $response);
+        Request::handleSuccessAndQuit(200, 'Licenses found', $response);
     }
 
     public function getLicenseById(int $id): void
@@ -114,19 +114,19 @@ class LicenseController implements ControllerInterface
         try {
             $license = $this->entityManager->getRepository(License::class)->find($id);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the license is not found
         if (!$license) {
-            RequestManager::handleErrorAndQuit(new Exception('License not found'), 404);
+            Request::handleErrorAndQuit(new Exception('License not found'), 404);
         }
 
         // set the response
         $response = $license->toArray();
 
         // handle the response
-        RequestManager::handleSuccessAndQuit(200, 'License found', $response);
+        Request::handleSuccessAndQuit(200, 'License found', $response);
     }
 
     public function updateLicense(int $id): void
@@ -148,7 +148,7 @@ class LicenseController implements ControllerInterface
 
         // check if the data is valid
         if (!$this->validateData($requestBody, false)) {
-            RequestManager::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 
         // get the user data from the request body
@@ -162,12 +162,12 @@ class LicenseController implements ControllerInterface
         try {
             $license = $this->entityManager->getRepository(License::class)->find($id);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the license is not found
         if (!$license) {
-            RequestManager::handleErrorAndQuit(new Exception('License not found'), 404);
+            Request::handleErrorAndQuit(new Exception('License not found'), 404);
         }
 
         // update the license
@@ -181,7 +181,7 @@ class LicenseController implements ControllerInterface
         try {
             $this->entityManager->persist($license);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
@@ -190,13 +190,13 @@ class LicenseController implements ControllerInterface
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                RequestManager::handleErrorAndQuit(new Exception('License already exists'), 409);
+                Request::handleErrorAndQuit(new Exception('License already exists'), 409);
             }
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // set the response
-        RequestManager::handleSuccessAndQuit(200, 'License updated');
+        Request::handleSuccessAndQuit(200, 'License updated');
 
     }
 
@@ -206,30 +206,30 @@ class LicenseController implements ControllerInterface
         try {
             $license = $this->entityManager->getRepository(License::class)->find($id);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // if the license is not found
         if (!$license) {
-            RequestManager::handleErrorAndQuit(new Exception('License not found'), 404);
+            Request::handleErrorAndQuit(new Exception('License not found'), 404);
         }
 
         // remove the license
         try {
             $this->entityManager->remove($license);
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit($e, 500);
         }
 
         // handle the response
-        RequestManager::handleSuccessAndQuit(200, 'License deleted');
+        Request::handleSuccessAndQuit(200, 'License deleted');
     }
 
 

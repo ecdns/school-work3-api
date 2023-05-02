@@ -7,7 +7,7 @@ require_once "vendor/autoload.php";
 use Dotenv\Dotenv;
 use Router\Router;
 use Service\DbManager;
-use Service\HttpHelper;
+use Service\Http;
 
 // Récupération de la méthode et de l'URI
 $requestMethod = $_SERVER["REQUEST_METHOD"];
@@ -32,14 +32,14 @@ $dbManager = new DbManager($dbHost, $dbName, $dbUser, $dbPassword, $dbPort, $ent
 try {
     $connexion = $dbManager->getConnexion();
 } catch (Exception $e) {
-    HttpHelper::sendStatusResponse(500, 'Internal Error', true);
+    Http::sendStatusResponse(500, 'Internal Error');
     exit(1);
 }
 
 try {
     $entityManager = $dbManager->getEntityManager($connexion);
 } catch (Exception $e) {
-    HttpHelper::sendStatusResponse(500, 'Internal Error', true);
+    Http::sendStatusResponse(500, 'Internal Error');
     exit(1);
 }
 
