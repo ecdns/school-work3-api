@@ -9,10 +9,9 @@ use Entity\Company;
 use Entity\Role;
 use Entity\User;
 use Exception;
-use Service\HttpHelper;
-use Service\LogManager;
+use Service\RequestManager;
 
-class UserController
+class UserController implements ControllerInterface
 {
     private EntityManager $entityManager;
 
@@ -21,22 +20,20 @@ class UserController
         $this->entityManager = $entityManager;
     }
 
-    public function validateData(mixed $data)
+    public function validateData(mixed $data, bool $isPostRequest = true): bool
     {
-        // check if one is missing and if so, return false
-        if (
-            !isset($data['firstName']) ||
-            !isset($data['lastName']) ||
-            !isset($data['email']) ||
-            !isset($data['password']) ||
-            !isset($data['job']) ||
-            !isset($data['phone']) ||
-            !isset($data['role']) ||
-            !isset($data['company'])
-        ) {
-            return false;
+        if ($isPostRequest) {
+            if (!isset($data['firstName']) || !isset($data['lastName']) || !isset($data['email']) || !isset($data['password']) || !isset($data['job']) || !isset($data['phone']) || !isset($data['role']) || !isset($data['company'])) {
+                return false;
+            } else {
+                return true;
+            }
         } else {
-            return true;
+            if (isset($data['firstName']) || isset($data['lastName']) || isset($data['email']) || isset($data['password']) || isset($data['job']) || isset($data['phone']) || isset($data['role']) || isset($data['company'])) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
@@ -68,10 +65,7 @@ class UserController
 
         // if the data is not valid
         if (!$dataIsValid) {
-            HttpHelper::sendStatusResponse(400, 'Invalid data');
-            $logMessage = LogManager::getFullContext() . ' - Invalid data';
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 
         // get the user data from the request body
@@ -91,27 +85,17 @@ class UserController
             $role = $this->entityManager->getRepository(Role::class)->findOneBy(['name' => $role]);
             $company = $this->entityManager->getRepository(Company::class)->findOneBy(['name' => $companyName]);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // if the role is not found
         if (!$role) {
-            HttpHelper::sendStatusResponse(404, 'Role not found');
-            $logMessage = LogManager::getFullContext() . ' - Role not found';
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit(new Exception('Role not found'), 404);
         }
 
         // if the company is not found
         if (!$company) {
-            HttpHelper::sendStatusResponse(404, 'Company not found');
-            $logMessage = LogManager::getFullContext() . ' - Company not found';
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit(new Exception('Company not found'), 404);
         }
 
         // create a new user
@@ -121,11 +105,7 @@ class UserController
         try {
             $this->entityManager->persist($user);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
@@ -134,23 +114,13 @@ class UserController
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                HttpHelper::sendStatusResponse(409, 'User already exists');
-                $logMessage = LogManager::getFullContext() . ' - User already exists';
-                LogManager::addErrorLog($logMessage);
-                exit(1);
+                RequestManager::handleErrorAndQuit(new Exception('User already exists'), 409);
             }
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
-        // set the response
-        HttpHelper::sendStatusResponse(201, 'User created');
-
-        // add a log
-        $logMessage = LogManager::getContext() . ' - User created';
-        LogManager::addInfoLog($logMessage);
+        // handle the response
+        RequestManager::handleSuccessAndQuit(201, 'User created');
     }
 
     public function getUsers(): void
@@ -159,19 +129,12 @@ class UserController
         try {
             $users = $this->entityManager->getRepository(User::class)->findAll();
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // if there are no users
         if (!$users) {
-            HttpHelper::sendStatusResponse(404, 'Users not found');
-            $logMessage = LogManager::getFullContext() . ' - Users not found';
-            LogManager::addInfoLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit(new Exception('No users found'), 404);
         }
 
         // get the users data
@@ -180,12 +143,8 @@ class UserController
             $usersData[] = $user->toArray();
         }
 
-        // set the response
-        HttpHelper::sendDataResponse(200, $usersData);
-
-        // add a log
-        $logMessage = LogManager::getContext() . ' - Users found';
-        LogManager::addInfoLog($logMessage);
+        // handle the response
+        RequestManager::handleSuccessAndQuit(200, 'Users found', $usersData);
     }
 
     public function getUserById(int $id): void
@@ -194,31 +153,19 @@ class UserController
         try {
             $user = $this->entityManager->getRepository(User::class)->find($id);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // if the user doesn't exist
         if (!$user) {
-            HttpHelper::sendStatusResponse(404, 'User not found');
-            $logMessage = LogManager::getContext() . ' - User not found';
-            LogManager::addInfoLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit(new Exception('User not found'), 404);
         }
 
         // get the user data
         $userData = $user->toArray();
 
-        // set the response
-
-        HttpHelper::sendDataResponse(200, $userData);
-
-        // add a log
-        $logMessage = LogManager::getContext() . ' - User found';
-        LogManager::addInfoLog($logMessage);
+        // handle the response
+        RequestManager::handleSuccessAndQuit(200, 'User found', $userData);
     }
 
     public function getUserByEmail(string $email): void
@@ -227,30 +174,19 @@ class UserController
         try {
             $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // if the user doesn't exist
         if (!$user) {
-            HttpHelper::sendStatusResponse(404, 'User not found');
-            $logMessage = LogManager::getContext() . ' - User not found';
-            LogManager::addInfoLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit(new Exception('User not found'), 404);
         }
 
         // get the user data
         $userData = $user->toArray();
 
-        // set the response
-        HttpHelper::sendDataResponse(200, $userData);
-
-        // add a log
-        $logMessage = LogManager::getContext() . ' - User found';
-        LogManager::addInfoLog($logMessage);
+        // handle the response
+        RequestManager::handleSuccessAndQuit(200, 'User found', $userData);
     }
 
     public function updateUser(int $id): void
@@ -273,6 +209,12 @@ class UserController
         // decode the json
         $requestBody = json_decode($requestBody, true);
 
+        // validate the data
+        if (!$this->validateData($requestBody, false)) {
+            RequestManager::handleErrorAndQuit(new Exception('Invalid data'), 400);
+        }
+
+
         // get the user data from the request body
         $firstName = $requestBody['firstName'] ?? false;
         $lastName = $requestBody['lastName'] ?? false;
@@ -287,19 +229,12 @@ class UserController
         try {
             $user = $this->entityManager->getRepository(User::class)->find($id);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // if the user doesn't exist
         if (!$user) {
-            HttpHelper::sendStatusResponse(404, 'User not found');
-            $logMessage = LogManager::getContext() . ' - User not found';
-            LogManager::addInfoLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit(new Exception('User not found'), 404);
         }
 
         // get the company and role from the database
@@ -307,105 +242,45 @@ class UserController
             $role = $this->entityManager->getRepository(Role::class)->findOneBy(['name' => $user->getRole()->getName()]);
             $company = $this->entityManager->getRepository(Company::class)->findOneBy(['name' => $user->getCompany()->getName()]);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // if the role doesn't exist
         if (!$role) {
-            HttpHelper::sendStatusResponse(404, 'Role not found');
-            $logMessage = LogManager::getContext() . ' - Role not found';
-            LogManager::addInfoLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit(new Exception('Role not found'), 404);
         }
 
         // if the company doesn't exist
         if (!$company) {
-            HttpHelper::sendStatusResponse(404, 'Company not found');
-            $logMessage = LogManager::getContext() . ' - Company not found';
-            LogManager::addInfoLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit(new Exception('Company not found'), 404);
         }
 
-        // if firstName is not null, set the user's firstName
-        if ($firstName) {
-            $user->setFirstName($firstName);
-        }
-
-        // if lastName is not null, set the user's lastName
-        if ($lastName) {
-            $user->setLastName($lastName);
-        }
-
-        // if email is not null, set the user's email
-        if ($email) {
-            $user->setEmail($email);
-        }
-
-        // if password is not null, set the user's password
-        if ($password) {
-            $user->setPassword($password);
-        }
-
-        // if job is not null, set the user's job
-        if ($job) {
-            $user->setJob($job);
-        }
-
-        // if phone is not null, set the user's phone
-        if ($phone) {
-            $user->setPhone($phone);
-        }
-
-        // if role is not null, set the user's role
-        if ($role) {
-            $user->setRole($role);
-        }
-
-        // if company is not null, set the user's company
-        if ($company) {
-            $user->setCompany($company);
-        }
-
-        // if no data was provided
-        if (!$firstName && !$lastName && !$email && !$password && !$job && !$phone && !$role && !$company) {
-            HttpHelper::sendStatusResponse(400, 'No valid data provided');
-            $logMessage = LogManager::getContext() . ' - No valid data provided';
-            LogManager::addInfoLog($logMessage);
-            exit(1);
-        }
+        // update the user data
+        $user->setFirstName($firstName ?? $user->getFirstName());
+        $user->setLastName($lastName ?? $user->getLastName());
+        $user->setEmail($email ?? $user->getEmail());
+        $user->setPassword($password ?? $user->getPassword());
+        $user->setJob($job ?? $user->getJob());
+        $user->setPhone($phone ?? $user->getPhone());
+        $user->setRole($role);
+        $user->setCompany($company);
 
         // persist the user
         try {
             $this->entityManager->persist($user);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
-        // set the response
-        HttpHelper::sendStatusResponse(200, 'User updated');
-
-        // add a log
-        $logMessage = LogManager::getContext() . ' - User updated';
-        LogManager::addInfoLog($logMessage);
+        // handle the response
+        RequestManager::handleSuccessAndQuit(200, 'User updated');
     }
 
     public function deleteUser(int $id): void
@@ -414,46 +289,30 @@ class UserController
         try {
             $user = $this->entityManager->getRepository(User::class)->find($id);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // if the user doesn't exist
         if (!$user) {
-            HttpHelper::sendStatusResponse(404, 'User not found');
-            $logMessage = LogManager::getContext() . ' - User not found';
-            LogManager::addInfoLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit(new Exception('User not found'), 404);
         }
 
         // remove the user
         try {
             $this->entityManager->remove($user);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            $logMessage = LogManager::getContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
-        // set the response
-        HttpHelper::sendStatusResponse(200, 'User deleted');
-
-        // add a log
-        $logMessage = LogManager::getContext() . ' - User deleted';
-        LogManager::addInfoLog($logMessage);
+        // handle the response
+        RequestManager::handleSuccessAndQuit(200, 'User deleted');
     }
 
     public function loginUser(): void
@@ -478,43 +337,26 @@ class UserController
         try {
             $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // if the user doesn't exist
         if (!$user) {
-            HttpHelper::sendStatusResponse(404, 'User not found');
-            $logMessage = LogManager::getContext() . ' - User not found';
-            LogManager::addInfoLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit(new Exception('User not found'), 404);
         }
 
         // if the password is incorrect
         if (!password_verify($password, $user->getPassword())) {
-            HttpHelper::sendStatusResponse(401, 'Incorrect password');
-            $logMessage = LogManager::getContext() . ' - Incorrect password';
-            LogManager::addInfoLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit(new Exception('Incorrect password'), 401);
         }
 
         // check if the user company is active
         if (!$user->getCompany()->getIsEnabled()) {
-            HttpHelper::sendStatusResponse(401, 'Company not active');
-            $logMessage = LogManager::getContext() . ' - Company not active';
-            LogManager::addInfoLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit(new Exception('Company is not active'), 401);
         }
 
-        // set the response
-        HttpHelper::sendStatusResponse(200, 'User logged in');
-
-        // add a log
-        $logMessage = LogManager::getContext() . ' - User logged in';
-        LogManager::addInfoLog($logMessage);
+        // handle the response
+        RequestManager::handleSuccessAndQuit(200, 'User logged in');
     }
 
 }

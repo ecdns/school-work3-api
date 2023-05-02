@@ -9,8 +9,9 @@ use Entity\UserSettings;
 use Exception;
 use Service\HttpHelper;
 use Service\LogManager;
+use Service\RequestManager;
 
-class UserSettingsController
+class UserSettingsController implements ControllerInterface
 {
 
     private EntityManager $entityManager;
@@ -20,13 +21,20 @@ class UserSettingsController
         $this->entityManager = $entityManager;
     }
 
-    public function validateData(mixed $data): bool
+    public function validateData(mixed $data, bool $isPostRequest = true): bool
     {
-        // check if some data is missing, if so return false, else return true
-        if (!isset($data['theme']) || !isset($data['language']) || !isset($data['user-id'])) {
-            return false;
+        if ($isPostRequest) {
+            if (!isset($data['theme']) || !isset($data['language']) || !isset($data['user-id'])) {
+                return false;
+            } else {
+                return true;
+            }
         } else {
-            return true;
+            if (isset($data['theme']) || isset($data['language']) || isset($data['user-id'])) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
@@ -47,10 +55,7 @@ class UserSettingsController
 
         // validate the data
         if (!$this->validateData($requestBody)) {
-            HttpHelper::sendStatusResponse(400, 'Invalid data');
-            $logMessage = LogManager::getFullContext() . ' - Invalid data';
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 
         // get the user settings data from the request body
@@ -62,19 +67,12 @@ class UserSettingsController
         try {
             $user = $this->entityManager->find('Entity\User', $id);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // if the user is not found
         if (!$user) {
-            HttpHelper::sendStatusResponse(404, 'User not found');
-            $logMessage = LogManager::getFullContext() . ' - User not found';
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit(new Exception('User not found'), 404);
         }
 
         // create a new user settings
@@ -84,11 +82,7 @@ class UserSettingsController
         try {
             $this->entityManager->persist($userSettings);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // update the user
@@ -98,11 +92,7 @@ class UserSettingsController
         try {
             $this->entityManager->persist($user);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
@@ -111,15 +101,9 @@ class UserSettingsController
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                HttpHelper::sendStatusResponse(409, 'License already exists');
-                $logMessage = LogManager::getFullContext() . ' - License already exists';
-                LogManager::addErrorLog($logMessage);
-                exit(1);
+                RequestManager::handleErrorAndQuit(new Exception('User settings already exist'), 409);
             }
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // send the response
@@ -137,19 +121,12 @@ class UserSettingsController
         try {
             $userSettings = $this->entityManager->find('Entity\UserSettings', $id);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // if the user settings are not found
         if (!$userSettings) {
-            HttpHelper::sendStatusResponse(404, 'User settings not found');
-            $logMessage = LogManager::getFullContext() . ' - User settings not found';
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit(new Exception('User settings not found'), 404);
         }
 
         // prepare the user settings data
@@ -177,6 +154,11 @@ class UserSettingsController
         // decode the json
         $requestBody = json_decode($requestBody, true);
 
+        // validate the data
+        if (!$this->validateData($requestBody, false)) {
+            RequestManager::handleErrorAndQuit(new Exception('Invalid data'), 400);
+        }
+
         // get the user settings data from the request body
         $theme = $requestBody['theme'] ?? false;
         $language = $requestBody['language'] ?? false;
@@ -185,58 +167,30 @@ class UserSettingsController
         try {
             $userSettings = $this->entityManager->find('Entity\UserSettings', $id);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // if the user settings are not found
         if (!$userSettings) {
-            HttpHelper::sendStatusResponse(404, 'User settings not found');
-            $logMessage = LogManager::getFullContext() . ' - User settings not found';
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit(new Exception('User settings not found'), 404);
         }
 
         // update the user settings
-        if ($theme) {
-            $userSettings->setTheme($theme);
-        }
-
-        if ($language) {
-            $userSettings->setLanguage($language);
-        }
-
-        // if no data was provided
-        if (!$theme && !$language) {
-            HttpHelper::sendStatusResponse(400, 'No valid data provided');
-            $logMessage = LogManager::getFullContext() . ' - No valid data provided';
-            LogManager::addErrorLog($logMessage);
-            exit(1);
-        }
+        $userSettings->setTheme($theme ?? $userSettings->getTheme());
+        $userSettings->setLanguage($language ?? $userSettings->getLanguage());
 
         // persist the user settings
         try {
             $this->entityManager->persist($userSettings);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // send the response
@@ -253,38 +207,26 @@ class UserSettingsController
         try {
             $userSettings = $this->entityManager->find('Entity\UserSettings', $id);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // if the user settings are not found
         if (!$userSettings) {
-            HttpHelper::sendStatusResponse(404, 'User settings not found');
-            $logMessage = LogManager::getFullContext() . ' - User settings not found';
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit(new Exception('User settings not found'), 404);
         }
 
         // remove the user settings
         try {
             $this->entityManager->remove($userSettings);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // send the response

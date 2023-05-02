@@ -6,10 +6,9 @@ use Doctrine\ORM\EntityManager;
 use Entity\Company;
 use Entity\CompanySettings;
 use Exception;
-use Service\HttpHelper;
-use Service\LogManager;
+use Service\RequestManager;
 
-class CompanySettingsController
+class CompanySettingsController implements ControllerInterface
 {
     private EntityManager $entityManager;
 
@@ -18,13 +17,20 @@ class CompanySettingsController
         $this->entityManager = $entityManager;
     }
 
-    public function validateData(mixed $data): bool
+    public function validateData(mixed $data, bool $isPostRequest = true): bool
     {
-        // check if some data is missing, if so, return false
-        if (!isset($data['primaryColor']) || !isset($data['secondaryColor']) || !isset($data['tertiaryColor']) || !isset($data['company'])) {
-            return false;
+        if ($isPostRequest) {
+            if (!isset($data['primaryColor']) || !isset($data['secondaryColor']) || !isset($data['tertiaryColor']) || !isset($data['company'])) {
+                return false;
+            } else {
+                return true;
+            }
         } else {
-            return true;
+            if (isset($data['primaryColor']) || isset($data['secondaryColor']) || isset($data['tertiaryColor']) || isset($data['company'])) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
@@ -47,10 +53,7 @@ class CompanySettingsController
 
         // validate the data
         if (!$this->validateData($requestBody)) {
-            HttpHelper::sendStatusResponse(400, 'Invalid data');
-            $logMessage = LogManager::getFullContext() . ' - Invalid data';
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 
         // get the user data from the request body
@@ -63,19 +66,12 @@ class CompanySettingsController
         try {
             $company = $this->entityManager->getRepository(Company::class)->findOneBy(['name' => $company]);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(404, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // if the company is not found`
         if (!$company) {
-            HttpHelper::sendStatusResponse(404, 'Company not found');
-            $logMessage = LogManager::getFullContext() . ' - Company not found';
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit(new Exception('Company not found'), 404);
         }
 
         // create a new companySettings object
@@ -89,11 +85,7 @@ class CompanySettingsController
             $this->entityManager->persist($companySettings);
             $this->entityManager->persist($company);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
@@ -102,23 +94,13 @@ class CompanySettingsController
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                HttpHelper::sendStatusResponse(409, 'License already exists');
-                $logMessage = LogManager::getFullContext() . ' - License already exists';
-                LogManager::addErrorLog($logMessage);
-                exit(1);
+                RequestManager::handleErrorAndQuit(new Exception('Company settings already exist'), 409);
             }
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
-        // set the response
-        HttpHelper::sendStatusResponse(201, 'Company settings created');
-
-        // log the event
-        $logMessage = LogManager::getContext() . ' - Company settings created';
-        LogManager::addInfoLog($logMessage);
+        // handle the response
+        RequestManager::handleSuccessAndQuit(201, 'Company settings created');
 
     }
 
@@ -128,29 +110,19 @@ class CompanySettingsController
         try {
             $companySettings = $this->entityManager->getRepository(CompanySettings::class)->find($id);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(404, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // if the company settings are not found
         if (!$companySettings) {
-            HttpHelper::sendStatusResponse(404, 'Company settings not found');
-            $logMessage = LogManager::getFullContext() . ' - Company settings not found';
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit(new Exception('Company settings not found'), 404);
         }
 
         // set the response
         $response = $companySettings->toArray();
 
-        HttpHelper::sendDataResponse(200, $response);
-
-        // log the event
-        $logMessage = LogManager::getContext() . ' - Company settings found';
-        LogManager::addInfoLog($logMessage);
+        // handle the response
+        RequestManager::handleSuccessAndQuit(200, 'Company settings found', $response);
     }
 
     public function updateCompanySettings(int $id): void
@@ -169,6 +141,11 @@ class CompanySettingsController
         // decode the json
         $requestBody = json_decode($requestBody, true);
 
+        // validate the data
+        if (!$this->validateData($requestBody, false)) {
+            RequestManager::handleErrorAndQuit(new Exception('Invalid data'), 400);
+        }
+
         // get the user data from the request body
         $primaryColor = $requestBody['primaryColor'] ?? false;
         $secondaryColor = $requestBody['secondaryColor'] ?? false;
@@ -178,70 +155,35 @@ class CompanySettingsController
         try {
             $companySettings = $this->entityManager->getRepository(CompanySettings::class)->find($id);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(404, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // if the company settings are not found
         if (!$companySettings) {
-            HttpHelper::sendStatusResponse(404, 'Company settings not found');
-            $logMessage = LogManager::getFullContext() . ' - Company settings not found';
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit(new Exception('Company settings not found'), 404);
         }
 
         // update the company settings
-        if ($primaryColor) {
-            $companySettings->setPrimaryColor($primaryColor);
-        }
-
-        if ($secondaryColor) {
-            $companySettings->setSecondaryColor($secondaryColor);
-        }
-
-        if ($tertiaryColor) {
-            $companySettings->setTertiaryColor($tertiaryColor);
-        }
-
-        // if no data was provided
-        if (!$primaryColor && !$secondaryColor && !$tertiaryColor) {
-            HttpHelper::sendStatusResponse(400, 'No valid data provided');
-            $logMessage = LogManager::getFullContext() . ' - No valid data provided';
-            LogManager::addErrorLog($logMessage);
-            exit(1);
-        }
+        $companySettings->setPrimaryColor($primaryColor ?? $companySettings->getPrimaryColor());
+        $companySettings->setSecondaryColor($secondaryColor ?? $companySettings->getSecondaryColor());
+        $companySettings->setTertiaryColor($tertiaryColor ?? $companySettings->getTertiaryColor());
 
         // persist
         try {
             $this->entityManager->persist($companySettings);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
-        // set the response
-        HttpHelper::sendStatusResponse(200, 'Company settings updated');
-
-        // log the event
-        $logMessage = LogManager::getContext() . ' - Company settings updated';
-        LogManager::addInfoLog($logMessage);
+        // handle the response
+        RequestManager::handleSuccessAndQuit(200, 'Company settings updated');
     }
 
     public function deleteCompanySettings(int $id): void
@@ -250,48 +192,29 @@ class CompanySettingsController
         try {
             $companySettings = $this->entityManager->getRepository(CompanySettings::class)->find($id);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(404, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // if the company settings are not found
         if (!$companySettings) {
-            HttpHelper::sendStatusResponse(404, 'Company settings not found');
-            $logMessage = LogManager::getFullContext() . ' - Company settings not found';
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit(new Exception('Company settings not found'), 404);
         }
 
         // remove the company settings
         try {
             $this->entityManager->remove($companySettings);
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            $error = $e->getMessage();
-            HttpHelper::sendStatusResponse(500, $error);
-            $logMessage = LogManager::getFullContext() . ' - ' . $error;
-            LogManager::addErrorLog($logMessage);
-            exit(1);
+            RequestManager::handleErrorAndQuit($e, 500);
         }
 
-        // set the response
-        HttpHelper::sendStatusResponse(200, 'Company settings deleted');
-
-        // log the event
-        $logMessage = LogManager::getContext() . ' - Company settings deleted';
-        LogManager::addInfoLog($logMessage);
+        // handle the response
+        RequestManager::handleSuccessAndQuit(200, 'Company settings deleted');
     }
 }
