@@ -38,12 +38,7 @@ class Task implements EntityInterface
     public Collection $taskStatuses;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'tasks')]
-    #[ORM\JoinTable(name: 'task_user')]
-    #[ORM\JoinColumn(name: 'task_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
-    #[ORM\InverseJoinColumn(name: 'user_id', referencedColumnName: 'id')]
-    #[ORM\InverseJoinColumn(onDelete: 'CASCADE')]
-    public Collection $users;
+    private Collection $users;
 
     #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'tasks')]
     #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id')]
