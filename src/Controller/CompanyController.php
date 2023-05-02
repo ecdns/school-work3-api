@@ -13,6 +13,7 @@ use Service\Request;
 class CompanyController implements ControllerInterface
 {
     private EntityManager $entityManager;
+    private const DATA = ['name', 'address', 'city', 'country', 'zipCode', 'phone', 'slogan', 'logoPath', 'license', 'language'];
 
     public function __construct(EntityManager $entityManager)
     {
@@ -21,21 +22,20 @@ class CompanyController implements ControllerInterface
 
     public function validateData(mixed $data, bool $isPostRequest = true): bool
     {
-        // check if the data is for creating a company or updating it
         if ($isPostRequest) {
-            // check if some data is missing, if so, return false
-            if (!isset($data['name']) || !isset($data['address']) || !isset($data['city']) || !isset($data['country']) || !isset($data['zipCode']) || !isset($data['phone']) || !isset($data['slogan']) || !isset($data['logoPath']) || !isset($data['license']) || !isset($data['language'])) {
-                return false;
-            } else {
-                return true;
+            foreach (self::DATA as $value) {
+                if (!isset($data[$value])) {
+                    return false;
+                }
             }
+            return true;
         } else {
-            // check if at least one data is present, if so, return true
-            if (isset($data['name']) || isset($data['address']) || isset($data['city']) || isset($data['country']) || isset($data['zipCode']) || isset($data['phone']) || isset($data['slogan']) || isset($data['logoPath']) || isset($data['license']) || isset($data['language'])) {
-                return true;
-            } else {
-                return false;
+            foreach (self::DATA as $value) {
+                if (isset($data[$value])) {
+                    return true;
+                }
             }
+            return false;
         }
     }
 

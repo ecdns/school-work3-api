@@ -11,6 +11,7 @@ use Service\Request;
 class CompanySettingsController implements ControllerInterface
 {
     private EntityManager $entityManager;
+    private const DATA = ['primaryColor', 'secondaryColor', 'tertiaryColor', 'company'];
 
     public function __construct(EntityManager $entityManager)
     {
@@ -20,17 +21,19 @@ class CompanySettingsController implements ControllerInterface
     public function validateData(mixed $data, bool $isPostRequest = true): bool
     {
         if ($isPostRequest) {
-            if (!isset($data['primaryColor']) || !isset($data['secondaryColor']) || !isset($data['tertiaryColor']) || !isset($data['company'])) {
-                return false;
-            } else {
-                return true;
+            foreach (self::DATA as $key) {
+                if (!isset($data[$key])) {
+                    return false;
+                }
             }
+            return true;
         } else {
-            if (isset($data['primaryColor']) || isset($data['secondaryColor']) || isset($data['tertiaryColor']) || isset($data['company'])) {
-                return true;
-            } else {
-                return false;
+            foreach (self::DATA as $key) {
+                if (isset($data[$key])) {
+                    return true;
+                }
             }
+            return false;
         }
     }
 

@@ -13,6 +13,7 @@ class UserSettingsController implements ControllerInterface
 {
 
     private EntityManager $entityManager;
+    private const DATA = ['theme', 'language', 'user-id'];
 
     public function __construct(EntityManager $entityManager)
     {
@@ -22,17 +23,19 @@ class UserSettingsController implements ControllerInterface
     public function validateData(mixed $data, bool $isPostRequest = true): bool
     {
         if ($isPostRequest) {
-            if (!isset($data['theme']) || !isset($data['language']) || !isset($data['user-id'])) {
-                return false;
-            } else {
-                return true;
+            foreach (self::DATA as $key) {
+                if (!isset($data[$key])) {
+                    return false;
+                }
             }
+            return true;
         } else {
-            if (isset($data['theme']) || isset($data['language']) || isset($data['user-id'])) {
-                return true;
-            } else {
-                return false;
+            foreach (self::DATA as $key) {
+                if (isset($data[$key])) {
+                    return true;
+                }
             }
+            return false;
         }
     }
 

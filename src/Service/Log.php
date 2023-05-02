@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Service;
 
-abstract class Log
+class Log
 {
 
     public static function getContext(): string

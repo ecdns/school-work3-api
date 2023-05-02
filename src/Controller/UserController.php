@@ -14,6 +14,7 @@ use Service\Request;
 class UserController implements ControllerInterface
 {
     private EntityManager $entityManager;
+    private const DATA = ['firstName', 'lastName', 'email', 'password', 'job', 'phone', 'role', 'company'];
 
     public function __construct(EntityManager $entityManager)
     {
@@ -23,17 +24,19 @@ class UserController implements ControllerInterface
     public function validateData(mixed $data, bool $isPostRequest = true): bool
     {
         if ($isPostRequest) {
-            if (!isset($data['firstName']) || !isset($data['lastName']) || !isset($data['email']) || !isset($data['password']) || !isset($data['job']) || !isset($data['phone']) || !isset($data['role']) || !isset($data['company'])) {
-                return false;
-            } else {
-                return true;
+            foreach (self::DATA as $key) {
+                if (!isset($data[$key])) {
+                    return false;
+                }
             }
+            return true;
         } else {
-            if (isset($data['firstName']) || isset($data['lastName']) || isset($data['email']) || isset($data['password']) || isset($data['job']) || isset($data['phone']) || isset($data['role']) || isset($data['company'])) {
-                return true;
-            } else {
-                return false;
+            foreach (self::DATA as $key) {
+                if (isset($data[$key])) {
+                    return true;
+                }
             }
+            return false;
         }
     }
 

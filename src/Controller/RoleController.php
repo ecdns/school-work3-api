@@ -10,6 +10,7 @@ use Service\Request;
 class RoleController implements ControllerInterface
 {
     private EntityManager $entityManager;
+    private const DATA = ['name', 'description'];
 
     public function __construct(EntityManager $entityManager)
     {
@@ -19,17 +20,19 @@ class RoleController implements ControllerInterface
     public function validateData(mixed $data, bool $isPostRequest = true): bool
     {
         if ($isPostRequest) {
-            if (!isset($data['name']) || !isset($data['description'])) {
-                return false;
-            } else {
-                return true;
+            foreach (self::DATA as $key) {
+                if (!isset($data[$key])) {
+                    return false;
+                }
             }
+            return true;
         } else {
-            if (isset($data['name']) || isset($data['description'])) {
-                return true;
-            } else {
-                return false;
+            foreach (self::DATA as $key) {
+                if (isset($data[$key])) {
+                    return true;
+                }
             }
+            return false;
         }
     }
 

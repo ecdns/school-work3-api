@@ -12,6 +12,7 @@ use Service\Request;
 class LicenseController implements ControllerInterface
 {
     private EntityManager $entityManager;
+    private const DATA = ['name', 'description', 'price', 'maxUsers', 'validityPeriod'];
 
     public function __construct(EntityManager $entityManager)
     {
@@ -21,17 +22,19 @@ class LicenseController implements ControllerInterface
     public function validateData(mixed $data, bool $isPostRequest = true): bool
     {
         if ($isPostRequest) {
-            if (!isset($data['name']) || !isset($data['description']) || !isset($data['price']) || !isset($data['maxUsers']) || !isset($data['validityPeriod'])) {
-                return false;
-            } else {
-                return true;
+            foreach (self::DATA as $key) {
+                if (!isset($data[$key])) {
+                    return false;
+                }
             }
+            return true;
         } else {
-            if (isset($data['name']) || isset($data['description']) || isset($data['price']) || isset($data['maxUsers']) || isset($data['validityPeriod'])) {
-                return true;
-            } else {
-                return false;
+            foreach (self::DATA as $key) {
+                if (isset($data[$key])) {
+                    return true;
+                }
             }
+            return false;
         }
     }
 
