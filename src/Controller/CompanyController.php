@@ -20,6 +20,16 @@ class CompanyController
         $this->entityManager = $entityManager;
     }
 
+    public function validateData(mixed $data): bool
+    {
+        // check if some data is missing, if so, return false
+        if (!isset($data['name']) || !isset($data['address']) || !isset($data['city']) || !isset($data['country']) || !isset($data['zipCode']) || !isset($data['phone']) || !isset($data['slogan']) || !isset($data['logoPath']) || !isset($data['license']) || !isset($data['language'])) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public function addCompany(): void
     {
         // get the request body
@@ -41,6 +51,14 @@ class CompanyController
 
         // decode the json
         $requestBody = json_decode($requestBody, true);
+
+        // check if the data is valid
+        if (!$this->validateData($requestBody)) {
+            HttpHelper::sendRequestState(400, 'Invalid data');
+            $logMessage = LogManager::getFullContext() . ' - Invalid data';
+            LogManager::addErrorLog($logMessage);
+            exit(1);
+        }
 
         // get the user data from the request body
         $name = $requestBody['name'];

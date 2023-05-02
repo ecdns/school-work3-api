@@ -51,5 +51,6 @@
 // User Settings
 {
     "theme": "dark",
-    "language": "en"
+    "language": "en",
+    "user-id": "1"
 }

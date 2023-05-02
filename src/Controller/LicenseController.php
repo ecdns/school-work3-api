@@ -19,6 +19,16 @@ class LicenseController
         $this->entityManager = $entityManager;
     }
 
+    public function validateData(mixed $data): bool
+    {
+        // check if some data is missing, if so, return false
+        if (!isset($data['name']) || !isset($data['description']) || !isset($data['price']) || !isset($data['maxUsers']) || !isset($data['validityPeriod'])) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public function addLicense(): void
     {
         // get the request body
@@ -35,6 +45,14 @@ class LicenseController
 
         // decode the json
         $requestBody = json_decode($requestBody, true);
+
+        // check if the data is valid
+        if (!$this->validateData($requestBody)) {
+            HttpHelper::sendRequestState(400, 'Invalid data');
+            $logMessage = LogManager::getFullContext() . ' - Invalid data';
+            LogManager::addErrorLog($logMessage);
+            exit(1);
+        }
 
         // get the user data from the request body
         $name = $requestBody['name'];
