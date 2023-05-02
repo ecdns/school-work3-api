@@ -30,8 +30,6 @@ class User implements EntityInterface
     private string $password;
 
     #[ORM\ManyToOne(targetEntity: Role::class, inversedBy: 'users')]
-    #[ORM\JoinColumn(name: 'role_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private Role $role;
 
     #[ORM\Column(type: 'string')]
@@ -54,10 +52,8 @@ class User implements EntityInterface
     #[ORM\Column(type: 'datetime', nullable: true)]
     private DateTime|null $passwordConfirmedAt = null;
 
-    // a user can have one user settings and one user settings can have one user
-    #[ORM\OneToOne(targetEntity: UserSettings::class, cascade: ['persist', 'remove'])]
-    private UserSettings $userSettings;
-
+    #[ORM\OneToOne(mappedBy: 'user', targetEntity: UserSettings::class, cascade: ['persist', 'remove'])]
+    private UserSettings|null $userSettings;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Order::class)]
     private Collection $orders;
@@ -66,19 +62,9 @@ class User implements EntityInterface
     private Collection $customers;
 
     #[ORM\ManyToMany(targetEntity: Task::class, mappedBy: 'users')]
-    #[ORM\JoinTable(name: 'task_user')]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
-    #[ORM\InverseJoinColumn(name: 'task_id', referencedColumnName: 'id')]
-    #[ORM\InverseJoinColumn(onDelete: 'CASCADE')]
     private Collection $tasks;
 
     #[ORM\ManyToMany(targetEntity: Project::class, mappedBy: 'users')]
-    #[ORM\JoinTable(name: 'project_user')]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
-    #[ORM\InverseJoinColumn(name: 'project_id', referencedColumnName: 'id')]
-    #[ORM\InverseJoinColumn(onDelete: 'CASCADE')]
     private Collection $projects;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Invoice::class)]
@@ -96,7 +82,7 @@ class User implements EntityInterface
     #[ORM\Column(type: 'boolean')]
     private bool $isEnabled;
 
-    public function __construct(string $firstName, string $lastName, string $email, string $password, Role $role, string $job, string $phone, Company $company, DateTime $createdAt, bool $isEnabled)
+    public function __construct(string $firstName, string $lastName, string $email, string $password, Role $role, string $job, string $phone, Company $company)
     {
         $this->firstName = $firstName;
         $this->lastName = $lastName;
@@ -132,6 +118,11 @@ class User implements EntityInterface
     public function setLastName(string $lastName): void
     {
         $this->lastName = $lastName;
+    }
+
+    public function getFullName(): string
+    {
+        return $this->firstName . ' ' . $this->lastName;
     }
 
     public function getEmail(): string
@@ -200,9 +191,9 @@ class User implements EntityInterface
     }
 
     #[ORM\PrePersist]
-    public function setCreatedAt(DateTime $createdAt): void
+    public function setCreatedAt(): void
     {
-        $this->createdAt = $createdAt;
+        $this->createdAt = new DateTime();
     }
 
     public function getUpdatedAt(): DateTime|null
@@ -211,9 +202,9 @@ class User implements EntityInterface
     }
 
     #[ORM\PreUpdate]
-    public function setUpdatedAt(DateTime $updatedAt): void
+    public function setUpdatedAt(): void
     {
-        $this->updatedAt = $updatedAt;
+        $this->updatedAt = new DateTime();
     }
 
     public function getPasswordConfirmedAt(): DateTime|null
@@ -226,7 +217,7 @@ class User implements EntityInterface
         $this->passwordConfirmedAt = $passwordConfirmedAt;
     }
 
-    public function getUserSettings(): UserSettings
+    public function getUserSettings(): UserSettings|null
     {
         return $this->userSettings;
     }
@@ -333,14 +324,15 @@ class User implements EntityInterface
             'firstName' => $this->getFirstName(),
             'lastName' => $this->getLastName(),
             'email' => $this->getEmail(),
-            'role' => $this->getRole()->toArray(),
+            'role' => $this->getRole()->getName(),
             'job' => $this->getJob(),
             'phone' => $this->getPhone(),
-            'company' => $this->getCompany()->toArray(),
+            'company' => $this->getCompany()->getName(),
             'createdAt' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
             'updatedAt' => $this->getUpdatedAt()?->format('Y-m-d H:i:s'),
             'passwordConfirmedAt' => $this->getPasswordConfirmedAt()?->format('Y-m-d H:i:s'),
             'isEnabled' => $this->getIsEnabled(),
+            'userSettings' => $this->getUserSettings()?->toArray(),
         ];
     }
 

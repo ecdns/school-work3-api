@@ -28,7 +28,8 @@ class UserSettings implements EntityInterface
     #[ORM\Column(type: 'datetime', nullable: true)]
     private DateTime|null $updatedAt = null;
 
-    #[ORM\OneToOne(targetEntity: User::class,cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'userSettings', targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
     private User $user;
 
     public function __construct(string $theme, string $language, User $user)
@@ -111,7 +112,7 @@ class UserSettings implements EntityInterface
             'language' => $this->language,
             'createdAt' => $this->createdAt,
             'updatedAt' => $this->updatedAt,
-            'user' => $this->user,
+            'user' => $this->user->getFirstName() . ' ' . $this->user->getLastName(),
         ];
     }
 

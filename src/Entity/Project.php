@@ -44,11 +44,6 @@ class Project implements EntityInterface
 
     // users
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'projects')]
-    #[ORM\JoinTable(name: 'project_user')]
-    #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
-    #[ORM\InverseJoinColumn(name: 'user_id', referencedColumnName: 'id')]
-    #[ORM\InverseJoinColumn(onDelete: 'CASCADE')]
     private Collection $users;
 
     #[ORM\ManyToOne(targetEntity: Customer::class, inversedBy: 'projects')]

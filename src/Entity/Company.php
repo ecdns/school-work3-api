@@ -42,9 +42,6 @@ class Company implements EntityInterface
     private string $logoPath;
 
     #[ORM\ManyToOne(targetEntity: License::class, inversedBy: 'companies')]
-    #[ORM\JoinColumn(name: 'license_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private License $license;
 
     #[ORM\Column(type: 'datetime')]
@@ -89,8 +86,8 @@ class Company implements EntityInterface
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Project::class)]
     private Collection $projects;
 
-    #[ORM\OneToOne(targetEntity: CompanySettings::class, cascade: ['persist', 'remove'])]
-    private CompanySettings $companySettings;
+    #[ORM\OneToOne(mappedBy: 'company', targetEntity: CompanySettings::class, cascade: ['persist', 'remove'])]
+    private CompanySettings|null $companySettings;
 
     public function __construct(
         string $name,
@@ -235,16 +232,16 @@ class Company implements EntityInterface
         $this->language = $language;
     }
 
-    #[ORM\PrePersist]
+
     public function getCreatedAt(): DateTime
     {
         return $this->created_at;
     }
 
-    #[ORM\PreUpdate]
-    public function setCreatedAt(DateTime $created_at): void
+    #[ORM\PrePersist]
+    public function setCreatedAt(): void
     {
-        $this->created_at = $created_at;
+        $this->created_at = new DateTime();
     }
 
     public function getUpdatedAt(): DateTime|null
@@ -252,9 +249,10 @@ class Company implements EntityInterface
         return $this->updated_at;
     }
 
-    public function setUpdatedAt(DateTime|null $updated_at): void
+    #[ORM\PreUpdate]
+    public function setUpdatedAt(): void
     {
-        $this->updated_at = $updated_at;
+        $this->updated_at = new DateTime();
     }
 
     public function getIsEnabled(): bool
@@ -267,9 +265,13 @@ class Company implements EntityInterface
         $this->isEnabled = $isEnabled;
     }
 
-    public function getUsers(): Collection
+    public function getUsers(): array
     {
-        return $this->users;
+        $users = [];
+        foreach ($this->users as $user) {
+            $users[] = $user->getFullName();
+        }
+        return $users;
     }
 
     public function setUsers(Collection $users): void
@@ -277,9 +279,13 @@ class Company implements EntityInterface
         $this->users = $users;
     }
 
-    public function getCustomers(): Collection
+    public function getCustomers(): array
     {
-        return $this->customers;
+        $customers = [];
+        foreach ($this->customers as $customer) {
+            $customers[] = $customer->getFullName();
+        }
+        return $customers;
     }
 
     public function setCustomers(Collection $customers): void
@@ -287,9 +293,13 @@ class Company implements EntityInterface
         $this->customers = $customers;
     }
 
-    public function getSuppliers(): Collection
+    public function getSuppliers(): array
     {
-        return $this->suppliers;
+        $suppliers = [];
+        foreach ($this->suppliers as $supplier) {
+            $suppliers[] = $supplier->getFullName();
+        }
+        return $suppliers;
     }
 
     public function setSuppliers(Collection $suppliers): void
@@ -297,9 +307,13 @@ class Company implements EntityInterface
         $this->suppliers = $suppliers;
     }
 
-    public function getProducts(): Collection
+    public function getProducts(): array
     {
-        return $this->products;
+        $products = [];
+        foreach ($this->products as $product) {
+            $products[] = $product->getName();
+        }
+        return $products;
     }
 
     public function setProducts(Collection $products): void
@@ -307,9 +321,13 @@ class Company implements EntityInterface
         $this->products = $products;
     }
 
-    public function getOrderForms(): Collection
+    public function getOrderForms(): array
     {
-        return $this->orderForms;
+        $orderForms = [];
+        foreach ($this->orderForms as $orderForm) {
+            $orderForms[] = $orderForm->getName();
+        }
+        return $orderForms;
     }
 
     public function setOrderForms(Collection $orderForms): void
@@ -317,9 +335,13 @@ class Company implements EntityInterface
         $this->orderForms = $orderForms;
     }
 
-    public function getInvoices(): Collection
+    public function getInvoices(): array
     {
-        return $this->invoices;
+        $invoices = [];
+        foreach ($this->invoices as $invoice) {
+            $invoices[] = $invoice->getNumber();
+        }
+        return $invoices;
     }
 
     public function setInvoices(Collection $invoices): void
@@ -327,9 +349,13 @@ class Company implements EntityInterface
         $this->invoices = $invoices;
     }
 
-    public function getEstimates(): Collection
+    public function getEstimates(): array
     {
-        return $this->estimates;
+        $estimates = [];
+        foreach ($this->estimates as $estimate) {
+            $estimates[] = $estimate->getNumber();
+        }
+        return $estimates;
     }
 
     public function setEstimates(Collection $estimates): void
@@ -337,9 +363,13 @@ class Company implements EntityInterface
         $this->estimates = $estimates;
     }
 
-    public function getContracts(): Collection
+    public function getContracts(): array
     {
-        return $this->contracts;
+        $contracts = [];
+        foreach ($this->contracts as $contract) {
+            $contracts[] = $contract->getName();
+        }
+        return $contracts;
     }
 
     public function setContracts(Collection $contracts): void
@@ -347,19 +377,23 @@ class Company implements EntityInterface
         $this->contracts = $contracts;
     }
 
-    public function getCompanySettings(): CompanySettings
+    public function getCompanySettings(): array
     {
-        return $this->companySettings;
+        return isset($this->companySettings) ? $this->companySettings->toArray() : array();
     }
 
-    public function setCompanySettings(CompanySettings $companySettings): void
+    public function setCompanySettings(CompanySettings|null $companySettings): void
     {
         $this->companySettings = $companySettings;
     }
 
-    public function getProjects(): Collection
+    public function getProjects(): array
     {
-        return $this->projects;
+        $projects = [];
+        foreach ($this->projects as $project) {
+            $projects[] = $project->getName();
+        }
+        return $projects;
     }
 
     public function setProjects(Collection $projects): void
@@ -381,7 +415,28 @@ class Company implements EntityInterface
             'phone' => $this->getPhone(),
             'slogan' => $this->getSlogan(),
             'logoPath' => $this->getLogoPath(),
-            'license' => $this->getLicense(),
+            'license' => $this->getLicense()->toArray(),
+            'licenseExpirationDate' => $this->getLicenseExpirationDate(),
+            'language' => $this->getLanguage(),
+            'created_at' => $this->getCreatedAt(),
+            'updated_at' => $this->getUpdatedAt(),
+            'isEnabled' => $this->getIsEnabled()
+        ];
+    }
+
+    public function toFullArrayWithUsers(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'address' => $this->getAddress(),
+            'city' => $this->getCity(),
+            'country' => $this->getCountry(),
+            'zipCode' => $this->getZipCode(),
+            'phone' => $this->getPhone(),
+            'slogan' => $this->getSlogan(),
+            'logoPath' => $this->getLogoPath(),
+            'license' => $this->getLicense()->toString(),
             'licenseExpirationDate' => $this->getLicenseExpirationDate(),
             'language' => $this->getLanguage(),
             'created_at' => $this->getCreatedAt(),
@@ -395,44 +450,14 @@ class Company implements EntityInterface
             'invoices' => $this->getInvoices(),
             'estimates' => $this->getEstimates(),
             'contracts' => $this->getContracts(),
-            'companySettings' => $this->getCompanySettings(),
+            'companySettings' => $this->getCompanySettings() ? $this->getCompanySettings() : null,
             'projects' => $this->getProjects(),
         ];
     }
 
-    public function toFullArrayWithUsers(): array
+    public function toString(): string
     {
-        $users = [];
-        foreach ($this->getUsers() as $user) {
-            $users[] = $user->toArray();
-        }
-        return [
-            'id' => $this->getId(),
-            'name' => $this->getName(),
-            'address' => $this->getAddress(),
-            'city' => $this->getCity(),
-            'country' => $this->getCountry(),
-            'zipCode' => $this->getZipCode(),
-            'phone' => $this->getPhone(),
-            'slogan' => $this->getSlogan(),
-            'logoPath' => $this->getLogoPath(),
-            'license' => $this->getLicense(),
-            'licenseExpirationDate' => $this->getLicenseExpirationDate(),
-            'language' => $this->getLanguage(),
-            'created_at' => $this->getCreatedAt(),
-            'updated_at' => $this->getUpdatedAt(),
-            'isEnabled' => $this->getIsEnabled(),
-            'users' => $users,
-            'customers' => $this->getCustomers(),
-            'suppliers' => $this->getSuppliers(),
-            'products' => $this->getProducts(),
-            'orderForms' => $this->getOrderForms(),
-            'invoices' => $this->getInvoices(),
-            'estimates' => $this->getEstimates(),
-            'contracts' => $this->getContracts(),
-            'companySettings' => $this->getCompanySettings(),
-            'projects' => $this->getProjects(),
-        ];
+        return $this->getName();
     }
 
     public function toJson(): string
