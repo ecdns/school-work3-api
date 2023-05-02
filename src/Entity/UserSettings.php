@@ -29,7 +29,7 @@ class UserSettings implements EntityInterface
     private DateTime|null $updatedAt = null;
 
     #[ORM\OneToOne(inversedBy: 'userSettings', targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private User $user;
 
     public function __construct(string $theme, string $language, User $user)

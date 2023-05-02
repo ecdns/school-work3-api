@@ -18,6 +18,16 @@ class CompanySettingsController
         $this->entityManager = $entityManager;
     }
 
+    public function validateData(mixed $data): bool
+    {
+        // check if some data is missing, if so, return false
+        if (!isset($data['primaryColor']) || !isset($data['secondaryColor']) || !isset($data['tertiaryColor']) || !isset($data['company'])) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public function addCompanySettings(): void
     {
 
@@ -34,6 +44,14 @@ class CompanySettingsController
 
         // decode the json
         $requestBody = json_decode($requestBody, true);
+
+        // validate the data
+        if (!$this->validateData($requestBody)) {
+            HttpHelper::sendRequestState(400, 'Invalid data');
+            $logMessage = LogManager::getFullContext() . ' - Invalid data';
+            LogManager::addErrorLog($logMessage);
+            exit(1);
+        }
 
         // get the user data from the request body
         $primaryColor = $requestBody['primaryColor'];

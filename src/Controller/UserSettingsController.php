@@ -20,6 +20,16 @@ class UserSettingsController
         $this->entityManager = $entityManager;
     }
 
+    public function validateData(mixed $data): bool
+    {
+        // check if some data is missing, if so return false, else return true
+        if (!isset($data['theme']) || !isset($data['language']) || !isset($data['user-id'])) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public function addUserSettings(): void
     {
         // get the request body
@@ -29,11 +39,19 @@ class UserSettingsController
         // {
         //     "theme": "dark",
         //     "language": "en",
-        //     "user-email": "user@user"
+        //     "user-id": "user@user"
         // }
 
         // decode the json
         $requestBody = json_decode($requestBody, true);
+
+        // validate the data
+        if (!$this->validateData($requestBody)) {
+            HttpHelper::sendRequestState(400, 'Invalid data');
+            $logMessage = LogManager::getFullContext() . ' - Invalid data';
+            LogManager::addErrorLog($logMessage);
+            exit(1);
+        }
 
         // get the user settings data from the request body
         $theme = $requestBody['theme'];

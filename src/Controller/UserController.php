@@ -21,6 +21,27 @@ class UserController
         $this->entityManager = $entityManager;
     }
 
+    public function validateData(mixed $data)
+    {
+        // check if one is missing and if so, return false
+        if (
+            !isset($data['firstName']) ||
+            !isset($data['lastName']) ||
+            !isset($data['email']) ||
+            !isset($data['password']) ||
+            !isset($data['job']) ||
+            !isset($data['phone']) ||
+            !isset($data['role']) ||
+            !isset($data['company'])
+        ) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
+
     public function addUser(): void
     {
 
@@ -42,6 +63,17 @@ class UserController
         // decode the json
         $requestBody = json_decode($requestBody, true);
 
+        // validate the data
+        $dataIsValid = $this->validateData($requestBody);
+
+        // if the data is not valid
+        if (!$dataIsValid) {
+            HttpHelper::sendRequestState(400, 'Invalid data');
+            $logMessage = LogManager::getFullContext() . ' - Invalid data';
+            LogManager::addErrorLog($logMessage);
+            exit(1);
+        }
+
         // get the user data from the request body
         $firstName = $requestBody['firstName'];
         $lastName = $requestBody['lastName'];
@@ -52,6 +84,7 @@ class UserController
         $phone = $requestBody['phone'];
         $role = $requestBody['role'];
         $companyName = $requestBody['company'];
+
 
         // get the company and role from the database
         try {
@@ -101,8 +134,8 @@ class UserController
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                HttpHelper::sendRequestState(409, 'License already exists');
-                $logMessage = LogManager::getFullContext() . ' - License already exists';
+                HttpHelper::sendRequestState(409, 'User already exists');
+                $logMessage = LogManager::getFullContext() . ' - User already exists';
                 LogManager::addErrorLog($logMessage);
                 exit(1);
             }

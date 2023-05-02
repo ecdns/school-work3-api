@@ -49,14 +49,14 @@ abstract class LogManager
     public static function addInfoLog(string $message): void
     {
         $file = fopen('log/info.log', 'a+');
-        fwrite($file, date('Y-m-d H:i:s') . ' [INFO] ' . $message . PHP_EOL);
+        fwrite($file, date('Y-m-d H:i:s') . ' - ' . $message . PHP_EOL);
         fclose($file);
     }
 
     public static function addErrorLog(string $message): void
     {
         $file = fopen('log/error.log', 'a+');
-        fwrite($file, date('Y-m-d H:i:s') . ' [ERROR] ' . $message . PHP_EOL);
+        fwrite($file, date('Y-m-d H:i:s') . ' - ' . $message . PHP_EOL);
         fclose($file);
     }
 
