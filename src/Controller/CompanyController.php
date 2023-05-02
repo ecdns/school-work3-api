@@ -54,7 +54,7 @@ class CompanyController
 
         // check if the data is valid
         if (!$this->validateData($requestBody)) {
-            HttpHelper::sendRequestState(400, 'Invalid data');
+            HttpHelper::sendStatusResponse(400, 'Invalid data');
             $logMessage = LogManager::getFullContext() . ' - Invalid data';
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -77,7 +77,7 @@ class CompanyController
             $license = $this->entityManager->getRepository(License::class)->findOneBy(['name' => $licenseName]);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -85,7 +85,7 @@ class CompanyController
 
         // if the license is not found
         if (!$license) {
-            HttpHelper::sendRequestState(404, 'License not found');
+            HttpHelper::sendStatusResponse(404, 'License not found');
             $logMessage = LogManager::getFullContext() . ' - License not found';
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -100,12 +100,12 @@ class CompanyController
             $error = $e->getMessage();
             // if the error mentions a constraint violation, it means the license already exists
             if (str_contains($error, 'constraint violation')) {
-                HttpHelper::sendRequestState(409, 'License already exists');
+                HttpHelper::sendStatusResponse(409, 'License already exists');
                 $logMessage = LogManager::getFullContext() . ' - License already exists';
                 LogManager::addErrorLog($logMessage);
                 exit(1);
             }
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -125,7 +125,7 @@ class CompanyController
             $this->entityManager->persist($company);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -137,14 +137,14 @@ class CompanyController
             $this->entityManager->flush();
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
         }
 
         // set the response
-        HttpHelper::sendRequestState(200, 'Company added successfully');
+        HttpHelper::sendStatusResponse(200, 'Company added successfully');
 
         // add a log
         $logMessage = LogManager::getFullContext() . ' - Company added successfully';
@@ -159,7 +159,7 @@ class CompanyController
             $companies = $this->entityManager->getRepository(Company::class)->findAll();
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -172,7 +172,7 @@ class CompanyController
         }
 
         // set the response
-        HttpHelper::sendRequestData(200, $response);
+        HttpHelper::sendDataResponse(200, $response);
 
         // add a log
         $logMessage = LogManager::getContext() . ' - Companies found';
@@ -187,7 +187,7 @@ class CompanyController
             $company = $this->entityManager->getRepository(Company::class)->find($id);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -195,7 +195,7 @@ class CompanyController
 
         // if the company is not found, return an error
         if (!$company) {
-            HttpHelper::sendRequestState(404, 'Company not found');
+            HttpHelper::sendStatusResponse(404, 'Company not found');
             $logMessage = LogManager::getFullContext() . ' - Company not found';
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -206,7 +206,7 @@ class CompanyController
 
         // set the response
 
-        HttpHelper::sendRequestData(200, $response);
+        HttpHelper::sendDataResponse(200, $response);
 
         // add a log
         $logMessage = LogManager::getContext() . ' - Company found';
@@ -221,7 +221,7 @@ class CompanyController
             $company = $this->entityManager->getRepository(Company::class)->findOneBy(['name' => $name]);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -229,7 +229,7 @@ class CompanyController
 
         // if the company is not found, return an error
         if (!$company) {
-            HttpHelper::sendRequestState(404, 'Company not found');
+            HttpHelper::sendStatusResponse(404, 'Company not found');
             $logMessage = LogManager::getFullContext() . ' - Company not found';
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -239,7 +239,7 @@ class CompanyController
         $response = $company->toFullArrayWithUsers();
 
         // set the response
-        HttpHelper::sendRequestData(200, $response);
+        HttpHelper::sendDataResponse(200, $response);
 
         // add a log
         $logMessage = LogManager::getContext() . ' - Company found';
@@ -286,7 +286,7 @@ class CompanyController
             $company = $this->entityManager->getRepository(Company::class)->find($id);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -294,7 +294,7 @@ class CompanyController
 
         // if the company is not found, return an error
         if (!$company) {
-            HttpHelper::sendRequestState(404, 'Company not found');
+            HttpHelper::sendStatusResponse(404, 'Company not found');
             $logMessage = LogManager::getFullContext() . ' - Company not found';
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -305,7 +305,7 @@ class CompanyController
             $license = $this->entityManager->getRepository(License::class)->findOneBy(['name' => $company->getLicense()->getName()]);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -313,7 +313,7 @@ class CompanyController
 
         // if the license is not found, return an error
         if (!$license) {
-            HttpHelper::sendRequestState(404, 'License not found');
+            HttpHelper::sendStatusResponse(404, 'License not found');
             $logMessage = LogManager::getFullContext() . ' - License not found';
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -326,7 +326,7 @@ class CompanyController
             $licenseExpirationDate->add(new DateInterval('P' . $license->getValidityPeriod() . 'Y'));
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -382,7 +382,7 @@ class CompanyController
 
         // if no data has been changed, return an error
         if (!$name && !$address && !$city && !$country && !$zipCode && !$phone && !$slogan && !$logoPath && !$licenseName && !$language) {
-            HttpHelper::sendRequestState(400, 'No valid data provided');
+            HttpHelper::sendStatusResponse(400, 'No valid data provided');
             $logMessage = LogManager::getFullContext() . ' - No valid data provided';
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -393,7 +393,7 @@ class CompanyController
             $this->entityManager->persist($company);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -404,14 +404,14 @@ class CompanyController
             $this->entityManager->flush();
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
         }
 
         // set the response
-        HttpHelper::sendRequestState(200, 'Company updated successfully');
+        HttpHelper::sendStatusResponse(200, 'Company updated successfully');
 
         // add a log
         $logMessage = LogManager::getContext() . ' - Company updated successfully';
@@ -426,7 +426,7 @@ class CompanyController
             $company = $this->entityManager->getRepository(Company::class)->find($id);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -434,7 +434,7 @@ class CompanyController
 
         // if the company is not found, return an error
         if (!$company) {
-            HttpHelper::sendRequestState(404, 'Company not found');
+            HttpHelper::sendStatusResponse(404, 'Company not found');
             $logMessage = LogManager::getFullContext() . ' - Company not found';
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -445,7 +445,7 @@ class CompanyController
             $this->entityManager->remove($company);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -456,14 +456,14 @@ class CompanyController
             $this->entityManager->flush();
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
         }
 
         // set the response
-        HttpHelper::sendRequestState(200, 'Company deleted successfully');
+        HttpHelper::sendStatusResponse(200, 'Company deleted successfully');
 
         // add a log
         $logMessage = LogManager::getContext() . ' - Company deleted successfully';

@@ -32,14 +32,14 @@ $dbManager = new DbManager($dbHost, $dbName, $dbUser, $dbPassword, $dbPort, $ent
 try {
     $connexion = $dbManager->getConnexion();
 } catch (Exception $e) {
-    HttpHelper::sendRequestState(500, 'Internal Error', true);
+    HttpHelper::sendStatusResponse(500, 'Internal Error', true);
     exit(1);
 }
 
 try {
     $entityManager = $dbManager->getEntityManager($connexion);
 } catch (Exception $e) {
-    HttpHelper::sendRequestState(500, 'Internal Error', true);
+    HttpHelper::sendStatusResponse(500, 'Internal Error', true);
     exit(1);
 }
 

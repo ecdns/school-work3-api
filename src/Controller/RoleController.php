@@ -43,7 +43,7 @@ class RoleController
 
         // validate the data
         if (!$this->validateData($requestBody)) {
-            HttpHelper::sendRequestState(400, 'Invalid data');
+            HttpHelper::sendStatusResponse(400, 'Invalid data');
             $logMessage = LogManager::getFullContext() . ' - Invalid data';
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -61,7 +61,7 @@ class RoleController
             $this->entityManager->persist($role);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -73,19 +73,19 @@ class RoleController
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                HttpHelper::sendRequestState(409, 'License already exists');
+                HttpHelper::sendStatusResponse(409, 'License already exists');
                 $logMessage = LogManager::getFullContext() . ' - License already exists';
                 LogManager::addErrorLog($logMessage);
                 exit(1);
             }
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
         }
 
         // set the response
-        HttpHelper::sendRequestState(201, 'Role created');
+        HttpHelper::sendStatusResponse(201, 'Role created');
 
         // log the response
         $logMessage = LogManager::getContext() . ' - ' . 'Role created';
@@ -99,7 +99,7 @@ class RoleController
             $roles = $this->entityManager->getRepository(Role::class)->findAll();
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -111,7 +111,7 @@ class RoleController
             $response[] = $role->toArray();
         }
 
-        HttpHelper::sendRequestData(200, $response);
+        HttpHelper::sendDataResponse(200, $response);
 
         // log the response
         $logMessage = LogManager::getContext() . ' - ' . 'Roles found';
@@ -125,7 +125,7 @@ class RoleController
             $role = $this->entityManager->find(Role::class, $id);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -133,7 +133,7 @@ class RoleController
 
         // if the role is not found
         if (!$role) {
-            HttpHelper::sendRequestState(404, 'Role not found');
+            HttpHelper::sendStatusResponse(404, 'Role not found');
             $logMessage = LogManager::getFullContext() . ' - ' . 'Role not found';
             LogManager::addInfoLog($logMessage);
             exit(1);
@@ -142,7 +142,7 @@ class RoleController
         // set the response
         $response = $role->toArray();
 
-        HttpHelper::sendRequestData(200, $response);
+        HttpHelper::sendDataResponse(200, $response);
 
         // log the response
         $logMessage = LogManager::getContext() . ' - ' . 'Role found';
@@ -156,7 +156,7 @@ class RoleController
             $role = $this->entityManager->find(Role::class, $id);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -164,7 +164,7 @@ class RoleController
 
         // if the role is not found
         if (!$role) {
-            HttpHelper::sendRequestState(404, 'Role not found');
+            HttpHelper::sendStatusResponse(404, 'Role not found');
             $logMessage = LogManager::getFullContext() . ' - ' . 'Role not found';
             LogManager::addInfoLog($logMessage);
             exit(1);
@@ -197,7 +197,7 @@ class RoleController
 
         // if no data was provided
         if (!$name && !$description) {
-            HttpHelper::sendRequestState(400, 'No valid data provided');
+            HttpHelper::sendStatusResponse(400, 'No valid data provided');
             $logMessage = LogManager::getContext() . ' - ' . 'No valid data provided';
             LogManager::addInfoLog($logMessage);
             exit(1);
@@ -208,7 +208,7 @@ class RoleController
             $this->entityManager->persist($role);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -219,14 +219,14 @@ class RoleController
             $this->entityManager->flush();
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
         }
 
         // set the response
-        HttpHelper::sendRequestState(200, 'Role updated');
+        HttpHelper::sendStatusResponse(200, 'Role updated');
 
         // log the response
         $logMessage = LogManager::getContext() . ' - ' . 'Role updated';
@@ -241,7 +241,7 @@ class RoleController
             $role = $this->entityManager->find(Role::class, $id);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -249,7 +249,7 @@ class RoleController
 
         // if the role is not found
         if (!$role) {
-            HttpHelper::sendRequestState(404, 'Role not found');
+            HttpHelper::sendStatusResponse(404, 'Role not found');
             $logMessage = LogManager::getContext() . ' - ' . 'Role not found';
             LogManager::addInfoLog($logMessage);
             exit(1);
@@ -260,7 +260,7 @@ class RoleController
             $this->entityManager->remove($role);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -271,14 +271,14 @@ class RoleController
             $this->entityManager->flush();
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
         }
 
         // set the response
-        HttpHelper::sendRequestState(200, 'Role deleted');
+        HttpHelper::sendStatusResponse(200, 'Role deleted');
 
         // log the response
         $logMessage = LogManager::getContext() . ' - ' . 'Role deleted';

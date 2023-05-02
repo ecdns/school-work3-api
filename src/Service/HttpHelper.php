@@ -4,7 +4,7 @@ namespace Service;
 
 abstract class HttpHelper
 {
-    public static function sendRequestState(int $httpCode, mixed $state): void
+    public static function sendStatusResponse(int $httpCode, mixed $state): void
     {
         http_response_code($httpCode);
         header('Content-Type: application/json');
@@ -12,7 +12,7 @@ abstract class HttpHelper
 
     }
 
-    public static function sendRequestData(int $httpCode, mixed $data): void
+    public static function sendDataResponse(int $httpCode, mixed $data): void
     {
         http_response_code($httpCode);
         header('Content-Type: application/json');

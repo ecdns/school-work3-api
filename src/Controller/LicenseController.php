@@ -48,7 +48,7 @@ class LicenseController
 
         // check if the data is valid
         if (!$this->validateData($requestBody)) {
-            HttpHelper::sendRequestState(400, 'Invalid data');
+            HttpHelper::sendStatusResponse(400, 'Invalid data');
             $logMessage = LogManager::getFullContext() . ' - Invalid data';
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -69,7 +69,7 @@ class LicenseController
             $this->entityManager->persist($license);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -81,19 +81,19 @@ class LicenseController
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                HttpHelper::sendRequestState(409, 'License already exists');
+                HttpHelper::sendStatusResponse(409, 'License already exists');
                 $logMessage = LogManager::getFullContext() . ' - License already exists';
                 LogManager::addErrorLog($logMessage);
                 exit(1);
             }
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
         }
 
         // set the response
-        HttpHelper::sendRequestState(201, 'License added successfully');
+        HttpHelper::sendStatusResponse(201, 'License added successfully');
 
         // add a log
         $logMessage = LogManager::getContext() . ' - License added successfully';
@@ -107,7 +107,7 @@ class LicenseController
             $licenses = $this->entityManager->getRepository(License::class)->findAll();
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(404, $error);
+            HttpHelper::sendStatusResponse(404, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -119,7 +119,7 @@ class LicenseController
             $response[] = $license->toArray();
         }
 
-        HttpHelper::sendRequestData(200, $response);
+        HttpHelper::sendDataResponse(200, $response);
 
         // add a log
         $logMessage = LogManager::getContext() . ' - Licenses found';
@@ -133,7 +133,7 @@ class LicenseController
             $license = $this->entityManager->getRepository(License::class)->find($id);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(404, $error);
+            HttpHelper::sendStatusResponse(404, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -141,7 +141,7 @@ class LicenseController
 
         // if the license is not found
         if (!$license) {
-            HttpHelper::sendRequestState(404, 'License not found');
+            HttpHelper::sendStatusResponse(404, 'License not found');
             $logMessage = LogManager::getFullContext() . ' - License not found';
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -150,7 +150,7 @@ class LicenseController
         // set the response
         $response = $license->toArray();
 
-        HttpHelper::sendRequestData(200, $response);
+        HttpHelper::sendDataResponse(200, $response);
 
         // add a log
         $logMessage = LogManager::getContext() . ' - License found';
@@ -186,7 +186,7 @@ class LicenseController
             $license = $this->entityManager->getRepository(License::class)->find($id);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(404, $error);
+            HttpHelper::sendStatusResponse(404, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -194,7 +194,7 @@ class LicenseController
 
         // if the license is not found
         if (!$license) {
-            HttpHelper::sendRequestState(404, 'License not found');
+            HttpHelper::sendStatusResponse(404, 'License not found');
             $logMessage = LogManager::getFullContext() . ' - License not found';
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -222,7 +222,7 @@ class LicenseController
         }
 
         if (!$name && !$description && !$price && !$maxUsers && !$validityPeriod) {
-            HttpHelper::sendRequestState(400, 'No valid data provided');
+            HttpHelper::sendStatusResponse(400, 'No valid data provided');
             $logMessage = LogManager::getFullContext() . ' - No valid data provided';
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -233,7 +233,7 @@ class LicenseController
             $this->entityManager->persist($license);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -244,14 +244,14 @@ class LicenseController
             $this->entityManager->flush();
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
         }
 
         // set the response
-        HttpHelper::sendRequestState(200, 'License updated successfully');
+        HttpHelper::sendStatusResponse(200, 'License updated successfully');
 
         // add a log
         $logMessage = LogManager::getContext() . ' - License updated successfully';
@@ -266,7 +266,7 @@ class LicenseController
             $license = $this->entityManager->getRepository(License::class)->find($id);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(404, $error);
+            HttpHelper::sendStatusResponse(404, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -274,7 +274,7 @@ class LicenseController
 
         // if the license is not found
         if (!$license) {
-            HttpHelper::sendRequestState(404, 'License not found');
+            HttpHelper::sendStatusResponse(404, 'License not found');
             $logMessage = LogManager::getFullContext() . ' - License not found';
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -285,7 +285,7 @@ class LicenseController
             $this->entityManager->remove($license);
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
@@ -296,14 +296,14 @@ class LicenseController
             $this->entityManager->flush();
         } catch (Exception $e) {
             $error = $e->getMessage();
-            HttpHelper::sendRequestState(500, $error);
+            HttpHelper::sendStatusResponse(500, $error);
             $logMessage = LogManager::getFullContext() . ' - ' . $error;
             LogManager::addErrorLog($logMessage);
             exit(1);
         }
 
         // set the response
-        HttpHelper::sendRequestState(200, 'License deleted successfully');
+        HttpHelper::sendStatusResponse(200, 'License deleted successfully');
 
         // add a log
         $logMessage = LogManager::getContext() . ' - License deleted successfully';

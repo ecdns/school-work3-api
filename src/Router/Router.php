@@ -98,7 +98,7 @@ class Router
             case "/user-settings":
                 return new UserSettingsController($entityManager);
             default:
-                HttpHelper::sendRequestState(500, 'No Implementation Found');
+                HttpHelper::sendStatusResponse(500, 'No Implementation Found');
                 exit(1);
         }
 
@@ -108,10 +108,10 @@ class Router
     {
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
-                HttpHelper::sendRequestState(404, 'Route Not Found');
+                HttpHelper::sendStatusResponse(404, 'Route Not Found');
                 break;
             case Dispatcher::METHOD_NOT_ALLOWED:
-                HttpHelper::sendRequestState(405, 'Method Not Allowed');
+                HttpHelper::sendStatusResponse(405, 'Method Not Allowed');
                 break;
             case Dispatcher::FOUND:
                 $handler = $routeInfo[1];
@@ -120,7 +120,7 @@ class Router
                 call_user_func_array([$controller, $handler], $vars);
                 break;
             default:
-                HttpHelper::sendRequestState(400, 'Unexpected Error');
+                HttpHelper::sendStatusResponse(400, 'Unexpected Error');
         }
     }
 }
