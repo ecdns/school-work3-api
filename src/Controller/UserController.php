@@ -198,14 +198,14 @@ class UserController implements ControllerInterface
 
 
         // get the user data from the request body
-        $firstName = $requestBody['firstName'] ?? false;
-        $lastName = $requestBody['lastName'] ?? false;
-        $email = $requestBody['email'] ?? false;
-        $password = $requestBody['password'] ?? false;
-        $job = $requestBody['job'] ?? false;
-        $phone = $requestBody['phone'] ?? false;
-        $role = $requestBody['role'] ?? false;
-        $companyName = $requestBody['company'] ?? false;
+        $firstName = $requestBody['firstName'] ?? null;
+        $lastName = $requestBody['lastName'] ?? null;
+        $email = $requestBody['email'] ?? null;
+        $password = $requestBody['password'] ?? null;
+        $job = $requestBody['job'] ?? null;
+        $phone = $requestBody['phone'] ?? null;
+        $role = $requestBody['role'] ?? null;
+        $companyName = $requestBody['company'] ?? null;
 
         // get the user from the database by its id
         try {

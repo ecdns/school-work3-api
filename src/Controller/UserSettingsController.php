@@ -153,8 +153,8 @@ class UserSettingsController implements ControllerInterface
         }
 
         // get the user settings data from the request body
-        $theme = $requestBody['theme'] ?? false;
-        $language = $requestBody['language'] ?? false;
+        $theme = $requestBody['theme'] ?? null;
+        $language = $requestBody['language'] ?? null;
 
         // get the user settings
         try {

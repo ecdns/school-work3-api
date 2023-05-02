@@ -156,8 +156,8 @@ class RoleController implements ControllerInterface
         $requestBody = json_decode($requestBody, true);
 
         // get the user data from the request body
-        $name = $requestBody['name'] ?? false;
-        $description = $requestBody['description'] ?? false;
+        $name = $requestBody['name'] ?? null;
+        $description = $requestBody['description'] ?? null;
 
         // update the role
         $role->setName($name ?? $role->getName());

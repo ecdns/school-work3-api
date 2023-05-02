@@ -155,11 +155,11 @@ class LicenseController implements ControllerInterface
         }
 
         // get the user data from the request body
-        $name = $requestBody['name'] ?? false;
-        $description = $requestBody['description'] ?? false;
-        $price = $requestBody['price'] ?? false;
-        $maxUsers = $requestBody['maxUsers'] ?? false;
-        $validityPeriod = $requestBody['validityPeriod'] ?? false;
+        $name = $requestBody['name'] ?? null;
+        $description = $requestBody['description'] ?? null;
+        $price = $requestBody['price'] ?? null;
+        $maxUsers = $requestBody['maxUsers'] ?? null;
+        $validityPeriod = $requestBody['validityPeriod'] ?? null;
 
         // get the license from the database by its id
         try {

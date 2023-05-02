@@ -8,6 +8,7 @@ use Dotenv\Dotenv;
 use Router\Router;
 use Service\DbManager;
 use Service\Http;
+use Service\Request;
 
 // Récupération de la méthode et de l'URI
 $requestMethod = $_SERVER["REQUEST_METHOD"];
@@ -32,23 +33,24 @@ $dbManager = new DbManager($dbHost, $dbName, $dbUser, $dbPassword, $dbPort, $ent
 try {
     $connexion = $dbManager->getConnexion();
 } catch (Exception $e) {
-    Http::sendStatusResponse(500, 'Internal Error');
-    exit(1);
+    Request::handleErrorAndQuit(new Exception('Internal Error'), 500);
 }
 
 try {
     $entityManager = $dbManager->getEntityManager($connexion);
 } catch (Exception $e) {
-    Http::sendStatusResponse(500, 'Internal Error');
-    exit(1);
+    Request::handleErrorAndQuit(new Exception('Internal Error'), 500);
 }
 
 // Création du routeur
 $router = new Router();
 
+// Suppression des paramètres GET dans l'URI si présents (ex: /users/1?name=John => /users/1)
 if (false !== $pos = strpos($uri, '?')) {
     $uri = substr($uri, 0, $pos);
 }
+
+// Décodage de l'URI
 $uri = rawurldecode($uri);
 
 // Lancement de la requête

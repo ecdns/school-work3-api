@@ -150,9 +150,9 @@ class CompanySettingsController implements ControllerInterface
         }
 
         // get the user data from the request body
-        $primaryColor = $requestBody['primaryColor'] ?? false;
-        $secondaryColor = $requestBody['secondaryColor'] ?? false;
-        $tertiaryColor = $requestBody['tertiaryColor'] ?? false;
+        $primaryColor = $requestBody['primaryColor'] ?? null;
+        $secondaryColor = $requestBody['secondaryColor'] ?? null;
+        $tertiaryColor = $requestBody['tertiaryColor'] ?? null;
 
         // get the company settings from the database by its id
         try {

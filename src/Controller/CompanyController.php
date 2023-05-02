@@ -226,16 +226,15 @@ class CompanyController implements ControllerInterface
         }
 
         // get the user data from the request body
-        $name = $requestBody['name'] ?? false;
-        $address = $requestBody['address'] ?? false;
-        $city = $requestBody['city'] ?? false;
-        $country = $requestBody['country'] ?? false;
-        $zipCode = $requestBody['zipCode'] ?? false;
-        $phone = $requestBody['phone'] ?? false;
-        $slogan = $requestBody['slogan'] ?? false;
-        $logoPath = $requestBody['logoPath'] ?? false;
-        $licenseName = $requestBody['license'] ?? false;
-        $language = $requestBody['language'] ?? false;
+        $name = $requestBody['name'] ?? null;
+        $address = $requestBody['address'] ?? null;
+        $city = $requestBody['city'] ?? null;
+        $country = $requestBody['country'] ?? null;
+        $zipCode = $requestBody['zipCode'] ?? null;
+        $phone = $requestBody['phone'] ?? null;
+        $slogan = $requestBody['slogan'] ?? null;
+        $logoPath = $requestBody['logoPath'] ?? null;
+        $language = $requestBody['language'] ?? null;
 
         // get the company from the database by its id
         try {
