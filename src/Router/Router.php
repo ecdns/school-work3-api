@@ -33,7 +33,6 @@ class Router
             $r->addRoute('POST', '/user', 'addUser');
             $r->addRoute('GET', '/user', 'getUsers');
             $r->addRoute('GET', '/user/{id:\d+}', 'getUserById');
-            $r->addRoute('GET','/user/{email}', 'getUserByEmail');
             $r->addRoute('PUT', '/user/{id:\d+}', 'updateUser');
             $r->addRoute('DELETE', '/user/{id:\d+}', 'deleteUser');
 

@@ -168,27 +168,6 @@ class UserController implements ControllerInterface
         RequestManager::handleSuccessAndQuit(200, 'User found', $userData);
     }
 
-    public function getUserByEmail(string $email): void
-    {
-        // get the user from the database by its email
-        try {
-            $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
-        } catch (Exception $e) {
-            RequestManager::handleErrorAndQuit($e, 500);
-        }
-
-        // if the user doesn't exist
-        if (!$user) {
-            RequestManager::handleErrorAndQuit(new Exception('User not found'), 404);
-        }
-
-        // get the user data
-        $userData = $user->toArray();
-
-        // handle the response
-        RequestManager::handleSuccessAndQuit(200, 'User found', $userData);
-    }
-
     public function updateUser(int $id): void
     {
         // get the request body
