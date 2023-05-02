@@ -27,7 +27,7 @@ class Request
         } else {
             Http::sendStatusResponse($httpCode, $status);
         }
-        $context = Log::getFullContext();
+        $context = Log::getContext();
         $success = $context . ' - ' . $status;
         Log::addInfoLog($success);
         exit(0);
