@@ -27,7 +27,7 @@ class CompanyController implements ControllerInterface
         // check if the data is for creating a company or updating it
         if ($isPostRequest) {
             // check if some data is missing, if so, return false
-            if (!isset($data['name']) && !isset($data['address']) && !isset($data['city']) && !isset($data['country']) && !isset($data['zipCode']) && !isset($data['phone']) && !isset($data['slogan']) && !isset($data['logoPath']) && !isset($data['license']) && !isset($data['language'])) {
+            if (!isset($data['name']) || !isset($data['address']) || !isset($data['city']) || !isset($data['country']) || !isset($data['zipCode']) || !isset($data['phone']) || !isset($data['slogan']) || !isset($data['logoPath']) || !isset($data['license']) || !isset($data['language'])) {
                 return false;
             } else {
                 return true;
