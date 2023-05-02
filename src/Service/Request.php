@@ -13,7 +13,7 @@ class Request
     {
         $message = $e->getMessage();
         $context = Log::getFullContext();
-        $error = $message . ' - ' . $context;
+        $error = $context . ' - ' . $message;
         Log::addErrorLog($error);
         Http::sendStatusResponse($httpCode, $message);
         exit(1);
@@ -27,7 +27,9 @@ class Request
         } else {
             Http::sendStatusResponse($httpCode, $status);
         }
-        Log::addInfoLog($status);
+        $context = Log::getFullContext();
+        $success = $context . ' - ' . $status;
+        Log::addInfoLog($success);
         exit(0);
     }
 }
