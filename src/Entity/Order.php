@@ -298,7 +298,6 @@ class Order implements EntityInterface
     {
         if ($this->orderLines->contains($orderLine)) {
             $this->orderLines->removeElement($orderLine);
-            $orderLine->setOrder(null);
         }
     }
 
