@@ -35,40 +35,35 @@ class Contract implements EntityInterface
     private DateTime|null $updatedAt = null;
 
     #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'contracts')]
-    #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Project $project;
 
     #[ORM\ManyToOne(targetEntity: Vat::class, inversedBy: 'contracts')]
-    #[ORM\JoinColumn(name: 'vat_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'vat_id', referencedColumnName: 'id', nullable: true, onDelete: 'CASCADE')]
     private Vat $vat;
 
     #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'contracts')]
-    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Company $company;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'contracts')]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private User $user;
 
     #[ORM\ManyToOne(targetEntity: Customer::class, inversedBy: 'contracts')]
-    #[ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Customer $customer;
 
     #[ORM\ManyToOne(targetEntity: ContractType::class, inversedBy: 'contracts')]
     #[ORM\JoinColumn(name: 'contract_type', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private ContractType $contractType;
 
-    public function __construct(string $name, string $description, float $totalExcludingTax, float $totalIncludingTax, Project $project, Vat $vat, Company $company, User $user, Customer $customer, ContractType $contractType)
+    public function __construct(string $name, string $description, float $totalExcludingTax, Project $project, Vat $vat, Company $company, User $user, Customer $customer, ContractType $contractType)
     {
         $this->name = $name;
         $this->description = $description;
         $this->totalExcludingTax = $totalExcludingTax;
-        $this->totalIncludingTax = $totalIncludingTax;
+        $this->totalIncludingTax = $totalExcludingTax * (1 + $vat->getRate() / 100);
         $this->project = $project;
         $this->vat = $vat;
         $this->company = $company;

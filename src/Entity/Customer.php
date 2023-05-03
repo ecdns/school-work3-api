@@ -50,13 +50,11 @@ class Customer implements EntityInterface
     private string $customerCompanyName;
 
     #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'customers')]
-    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id',onDelete: 'CASCADE')]
     private Company $company;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'customers')]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private User $user;
 
     #[ORM\ManyToOne(targetEntity: CustomerStatus::class, inversedBy: 'customers')]
@@ -79,10 +77,6 @@ class Customer implements EntityInterface
     private Collection $contracts;
 
     #[ORM\ManyToMany(targetEntity: Project::class, mappedBy: 'customers')]
-    #[ORM\JoinTable(name: 'customer_project')]
-    #[ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id')]
-    #[ORM\InverseJoinColumn(name: 'project_id', referencedColumnName: 'id')]
-    #[ORM\OrderBy(['id' => 'ASC'])]
     private Collection $projects;
 
     public function __construct(string $firstName, string $lastName, string $email, string $address, string $city, string $country, string $zipCode, string $phone, string $customerCompanyName, Company $company, User $user, CustomerStatus $status)

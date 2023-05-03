@@ -25,18 +25,15 @@ class Estimate implements EntityInterface
     private string $description;
 
     #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'estimates')]
-    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Company $company;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'estimates')]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private User $user;
 
     #[ORM\ManyToOne(targetEntity: Customer::class, inversedBy: 'estimates')]
-    #[ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Customer $customer;
 
     #[ORM\Column(type: 'float')]
@@ -59,13 +56,11 @@ class Estimate implements EntityInterface
     private EstimateStatus $estimateStatus;
 
     #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'estimates')]
-    #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Project $project;
 
     #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'estimates')]
-    #[ORM\JoinColumn(name: 'order_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'order_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Order $order;
 
     #[ORM\OneToMany(mappedBy: 'estimate', targetEntity: Product::class)]

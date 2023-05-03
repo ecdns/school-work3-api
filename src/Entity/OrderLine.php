@@ -28,14 +28,12 @@ class OrderLine implements EntityInterface
 
     // order
     #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'orderLines')]
-    #[ORM\JoinColumn(name: 'order_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'order_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Order $order;
 
     // product
     #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'orderLines')]
-    #[ORM\JoinColumn(name: 'product_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'product_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Product $product;
 
     #[ORM\Column(type: 'datetime', nullable: false)]

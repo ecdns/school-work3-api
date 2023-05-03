@@ -49,13 +49,11 @@ class Product implements EntityInterface
     private ProductFamily $productFamily;
 
     #[ORM\ManyToOne(targetEntity: Vat::class, inversedBy: 'products')]
-    #[ORM\JoinColumn(name: 'vat_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'vat_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Vat $vat;
 
     #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'products')]
-    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Company $company;
 
     #[ORM\ManyToOne(targetEntity: QuantityUnit::class, inversedBy: 'products')]
@@ -63,8 +61,7 @@ class Product implements EntityInterface
     private QuantityUnit $quantityUnit;
 
     #[ORM\ManyToOne(targetEntity: Supplier::class, inversedBy: 'products')]
-    #[ORM\JoinColumn(name: 'supplier_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'supplier_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Supplier $supplier;
 
     // a product can be in many order lines (one-to-many)

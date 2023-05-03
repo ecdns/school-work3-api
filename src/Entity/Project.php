@@ -33,22 +33,18 @@ class Project implements EntityInterface
     private string $expiredAt;
 
     #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'projects')]
-    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Company $company;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'projects')]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private User $user;
 
     // users
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'projects')]
     private Collection $users;
 
-    #[ORM\ManyToOne(targetEntity: Customer::class, inversedBy: 'projects')]
-    #[ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'projects')]
     private Customer $customer;
 
     #[ORM\OneToMany(mappedBy: 'project', targetEntity: Task::class)]

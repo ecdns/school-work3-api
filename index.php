@@ -7,7 +7,6 @@ require_once "vendor/autoload.php";
 use Dotenv\Dotenv;
 use Router\Router;
 use Service\DbManager;
-use Service\Http;
 use Service\Request;
 
 // Récupération de la méthode et de l'URI
@@ -53,6 +52,6 @@ if (false !== $pos = strpos($uri, '?')) {
 // Décodage de l'URI
 $uri = rawurldecode($uri);
 
-// Lancement de la requête
+// Récupération des informations de la route correspondant à la méthode et à l'URI et déclenchement de la requête
 $routeInfo = $router->fetchRouteInfo($requestMethod, $uri);
 $router->trigRequest($routeInfo, $uri, $entityManager);

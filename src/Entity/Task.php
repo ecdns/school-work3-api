@@ -41,8 +41,7 @@ class Task implements EntityInterface
     private Collection $users;
 
     #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'tasks')]
-    #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     public Project $project;
 
     public function __construct(string $title, string $description, string $location, string $dueDate, Project $project, Collection $users)

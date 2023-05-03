@@ -27,9 +27,9 @@ class OrderPayment implements EntityInterface
     private DateTime|null $updatedAt = null;
 
     #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'orderPayments')]
-    #[ORM\JoinColumn(name: 'order_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'order_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Order $order;
+
     public function __construct(float $amount, Order $order)
     {
         $this->order = $order;

@@ -53,8 +53,7 @@ class Supplier implements EntityInterface
     private Collection $products;
 
     #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'suppliers')]
-    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Company $company;
 
     #[ORM\Column(type: 'string')]

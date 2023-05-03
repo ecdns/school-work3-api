@@ -18,13 +18,11 @@ class Message implements EntityInterface
     public int $id;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'messages')]
-    #[ORM\JoinColumn(name: 'sender_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'sender_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     public User $sender;
 
     #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'messages')]
-    #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     public Project $project;
 
     #[ORM\Column(type: 'string')]
@@ -32,9 +30,6 @@ class Message implements EntityInterface
 
     #[ORM\Column(type: 'boolean')]
     public bool $isRead;
-
-    #[ORM\Column(type: 'boolean')]
-    public bool $isLiked;
 
     #[ORM\Column(type: 'datetime', nullable: false)]
     public DateTime $createdAt;
@@ -48,7 +43,6 @@ class Message implements EntityInterface
         $this->project = $project;
         $this->message = $message;
         $this->isRead = $isRead;
-        $this->isLiked = $isLiked;
     }
 
     public function getId(): int
@@ -74,11 +68,6 @@ class Message implements EntityInterface
     public function getIsRead(): bool
     {
         return $this->isRead;
-    }
-
-    public function getIsLiked(): bool
-    {
-        return $this->isLiked;
     }
 
     public function getCreatedAt(): DateTime
@@ -109,11 +98,6 @@ class Message implements EntityInterface
     public function setIsRead(bool $isRead): void
     {
         $this->isRead = $isRead;
-    }
-
-    public function setIsLiked(bool $isLiked): void
-    {
-        $this->isLiked = $isLiked;
     }
 
     #[ORM\PrePersist]

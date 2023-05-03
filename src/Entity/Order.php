@@ -23,18 +23,15 @@ class Order implements EntityInterface
     private string $description;
 
     #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'orders')]
-    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Company $company;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'orders')]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private User $user;
 
     #[ORM\ManyToOne(targetEntity: Customer::class, inversedBy: 'orders')]
-    #[ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id',onDelete: 'CASCADE')]
     private Customer $customer;
 
     #[ORM\Column(type: 'float')]
@@ -50,8 +47,7 @@ class Order implements EntityInterface
     private DateTime|null $updatedAt = null;
 
     #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'orders')]
-    #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Project $project;
 
     #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderLine::class)]
@@ -72,7 +68,7 @@ class Order implements EntityInterface
     #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderForm::class)]
     private Collection $orderForms;
 
-    public function __construct(string $name, string $description, float $totalExcludingTax, float $totalIncludingTax, DateTime $createdAt, Project $project)
+    public function __construct(string $name, string $description, DateTime $createdAt, Project $project)
     {
         $this->name = $name;
         $this->description = $description;
