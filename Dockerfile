@@ -36,10 +36,10 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
     composer install --no-dev --no-interaction --no-progress --prefer-dist
 
 # Copy the PHP configuration file to the container
-COPY conf/php.ini /usr/local/etc/php/conf.d/
+COPY docker/php.ini /usr/local/etc/php/conf.d/
 
 # Copy the Apache virtual host configuration file to the container
-COPY conf/vhost.conf /etc/apache2/sites-available/000-default.conf
+COPY docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 
 # Enable necessary Apache modules and virtual host
 RUN a2enmod headers rewrite remoteip && \

@@ -32,13 +32,13 @@ $dbManager = new DbManager($dbHost, $dbName, $dbUser, $dbPassword, $dbPort, $ent
 try {
     $connexion = $dbManager->getConnexion();
 } catch (Exception $e) {
-    Request::handleErrorAndQuit(new Exception('Internal Error'), 500);
+    Request::handleErrorAndQuit(500, $e);
 }
 
 try {
     $entityManager = $dbManager->getEntityManager($connexion);
 } catch (Exception $e) {
-    Request::handleErrorAndQuit(new Exception('Internal Error'), 500);
+    Request::handleErrorAndQuit(500, $e);
 }
 
 // Création du routeur

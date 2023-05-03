@@ -101,7 +101,7 @@ class Router
             case "/user-settings":
                 return new UserSettingsController($entityManager);
             default:
-                Request::handleErrorAndQuit(new Exception('No Implementation found'), 404);
+                Request::handleErrorAndQuit(404, new Exception('Not found'));
         }
 
     }
@@ -110,9 +110,9 @@ class Router
     {
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
-                Request::handleErrorAndQuit(new Exception('Route not found'), 404);
+                Request::handleErrorAndQuit(404, new Exception('Not found'));
             case Dispatcher::METHOD_NOT_ALLOWED:
-                Request::handleErrorAndQuit(new Exception('Method not allowed'), 405);
+                Request::handleErrorAndQuit(405, new Exception('Method not allowed'));
             case Dispatcher::FOUND:
                 $handler = $routeInfo[1];
                 $vars = $routeInfo[2];
@@ -120,7 +120,7 @@ class Router
                 call_user_func_array([$controller, $handler], $vars);
                 break;
             default:
-                Request::handleErrorAndQuit(new Exception('Unknown error'), 500);
+                Request::handleErrorAndQuit(500, new Exception('Internal server error'));
         }
     }
 }
