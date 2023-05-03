@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Controller;
 
 use Doctrine\ORM\EntityManager;
@@ -7,34 +9,14 @@ use Entity\Role;
 use Exception;
 use Service\Request;
 
-class RoleController implements ControllerInterface
+class RoleController extends AbstractController
 {
     private EntityManager $entityManager;
-    private const DATA = ['name', 'description'];
+    private const REQUIRED_FIELDS = ['name', 'description'];
 
     public function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
-    }
-
-    public function validatePostData(mixed $data): bool
-    {
-        foreach (self::DATA as $key) {
-            if (!isset($data[$key])) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public function validatePutData(mixed $data): bool
-    {
-        foreach (self::DATA as $key) {
-            if (isset($data[$key])) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public function addRole(): void
@@ -52,7 +34,7 @@ class RoleController implements ControllerInterface
         $requestBody = json_decode($requestBody, true);
 
         // validate the data
-        if (!$this->validatePostData($requestBody)) {
+        if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
             Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 
@@ -143,7 +125,7 @@ class RoleController implements ControllerInterface
         $requestBody = file_get_contents('php://input');
 
         // validate the data
-        if (!$this->validatePutData($requestBody)) {
+        if (!$this->validatePutData($requestBody, self::REQUIRED_FIELDS)) {
             Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 

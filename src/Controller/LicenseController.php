@@ -9,34 +9,14 @@ use Entity\License;
 use Exception;
 use Service\Request;
 
-class LicenseController implements ControllerInterface
+class LicenseController extends AbstractController
 {
     private EntityManager $entityManager;
-    private const DATA = ['name', 'description', 'price', 'maxUsers', 'validityPeriod'];
+    private const REQUIRED_FIELDS = ['name', 'description', 'price', 'maxUsers', 'validityPeriod'];
 
     public function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
-    }
-
-    public function validatePostData(mixed $data): bool
-    {
-        foreach (self::DATA as $key) {
-            if (!isset($data[$key])) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public function validatePutData(mixed $data): bool
-    {
-        foreach (self::DATA as $key) {
-            if (isset($data[$key])) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public function addLicense(): void
@@ -57,7 +37,7 @@ class LicenseController implements ControllerInterface
         $requestBody = json_decode($requestBody, true);
 
         // check if the data is valid
-        if (!$this->validatePostData($requestBody)) {
+        if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
             Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 
@@ -151,7 +131,7 @@ class LicenseController implements ControllerInterface
         $requestBody = json_decode($requestBody, true);
 
         // check if the data is valid
-        if (!$this->validatePutData($requestBody)) {
+        if (!$this->validatePutData($requestBody, self::REQUIRED_FIELDS)) {
             Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 

@@ -11,34 +11,14 @@ use Entity\User;
 use Exception;
 use Service\Request;
 
-class UserController implements ControllerInterface
+class UserController extends AbstractController
 {
     private EntityManager $entityManager;
-    private const DATA = ['firstName', 'lastName', 'email', 'password', 'job', 'phone', 'role', 'company'];
+    private const REQUIRED_FIELDS = ['firstName', 'lastName', 'email', 'password', 'job', 'phone', 'role', 'company'];
 
     public function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
-    }
-
-    public function validatePostData(mixed $data): bool
-    {
-        foreach (self::DATA as $key) {
-            if (!isset($data[$key])) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public function validatePutData(mixed $data): bool
-    {
-        foreach (self::DATA as $key) {
-            if (isset($data[$key])) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public function addUser(): void
@@ -63,10 +43,7 @@ class UserController implements ControllerInterface
         $requestBody = json_decode($requestBody, true);
 
         // validate the data
-        $dataIsValid = $this->validatePostData($requestBody);
-
-        // if the data is not valid
-        if (!$dataIsValid) {
+        if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
             Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 
@@ -191,7 +168,7 @@ class UserController implements ControllerInterface
         $requestBody = json_decode($requestBody, true);
 
         // validate the data
-        if (!$this->validatePutData($requestBody)) {
+        if (!$this->validatePutData($requestBody, self::REQUIRED_FIELDS)) {
             Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 

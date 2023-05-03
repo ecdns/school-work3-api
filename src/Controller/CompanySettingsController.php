@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Controller;
 
 use Doctrine\ORM\EntityManager;
@@ -8,34 +10,14 @@ use Entity\CompanySettings;
 use Exception;
 use Service\Request;
 
-class CompanySettingsController implements ControllerInterface
+class CompanySettingsController extends AbstractController
 {
     private EntityManager $entityManager;
-    private const DATA = ['primaryColor', 'secondaryColor', 'tertiaryColor', 'company'];
+    private const REQUIRED_FIELDS = ['primaryColor', 'secondaryColor', 'tertiaryColor', 'company'];
 
     public function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
-    }
-
-    public function validatePostData(mixed $data): bool
-    {
-        foreach (self::DATA as $key) {
-            if (!isset($data[$key])) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public function validatePutData(mixed $data): bool
-    {
-        foreach (self::DATA as $key) {
-            if (isset($data[$key])) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public function addCompanySettings(): void
@@ -56,7 +38,7 @@ class CompanySettingsController implements ControllerInterface
         $requestBody = json_decode($requestBody, true);
 
         // validate the data
-        if (!$this->validatePostData($requestBody)) {
+        if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
             Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 
@@ -146,7 +128,7 @@ class CompanySettingsController implements ControllerInterface
         $requestBody = json_decode($requestBody, true);
 
         // validate the data
-        if (!$this->validatePutData($requestBody)) {
+        if (!$this->validatePutData($requestBody, self::REQUIRED_FIELDS)) {
             Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 

@@ -9,35 +9,15 @@ use Entity\UserSettings;
 use Exception;
 use Service\Request;
 
-class UserSettingsController implements ControllerInterface
+class UserSettingsController extends AbstractController
 {
 
     private EntityManager $entityManager;
-    private const DATA = ['theme', 'language', 'user-id'];
+    private const REQUIRED_FIELDS = ['theme', 'language', 'user-id'];
 
     public function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
-    }
-
-    public function validatePostData(mixed $data): bool
-    {
-        foreach (self::DATA as $key) {
-            if (!isset($data[$key])) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public function validatePutData(mixed $data): bool
-    {
-        foreach (self::DATA as $key) {
-            if (isset($data[$key])) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public function addUserSettings(): void
@@ -56,7 +36,7 @@ class UserSettingsController implements ControllerInterface
         $requestBody = json_decode($requestBody, true);
 
         // validate the data
-        if (!$this->validatePostData($requestBody)) {
+        if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
             Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 
@@ -149,7 +129,7 @@ class UserSettingsController implements ControllerInterface
         $requestBody = json_decode($requestBody, true);
 
         // validate the data
-        if (!$this->validatePutData($requestBody)) {
+        if (!$this->validatePutData($requestBody, self::REQUIRED_FIELDS)) {
             Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 

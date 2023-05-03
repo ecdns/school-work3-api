@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Controller;
 
 use DateInterval;
@@ -10,36 +12,15 @@ use Entity\License;
 use Exception;
 use Service\Request;
 
-class CompanyController implements ControllerInterface
+class CompanyController extends AbstractController
 {
     private EntityManager $entityManager;
-    private const DATA = ['name', 'address', 'city', 'country', 'zipCode', 'phone', 'slogan', 'logoPath', 'license', 'language'];
+    private const REQUIRED_FIELDS = ['name', 'address', 'city', 'country', 'zipCode', 'phone', 'slogan', 'logoPath', 'license', 'language'];
 
     public function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
     }
-
-    public function validatePostData(mixed $data): bool
-    {
-        foreach (self::DATA as $value) {
-            if (!isset($data[$value])) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public function validatePutData(mixed $data): bool
-    {
-        foreach (self::DATA as $value) {
-            if (isset($data[$value])) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     public function addCompany(): void
     {
@@ -64,7 +45,7 @@ class CompanyController implements ControllerInterface
         $requestBody = json_decode($requestBody, true);
 
         // check if the data is valid
-        if (!$this->validatePostData($requestBody)) {
+        if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
             Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 
@@ -222,7 +203,7 @@ class CompanyController implements ControllerInterface
         $requestBody = json_decode($requestBody, true);
 
         // validate the request body
-        if ($this->validatePutData($requestBody) === false) {
+        if ($this->validatePutData($requestBody, self::REQUIRED_FIELDS) === false) {
             Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 
