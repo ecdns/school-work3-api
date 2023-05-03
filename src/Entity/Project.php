@@ -29,22 +29,14 @@ class Project implements EntityInterface
     #[ORM\Column(type: 'datetime', nullable: true)]
     private DateTime|null $updatedAt = null;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
-    private string $expiredAt;
-
     #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'projects')]
     #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Company $company;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'projects')]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private User $user;
-
-    // users
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'projects')]
     private Collection $users;
 
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'projects')]
+    #[ORM\ManyToMany(targetEntity: Customer::class, inversedBy: 'projects')]
     private Customer $customer;
 
     #[ORM\OneToMany(mappedBy: 'project', targetEntity: Task::class)]
@@ -57,14 +49,12 @@ class Project implements EntityInterface
     #[ORM\JoinColumn(name: 'project_status', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private ProjectStatus $projectStatus;
 
-    public function __construct(string $title, string $description, DateTime $createdAt, User $user, string $expiredAt, Customer $customer, ProjectStatus $projectStatus)
+    public function __construct(string $title, string $description, Company $company, DateTime $createdAt, Customer $customer, ProjectStatus $projectStatus)
     {
         $this->title = $title;
         $this->description = $description;
         $this->createdAt = $createdAt;
-        $this->user = $user;
-        $this->company = $this->user->getCompany();
-        $this->expiredAt = $expiredAt;
+        $this->company = $company;
         $this->customer = $customer;
         $this->projectStatus = $projectStatus;
     }
@@ -116,16 +106,6 @@ class Project implements EntityInterface
         $this->updatedAt = $updatedAt;
     }
 
-    public function getExpiredAt(): string
-    {
-        return $this->expiredAt;
-    }
-
-    public function setExpiredAt(string $expiredAt): void
-    {
-        $this->expiredAt = $expiredAt;
-    }
-
     public function getCompany(): Company
     {
         return $this->company;
@@ -134,16 +114,6 @@ class Project implements EntityInterface
     public function setCompany(Company $company): void
     {
         $this->company = $company;
-    }
-
-    public function getUser(): User
-    {
-        return $this->user;
-    }
-
-    public function setUser(User $user): void
-    {
-        $this->user = $user;
     }
 
     public function getUsers(): Collection
@@ -276,7 +246,6 @@ class Project implements EntityInterface
             'description' => $this->description,
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
-            'expiredAt' => $this->expiredAt,
             'company' => $this->company->toArray()
         ];
     }
@@ -289,9 +258,7 @@ class Project implements EntityInterface
             'description' => $this->description,
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
-            'expiredAt' => $this->expiredAt,
             'company' => $this->company->toArray(),
-            'user' => $this->user->toArray(),
             'users' => $this->users->map(fn (User $user) => $user->toArray())->toArray(),
             'customer' => $this->customer->toArray(),
             'tasks' => $this->tasks->map(fn (Task $task) => $task->toArray())->toArray(),
