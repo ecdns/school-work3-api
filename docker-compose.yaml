@@ -3,7 +3,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: docker/Dockerfile
     ports:
       - "8080:8080"
     env_file: .env
@@ -26,6 +26,5 @@ services:
       MYSQL_DATABASE: ${DB_NAME}
     volumes:
       - db_data:/var/lib/mysql
-      #- ./scripts/initialize_db_insert_data_set.sql:/docker-entrypoint-initdb.d//initialize_db_insert_data_set.sql
 volumes:
   db_data:
