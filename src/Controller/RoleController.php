@@ -35,7 +35,7 @@ class RoleController extends AbstractController
 
         // validate the data
         if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
         // get the user data from the request body
@@ -49,7 +49,7 @@ class RoleController extends AbstractController
         try {
             $this->entityManager->persist($role);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // flush the entity manager
@@ -58,9 +58,9 @@ class RoleController extends AbstractController
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                Request::handleErrorAndQuit(new Exception('Role already exists'), 409);
+                Request::handleErrorAndQuit(409, new Exception('Role already exists'));
             }
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // handle the response
@@ -73,7 +73,7 @@ class RoleController extends AbstractController
         try {
             $roles = $this->entityManager->getRepository(Role::class)->findAll();
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // set the response
@@ -92,12 +92,12 @@ class RoleController extends AbstractController
         try {
             $role = $this->entityManager->find(Role::class, $id);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the role is not found
         if (!$role) {
-            Request::handleErrorAndQuit(new Exception('Role not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('Role not found'));
         }
 
         // set the response
@@ -113,20 +113,23 @@ class RoleController extends AbstractController
         try {
             $role = $this->entityManager->find(Role::class, $id);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the role is not found
         if (!$role) {
-            Request::handleErrorAndQuit(new Exception('Role not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('Role not found'));
         }
 
         // get the request body
         $requestBody = file_get_contents('php://input');
 
+        // decode the json
+        $requestBody = json_decode($requestBody, true);
+
         // validate the data
         if (!$this->validatePutData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
         // it will look like this:
@@ -150,14 +153,14 @@ class RoleController extends AbstractController
         try {
             $this->entityManager->persist($role);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // handle the response
@@ -171,26 +174,26 @@ class RoleController extends AbstractController
         try {
             $role = $this->entityManager->find(Role::class, $id);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the role is not found
         if (!$role) {
-            Request::handleErrorAndQuit(new Exception('Role not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('Role not found'));
         }
 
         // remove the role
         try {
             $this->entityManager->remove($role);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // handle the response

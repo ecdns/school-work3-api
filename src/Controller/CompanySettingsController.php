@@ -39,7 +39,7 @@ class CompanySettingsController extends AbstractController
 
         // validate the data
         if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
         // get the user data from the request body
@@ -52,12 +52,12 @@ class CompanySettingsController extends AbstractController
         try {
             $company = $this->entityManager->getRepository(Company::class)->findOneBy(['name' => $company]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the company is not found`
         if (!$company) {
-            Request::handleErrorAndQuit(new Exception('Company not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('Company not found'));
         }
 
         // create a new companySettings object
@@ -71,7 +71,7 @@ class CompanySettingsController extends AbstractController
             $this->entityManager->persist($companySettings);
             $this->entityManager->persist($company);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // flush the entity manager
@@ -80,9 +80,9 @@ class CompanySettingsController extends AbstractController
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                Request::handleErrorAndQuit(new Exception('Company settings already exist'), 409);
+                Request::handleErrorAndQuit(409, new Exception('Company settings already exist'));
             }
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // handle the response
@@ -96,12 +96,12 @@ class CompanySettingsController extends AbstractController
         try {
             $companySettings = $this->entityManager->getRepository(CompanySettings::class)->find($id);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the company settings are not found
         if (!$companySettings) {
-            Request::handleErrorAndQuit(new Exception('Company settings not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('Company settings not found'));
         }
 
         // set the response
@@ -129,7 +129,7 @@ class CompanySettingsController extends AbstractController
 
         // validate the data
         if (!$this->validatePutData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
         // get the user data from the request body
@@ -141,12 +141,12 @@ class CompanySettingsController extends AbstractController
         try {
             $companySettings = $this->entityManager->getRepository(CompanySettings::class)->find($id);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the company settings are not found
         if (!$companySettings) {
-            Request::handleErrorAndQuit(new Exception('Company settings not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('Company settings not found'));
         }
 
         // update the company settings
@@ -158,14 +158,14 @@ class CompanySettingsController extends AbstractController
         try {
             $this->entityManager->persist($companySettings);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // handle the response
@@ -178,26 +178,26 @@ class CompanySettingsController extends AbstractController
         try {
             $companySettings = $this->entityManager->getRepository(CompanySettings::class)->find($id);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the company settings are not found
         if (!$companySettings) {
-            Request::handleErrorAndQuit(new Exception('Company settings not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('Company settings not found'));
         }
 
         // remove the company settings
         try {
             $this->entityManager->remove($companySettings);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // handle the response

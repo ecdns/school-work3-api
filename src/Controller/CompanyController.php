@@ -46,7 +46,7 @@ class CompanyController extends AbstractController
 
         // check if the data is valid
         if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
         // get the user data from the request body
@@ -65,12 +65,12 @@ class CompanyController extends AbstractController
         try {
             $license = $this->entityManager->getRepository(License::class)->findOneBy(['name' => $licenseName]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the license is not found
         if (!$license) {
-            Request::handleErrorAndQuit(new Exception('License not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('License not found'));
         }
 
         // get the license expiration date knowing it will be in years
@@ -82,9 +82,9 @@ class CompanyController extends AbstractController
             $error = $e->getMessage();
             // if the error mentions a constraint violation, it means the license already exists
             if (str_contains($error, 'constraint violation')) {
-                Request::handleErrorAndQuit(new Exception('License already exists'), 409);
+                Request::handleErrorAndQuit(409, new Exception('License already exists'));
             }
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // check if the license is expired, if it is, return set $isEnable to false
@@ -100,7 +100,7 @@ class CompanyController extends AbstractController
         try {
             $this->entityManager->persist($company);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // flush the entity manager
@@ -108,7 +108,10 @@ class CompanyController extends AbstractController
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            if (str_contains($e->getMessage(), 'constraint violation')) {
+                Request::handleErrorAndQuit(409, new Exception('Company already exists'));
+            }
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // set the response
@@ -122,7 +125,7 @@ class CompanyController extends AbstractController
         try {
             $companies = $this->entityManager->getRepository(Company::class)->findAll();
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // construct the response with the companies data
@@ -142,12 +145,12 @@ class CompanyController extends AbstractController
         try {
             $company = $this->entityManager->getRepository(Company::class)->find($id);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the company is not found, return an error
         if (!$company) {
-            Request::handleErrorAndQuit(new Exception('Company not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('Company not found'));
         }
 
         // construct the response with the company data
@@ -164,12 +167,12 @@ class CompanyController extends AbstractController
         try {
             $company = $this->entityManager->getRepository(Company::class)->findOneBy(['name' => $name]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the company is not found, return an error
         if (!$company) {
-            Request::handleErrorAndQuit(new Exception('Company not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('Company not found'));
         }
 
         // construct the response with the company data
@@ -204,7 +207,7 @@ class CompanyController extends AbstractController
 
         // validate the request body
         if ($this->validatePutData($requestBody, self::REQUIRED_FIELDS) === false) {
-            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
         // get the user data from the request body
@@ -222,24 +225,24 @@ class CompanyController extends AbstractController
         try {
             $company = $this->entityManager->getRepository(Company::class)->find($id);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the company is not found, return an error
         if (!$company) {
-            Request::handleErrorAndQuit(new Exception('Company not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('Company not found'));
         }
 
         // get the license from the database by its name
         try {
             $license = $this->entityManager->getRepository(License::class)->findOneBy(['name' => $company->getLicense()->getName()]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the license is not found, return an error
         if (!$license) {
-            Request::handleErrorAndQuit(new Exception('License not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('License not found'));
         }
 
         // get the license expiration date knowing it will be in years
@@ -248,7 +251,7 @@ class CompanyController extends AbstractController
         try {
             $licenseExpirationDate->add(new DateInterval('P' . $license->getValidityPeriod() . 'Y'));
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // check if the license is expired, if it is, return set $isEnable to false
@@ -275,14 +278,14 @@ class CompanyController extends AbstractController
         try {
             $this->entityManager->persist($company);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // set the response
@@ -296,26 +299,26 @@ class CompanyController extends AbstractController
         try {
             $company = $this->entityManager->getRepository(Company::class)->find($id);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the company is not found, return an error
         if (!$company) {
-            Request::handleErrorAndQuit(new Exception('Company not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('Company not found'));
         }
 
         // remove the company
         try {
             $this->entityManager->remove($company);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // handle the response

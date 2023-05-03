@@ -37,7 +37,7 @@ class UserSettingsController extends AbstractController
 
         // validate the data
         if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
         // get the user settings data from the request body
@@ -49,12 +49,12 @@ class UserSettingsController extends AbstractController
         try {
             $user = $this->entityManager->find('Entity\User', $id);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the user is not found
         if (!$user) {
-            Request::handleErrorAndQuit(new Exception('User not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('User not found'));
         }
 
         // create a new user settings
@@ -64,7 +64,7 @@ class UserSettingsController extends AbstractController
         try {
             $this->entityManager->persist($userSettings);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // update the user
@@ -74,7 +74,7 @@ class UserSettingsController extends AbstractController
         try {
             $this->entityManager->persist($user);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // flush the entity manager
@@ -83,9 +83,9 @@ class UserSettingsController extends AbstractController
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                Request::handleErrorAndQuit(new Exception('User settings already exist'), 409);
+                Request::handleErrorAndQuit(400, new Exception('User settings already exist'));
             }
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // handle the response
@@ -99,12 +99,12 @@ class UserSettingsController extends AbstractController
         try {
             $userSettings = $this->entityManager->find('Entity\UserSettings', $id);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the user settings are not found
         if (!$userSettings) {
-            Request::handleErrorAndQuit(new Exception('User settings not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('User settings not found'));
         }
 
         // prepare the user settings data
@@ -130,7 +130,7 @@ class UserSettingsController extends AbstractController
 
         // validate the data
         if (!$this->validatePutData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
         // get the user settings data from the request body
@@ -141,12 +141,12 @@ class UserSettingsController extends AbstractController
         try {
             $userSettings = $this->entityManager->find('Entity\UserSettings', $id);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the user settings are not found
         if (!$userSettings) {
-            Request::handleErrorAndQuit(new Exception('User settings not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('User settings not found'));
         }
 
         // update the user settings
@@ -157,14 +157,14 @@ class UserSettingsController extends AbstractController
         try {
             $this->entityManager->persist($userSettings);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // handle the response
@@ -177,26 +177,26 @@ class UserSettingsController extends AbstractController
         try {
             $userSettings = $this->entityManager->find('Entity\UserSettings', $id);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the user settings are not found
         if (!$userSettings) {
-            Request::handleErrorAndQuit(new Exception('User settings not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('User settings not found'));
         }
 
         // remove the user settings
         try {
             $this->entityManager->remove($userSettings);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // handle the response

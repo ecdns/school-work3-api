@@ -33,6 +33,7 @@ class Log
         return $context;
     }
 
+    // Unused for now
     public static function getFullContext(): string
     {
 
@@ -53,9 +54,9 @@ class Log
         return $context;
     }
 
-    public static function addInfoLog(string $message): void
+    public static function addSuccessLog(string $message): void
     {
-        $file = fopen('log/info.log', 'a+');
+        $file = fopen('log/success.log', 'a+');
         fwrite($file, date('Y-m-d H:i:s') . ' - ' . $message . PHP_EOL);
         fclose($file);
     }

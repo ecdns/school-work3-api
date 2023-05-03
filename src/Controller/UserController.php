@@ -44,7 +44,7 @@ class UserController extends AbstractController
 
         // validate the data
         if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
         // get the user data from the request body
@@ -64,17 +64,17 @@ class UserController extends AbstractController
             $role = $this->entityManager->getRepository(Role::class)->findOneBy(['name' => $role]);
             $company = $this->entityManager->getRepository(Company::class)->findOneBy(['name' => $companyName]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the role is not found
         if (!$role) {
-            Request::handleErrorAndQuit(new Exception('Role not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('Role not found'));
         }
 
         // if the company is not found
         if (!$company) {
-            Request::handleErrorAndQuit(new Exception('Company not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('Company not found'));
         }
 
         // create a new user
@@ -84,7 +84,7 @@ class UserController extends AbstractController
         try {
             $this->entityManager->persist($user);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // flush the entity manager
@@ -93,9 +93,9 @@ class UserController extends AbstractController
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                Request::handleErrorAndQuit(new Exception('User already exists'), 409);
+                Request::handleErrorAndQuit(409, new Exception('User already exists'));
             }
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // handle the response
@@ -108,12 +108,12 @@ class UserController extends AbstractController
         try {
             $users = $this->entityManager->getRepository(User::class)->findAll();
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if there are no users
         if (!$users) {
-            Request::handleErrorAndQuit(new Exception('No users found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('No users found'));
         }
 
         // get the users data
@@ -132,12 +132,12 @@ class UserController extends AbstractController
         try {
             $user = $this->entityManager->getRepository(User::class)->find($id);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the user doesn't exist
         if (!$user) {
-            Request::handleErrorAndQuit(new Exception('User not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('User not found'));
         }
 
         // get the user data
@@ -169,7 +169,7 @@ class UserController extends AbstractController
 
         // validate the data
         if (!$this->validatePutData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
 
@@ -187,12 +187,12 @@ class UserController extends AbstractController
         try {
             $user = $this->entityManager->getRepository(User::class)->find($id);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the user doesn't exist
         if (!$user) {
-            Request::handleErrorAndQuit(new Exception('User not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('User not found'));
         }
 
         // get the company and role from the database
@@ -200,17 +200,17 @@ class UserController extends AbstractController
             $role = $this->entityManager->getRepository(Role::class)->findOneBy(['name' => $user->getRole()->getName()]);
             $company = $this->entityManager->getRepository(Company::class)->findOneBy(['name' => $user->getCompany()->getName()]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the role doesn't exist
         if (!$role) {
-            Request::handleErrorAndQuit(new Exception('Role not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('Role not found'));
         }
 
         // if the company doesn't exist
         if (!$company) {
-            Request::handleErrorAndQuit(new Exception('Company not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('Company not found'));
         }
 
         // update the user data
@@ -227,14 +227,14 @@ class UserController extends AbstractController
         try {
             $this->entityManager->persist($user);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // handle the response
@@ -247,26 +247,26 @@ class UserController extends AbstractController
         try {
             $user = $this->entityManager->getRepository(User::class)->find($id);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the user doesn't exist
         if (!$user) {
-            Request::handleErrorAndQuit(new Exception('User not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('User not found'));
         }
 
         // remove the user
         try {
             $this->entityManager->remove($user);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // handle the response
@@ -295,22 +295,22 @@ class UserController extends AbstractController
         try {
             $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the user doesn't exist
         if (!$user) {
-            Request::handleErrorAndQuit(new Exception('User not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('User not found'));
         }
 
         // if the password is incorrect
         if (!password_verify($password, $user->getPassword())) {
-            Request::handleErrorAndQuit(new Exception('Incorrect password'), 401);
+            Request::handleErrorAndQuit(401, new Exception('Incorrect password'));
         }
 
         // check if the user company is active
         if (!$user->getCompany()->getIsEnabled()) {
-            Request::handleErrorAndQuit(new Exception('Company is not active'), 401);
+            Request::handleErrorAndQuit(401, new Exception('Company is not active'));
         }
 
         // handle the response

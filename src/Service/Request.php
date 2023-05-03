@@ -8,13 +8,13 @@ use Throwable;
 
 class Request
 {
-    public static function handleErrorAndQuit(Throwable $e, int $httpCode): void
+    public static function handleErrorAndQuit(int $httpCode, Throwable $e): void
     {
         $message = $e->getMessage();
-        $context = Log::getFullContext();
+        Http::sendStatusResponse($httpCode, $message);
+        $context = Log::getContext();
         $error = $context . ' - ' . $message;
         Log::addErrorLog($error);
-        Http::sendStatusResponse($httpCode, $message);
         exit(1);
     }
 
@@ -28,7 +28,7 @@ class Request
         }
         $context = Log::getContext();
         $success = $context . ' - ' . $status;
-        Log::addInfoLog($success);
+        Log::addSuccessLog($success);
         exit(0);
     }
 }

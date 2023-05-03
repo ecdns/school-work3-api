@@ -38,7 +38,7 @@ class LicenseController extends AbstractController
 
         // check if the data is valid
         if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
         // get the user data from the request body
@@ -55,7 +55,7 @@ class LicenseController extends AbstractController
         try {
             $this->entityManager->persist($license);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // flush the entity manager
@@ -64,9 +64,9 @@ class LicenseController extends AbstractController
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                Request::handleErrorAndQuit(new Exception('License already exists'), 409);
+                Request::handleErrorAndQuit(400, new Exception('License already exists'));
             }
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // handle the response
@@ -79,7 +79,7 @@ class LicenseController extends AbstractController
         try {
             $licenses = $this->entityManager->getRepository(License::class)->findAll();
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // set the response
@@ -98,12 +98,12 @@ class LicenseController extends AbstractController
         try {
             $license = $this->entityManager->getRepository(License::class)->find($id);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the license is not found
         if (!$license) {
-            Request::handleErrorAndQuit(new Exception('License not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('License not found'));
         }
 
         // set the response
@@ -132,7 +132,7 @@ class LicenseController extends AbstractController
 
         // check if the data is valid
         if (!$this->validatePutData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
+            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
         // get the user data from the request body
@@ -146,12 +146,12 @@ class LicenseController extends AbstractController
         try {
             $license = $this->entityManager->getRepository(License::class)->find($id);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the license is not found
         if (!$license) {
-            Request::handleErrorAndQuit(new Exception('License not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('License not found'));
         }
 
         // update the license
@@ -165,7 +165,7 @@ class LicenseController extends AbstractController
         try {
             $this->entityManager->persist($license);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // flush the entity manager
@@ -173,10 +173,7 @@ class LicenseController extends AbstractController
             $this->entityManager->flush();
         } catch (Exception $e) {
             $error = $e->getMessage();
-            if (str_contains($error, 'constraint violation')) {
-                Request::handleErrorAndQuit(new Exception('License already exists'), 409);
-            }
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // set the response
@@ -190,26 +187,26 @@ class LicenseController extends AbstractController
         try {
             $license = $this->entityManager->getRepository(License::class)->find($id);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // if the license is not found
         if (!$license) {
-            Request::handleErrorAndQuit(new Exception('License not found'), 404);
+            Request::handleErrorAndQuit(404, new Exception('License not found'));
         }
 
         // remove the license
         try {
             $this->entityManager->remove($license);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // flush the entity manager
         try {
             $this->entityManager->flush();
         } catch (Exception $e) {
-            Request::handleErrorAndQuit($e, 500);
+            Request::handleErrorAndQuit(500, $e);
         }
 
         // handle the response
