@@ -21,26 +21,25 @@ class UserController implements ControllerInterface
         $this->entityManager = $entityManager;
     }
 
-    public function validateData(mixed $data, bool $isPostRequest = true): bool
+    public function validatePostData(mixed $data): bool
     {
-        if ($isPostRequest) {
-            foreach (self::DATA as $key) {
-                if (!isset($data[$key])) {
-                    return false;
-                }
+        foreach (self::DATA as $key) {
+            if (!isset($data[$key])) {
+                return false;
             }
-            return true;
-        } else {
-            foreach (self::DATA as $key) {
-                if (isset($data[$key])) {
-                    return true;
-                }
-            }
-            return false;
         }
+        return true;
     }
 
-
+    public function validatePutData(mixed $data): bool
+    {
+        foreach (self::DATA as $key) {
+            if (isset($data[$key])) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public function addUser(): void
     {
@@ -64,7 +63,7 @@ class UserController implements ControllerInterface
         $requestBody = json_decode($requestBody, true);
 
         // validate the data
-        $dataIsValid = $this->validateData($requestBody);
+        $dataIsValid = $this->validatePostData($requestBody);
 
         // if the data is not valid
         if (!$dataIsValid) {
@@ -192,7 +191,7 @@ class UserController implements ControllerInterface
         $requestBody = json_decode($requestBody, true);
 
         // validate the data
-        if (!$this->validateData($requestBody, false)) {
+        if (!$this->validatePutData($requestBody)) {
             Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 

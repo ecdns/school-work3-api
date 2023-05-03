@@ -20,23 +20,24 @@ class CompanyController implements ControllerInterface
         $this->entityManager = $entityManager;
     }
 
-    public function validateData(mixed $data, bool $isPostRequest = true): bool
+    public function validatePostData(mixed $data): bool
     {
-        if ($isPostRequest) {
-            foreach (self::DATA as $value) {
-                if (!isset($data[$value])) {
-                    return false;
-                }
+        foreach (self::DATA as $value) {
+            if (!isset($data[$value])) {
+                return false;
             }
-            return true;
-        } else {
-            foreach (self::DATA as $value) {
-                if (isset($data[$value])) {
-                    return true;
-                }
-            }
-            return false;
         }
+        return true;
+    }
+
+    public function validatePutData(mixed $data): bool
+    {
+        foreach (self::DATA as $value) {
+            if (isset($data[$value])) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -63,7 +64,7 @@ class CompanyController implements ControllerInterface
         $requestBody = json_decode($requestBody, true);
 
         // check if the data is valid
-        if (!$this->validateData($requestBody)) {
+        if (!$this->validatePostData($requestBody)) {
             Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 
@@ -221,7 +222,7 @@ class CompanyController implements ControllerInterface
         $requestBody = json_decode($requestBody, true);
 
         // validate the request body
-        if ($this->validateData($requestBody, false) === false) {
+        if ($this->validatePutData($requestBody) === false) {
             Request::handleErrorAndQuit(new Exception('Invalid data'), 400);
         }
 

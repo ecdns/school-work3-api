@@ -4,5 +4,7 @@ namespace Controller;
 
 interface ControllerInterface
 {
-    public function validateData(mixed $data, bool $isPostRequest = true): bool;
+    public function validatePostData(mixed $data): bool;
+
+    public function validatePutData(mixed $data): bool;
 }
