@@ -11,7 +11,7 @@ class Auth
 {
     public static function hashPassword(string $password): string
     {
-        return password_hash($password, PASSWORD_BCRYPT);
+        return password_hash($password, PASSWORD_DEFAULT);
     }
 
     public static function isValidPassword(string $password, string $hashedPassword): bool

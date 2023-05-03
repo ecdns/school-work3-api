@@ -9,6 +9,7 @@ use Entity\Company;
 use Entity\Role;
 use Entity\User;
 use Exception;
+use Service\Auth;
 use Service\Request;
 
 class UserController extends AbstractController
@@ -52,7 +53,7 @@ class UserController extends AbstractController
         $lastName = $requestBody['lastName'];
         $email = $requestBody['email'];
         $password = $requestBody['password'];
-        $password = password_hash($password, PASSWORD_DEFAULT);
+        $password = Auth::hashPassword($password); // hash the password (see Auth.php)
         $job = $requestBody['job'];
         $phone = $requestBody['phone'];
         $role = $requestBody['role'];
@@ -304,7 +305,7 @@ class UserController extends AbstractController
         }
 
         // if the password is incorrect
-        if (!password_verify($password, $user->getPassword())) {
+        if (!Auth::isValidPassword($password, $user->getPassword())) {
             Request::handleErrorAndQuit(401, new Exception('Incorrect password'));
         }
 
