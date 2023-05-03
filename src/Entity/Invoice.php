@@ -51,27 +51,27 @@ class Invoice implements EntityInterface
     #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Project $project;
 
-    #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'invoices')]
-    #[ORM\JoinColumn(name: 'order_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private Order $order;
+    #[ORM\ManyToOne(targetEntity: SellProcess::class, inversedBy: 'invoices')]
+    #[ORM\JoinColumn(name: 'sell_process_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private SellProcess $sellProcess;
 
     // Products
     #[ORM\OneToMany(mappedBy: 'invoice', targetEntity: Product::class)]
     private ReadableCollection $invoiceProducts;
 
-    public function __construct(string $name, string $description, DateTime $createdAt, EstimateStatus $estimateStatus, Project $project, Order $order)
+    public function __construct(string $name, string $description, DateTime $createdAt, SellProcess $order)
     {
         $this->name = $name;
         $this->description = $description;
-        $this->order = $order;
-        $this->project = $this->order->getProject();
-        $this->customer = $this->project->getCustomer();
-        $this->company = $this->project->getCompany();
-        $this->user = $this->project->getUser();
-        $this->totalExcludingTax = $this->order->getTotalExcludingTax();
-        $this->totalIncludingTax = $this->order->getTotalIncludingTax();
+        $this->sellProcess = $order;
+        $this->project = $this->sellProcess->getProject();
+        $this->customer = $this->sellProcess->getCustomer();
+        $this->company = $this->sellProcess->getCompany();
+        $this->user = $this->sellProcess->getUser();
+        $this->totalExcludingTax = $this->sellProcess->getTotalExcludingTax();
+        $this->totalIncludingTax = $this->sellProcess->getTotalIncludingTax();
         $this->createdAt = $createdAt;
-        $this->invoiceProducts = $this->order->getOrderLines()->map(fn($orderLine) => $orderLine->getProduct());
+        $this->invoiceProducts = $this->sellProcess->getOrderLines()->map(fn($orderLine) => $orderLine->getProduct());
     }
 
     public function getId(): int
@@ -151,14 +151,14 @@ class Invoice implements EntityInterface
         $this->project = $project;
     }
 
-    public function getOrder(): Order
+    public function getSellProcess(): SellProcess
     {
-        return $this->order;
+        return $this->sellProcess;
     }
 
-    public function setOrder(Order $order): void
+    public function setSellProcess(SellProcess $sellProcess): void
     {
-        $this->order = $order;
+        $this->sellProcess = $sellProcess;
     }
 
     public function getInvoiceProducts(): ReadableCollection
@@ -212,7 +212,7 @@ class Invoice implements EntityInterface
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
             'project' => $this->project->toArray(),
-            'order' => $this->order->toArray(),
+            'sellProcess' => $this->sellProcess->toArray(),
             'invoiceProducts' => $this->invoiceProducts->map(fn($invoiceProduct) => $invoiceProduct->toArray())->toArray(),
         ];
     }
@@ -231,7 +231,7 @@ class Invoice implements EntityInterface
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
             'project' => $this->project->toFullArray(),
-            'order' => $this->order->toFullArray(),
+            'sellProcess' => $this->sellProcess->toFullArray(),
             'invoiceProducts' => $this->invoiceProducts->map(fn($invoiceProduct) => $invoiceProduct->toFullArray())->toArray(),
         ];
     }

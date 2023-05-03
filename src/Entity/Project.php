@@ -33,28 +33,34 @@ class Project implements EntityInterface
     #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Company $company;
 
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'projects')]
+    #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private User $creator;
+
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'projects')]
     private Collection $users;
 
-    #[ORM\ManyToMany(targetEntity: Customer::class, inversedBy: 'projects')]
+    #[ORM\ManyToOne(targetEntity: Customer::class, inversedBy: 'projects')]
+    #[ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Customer $customer;
 
     #[ORM\OneToMany(mappedBy: 'project', targetEntity: Task::class)]
     private Collection $tasks;
 
-    #[ORM\OneToMany(mappedBy: 'project', targetEntity: Order::class)]
-    private Collection $orders;
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: SellProcess::class)]
+    private Collection $sellProcesses;
 
     #[ORM\ManyToOne(targetEntity: ProjectStatus::class, inversedBy: 'projects')]
     #[ORM\JoinColumn(name: 'project_status', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private ProjectStatus $projectStatus;
 
-    public function __construct(string $title, string $description, Company $company, DateTime $createdAt, Customer $customer, ProjectStatus $projectStatus)
+    public function __construct(string $title, string $description, Company $company, User $creator ,DateTime $createdAt, Customer $customer, ProjectStatus $projectStatus)
     {
         $this->title = $title;
         $this->description = $description;
         $this->createdAt = $createdAt;
         $this->company = $company;
+        $this->creator = $creator;
         $this->customer = $customer;
         $this->projectStatus = $projectStatus;
     }
@@ -116,6 +122,16 @@ class Project implements EntityInterface
         $this->company = $company;
     }
 
+    public function getCreator(): User
+    {
+        return $this->creator;
+    }
+
+    public function setCreator(User $creator): void
+    {
+        $this->creator = $creator;
+    }
+
     public function getUsers(): Collection
     {
         return $this->users;
@@ -146,14 +162,14 @@ class Project implements EntityInterface
         $this->tasks = $tasks;
     }
 
-    public function getOrders(): Collection
+    public function getSellProcesses(): Collection
     {
-        return $this->orders;
+        return $this->sellProcesses;
     }
 
-    public function setOrders(Collection $orders): void
+    public function setSellProcesses(Collection $sellProcesses): void
     {
-        $this->orders = $orders;
+        $this->sellProcesses = $sellProcesses;
     }
 
     public function getProjectStatus(): ProjectStatus
@@ -176,14 +192,14 @@ class Project implements EntityInterface
         $this->tasks->removeElement($task);
     }
 
-    public function addOrder(Order $order): void
+    public function addSell(SellProcess $sell): void
     {
-        $this->orders->add($order);
+        $this->sells->add($sell);
     }
 
-    public function removeOrder(Order $order): void
+    public function removeSell(SellProcess $sell): void
     {
-        $this->orders->removeElement($order);
+        $this->sells->removeElement($sell);
     }
 
     public function addUser(User $user): void
@@ -210,17 +226,17 @@ class Project implements EntityInterface
         }
     }
 
-    public function addOrders(Collection $orders): void
+    public function addSells(Collection $sells): void
     {
-        foreach ($orders as $order) {
-            $this->addOrder($order);
+        foreach ($sells as $sell) {
+            $this->addSell($sell);
         }
     }
 
-    public function removeOrders(Collection $orders): void
+    public function removeSells(Collection $sells): void
     {
-        foreach ($orders as $order) {
-            $this->removeOrder($order);
+        foreach ($sells as $sell) {
+            $this->removeSell($sell);
         }
     }
 
@@ -259,10 +275,11 @@ class Project implements EntityInterface
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
             'company' => $this->company->toArray(),
+            'creator' => $this->creator->toArray(),
             'users' => $this->users->map(fn (User $user) => $user->toArray())->toArray(),
             'customer' => $this->customer->toArray(),
             'tasks' => $this->tasks->map(fn (Task $task) => $task->toArray())->toArray(),
-            'orders' => $this->orders->map(fn (Order $order) => $order->toArray())->toArray(),
+            'sellProcesses' => $this->sellProcesses->map(fn (SellProcess $sell) => $sell->toArray())->toArray(),
             'projectStatus' => $this->projectStatus->toArray(),
         ];
     }

@@ -7,9 +7,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-#[ORM\Table(name: 'order')]
+#[ORM\Table(name: 'sell_process')]
 #[ORM\HasLifecycleCallbacks]
-class Order implements EntityInterface
+class SellProcess implements EntityInterface
 {
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
@@ -22,15 +22,15 @@ class Order implements EntityInterface
     #[ORM\Column(type: 'string')]
     private string $description;
 
-    #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'orders')]
+    #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'sell_processes')]
     #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Company $company;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'orders')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'sell_processes')]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private User $user;
 
-    #[ORM\ManyToOne(targetEntity: Customer::class, inversedBy: 'orders')]
+    #[ORM\ManyToOne(targetEntity: Customer::class, inversedBy: 'sell_processes')]
     #[ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id',onDelete: 'CASCADE')]
     private Customer $customer;
 
@@ -46,35 +46,36 @@ class Order implements EntityInterface
     #[ORM\Column(type: 'datetime', nullable: true)]
     private DateTime|null $updatedAt = null;
 
-    #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'orders')]
+    #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'sell_processes')]
     #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Project $project;
 
-    #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderLine::class)]
+    #[ORM\OneToMany(mappedBy: 'sell_process', targetEntity: OrderLine::class)]
     private Collection $orderLines;
 
-    #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderPayment::class)]
+    #[ORM\OneToMany(mappedBy: 'sell_process', targetEntity: OrderPayment::class)]
     private Collection $orderPayments;
 
-    #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderStatus::class)]
-    private Collection $orderStatuses;
+    #[ORM\ManyToOne(targetEntity: SellProcessStatus::class, inversedBy: 'sell_processes')]
+    #[ORM\JoinColumn(name: 'sell_process_status_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private SellProcessStatus $sellProcessStatus;
 
-    #[ORM\OneToMany(mappedBy: 'order', targetEntity: Estimate::class)]
+    #[ORM\OneToMany(mappedBy: 'sell_process', targetEntity: Estimate::class)]
     private Collection $estimates;
 
-    #[ORM\OneToMany(mappedBy: 'order', targetEntity: Invoice::class)]
+    #[ORM\OneToMany(mappedBy: 'sell_process', targetEntity: Invoice::class)]
     private Collection $invoices;
 
-    #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderForm::class)]
+    #[ORM\OneToMany(mappedBy: 'sell_process', targetEntity: OrderForm::class)]
     private Collection $orderForms;
 
-    public function __construct(string $name, string $description, DateTime $createdAt, Project $project)
+    public function __construct(string $name, string $description, User $user, DateTime $createdAt, Project $project)
     {
         $this->name = $name;
         $this->description = $description;
         $this->project = $project;
         $this->company = $project->getCompany();
-        $this->user = $project->getUser();
+        $this->user = $user;
         $this->customer = $project->getCustomer();
         $this->totalExcludingTax = $this->calculateTotalExcludingTax();
         $this->totalIncludingTax = $this->calculateTotalIncludingTax();
@@ -241,14 +242,14 @@ class Order implements EntityInterface
         $this->orderPayments = $orderPayments;
     }
 
-    public function getOrderStatuses(): Collection
+    public function getSellProcessStatus(): SellProcessStatus
     {
-        return $this->orderStatuses;
+        return $this->sellProcessStatus;
     }
 
-    public function setOrderStatuses(Collection $orderStatuses): void
+    public function setSellProcessStatus(SellProcessStatus $sellProcessStatus): void
     {
-        $this->orderStatuses = $orderStatuses;
+        $this->sellProcessStatus = $sellProcessStatus;
     }
 
     public function getEstimates(): Collection
@@ -331,7 +332,7 @@ class Order implements EntityInterface
             'project' => $this->project->toArray(),
             'orderLines' => $this->orderLines->map(fn (OrderLine $orderLine) => $orderLine->toArray())->toArray(),
             'orderPayments' => $this->orderPayments->map(fn (OrderPayment $orderPayment) => $orderPayment->toArray())->toArray(),
-            'orderStatuses' => $this->orderStatuses->map(fn (OrderStatus $orderStatus) => $orderStatus->toArray())->toArray(),
+            'sellProcessStatus' => $this->sellProcessStatus->toArray(),
             'estimates' => $this->estimates->map(fn (Estimate $estimate) => $estimate->toArray())->toArray(),
             'invoices' => $this->invoices->map(fn (Invoice $invoice) => $invoice->toArray())->toArray(),
             'orderForms' => $this->orderForms->map(fn (OrderForm $orderForm) => $orderForm->toArray())->toArray(),

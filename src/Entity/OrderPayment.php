@@ -26,14 +26,14 @@ class OrderPayment implements EntityInterface
     #[ORM\Column(type: 'datetime', nullable: true)]
     private DateTime|null $updatedAt = null;
 
-    #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'orderPayments')]
-    #[ORM\JoinColumn(name: 'order_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private Order $order;
+    #[ORM\ManyToOne(targetEntity: SellProcess::class, inversedBy: 'orderPayments')]
+    #[ORM\JoinColumn(name: 'sell_process_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private SellProcess $sellProcess;
 
-    public function __construct(float $amount, Order $order)
+    public function __construct(SellProcess $sellProcess)
     {
-        $this->order = $order;
         $this->amount = $this->getAmount();
+        $this->sellProcess = $sellProcess;
     }
 
     public function getId(): int
@@ -43,7 +43,7 @@ class OrderPayment implements EntityInterface
 
     public function getAmount(): float
     {
-        return $this->order->getTotalIncludingTax();
+        return $this->sellProcess->getTotalIncludingTax();
     }
 
     public function getCreatedAt(): DateTime
@@ -56,9 +56,14 @@ class OrderPayment implements EntityInterface
         return $this->updatedAt;
     }
 
-    public function getOrder(): Order
+    public function getSellProcess(): SellProcess
     {
-        return $this->order;
+        return $this->sellProcess;
+    }
+
+    public function setAmount(float $amount): void
+    {
+        $this->amount = $amount;
     }
     #[ORM\PrePersist]
     public function setCreatedAt(): void
@@ -84,7 +89,7 @@ class OrderPayment implements EntityInterface
             'amount' => $this->amount,
             'createdAt' => $this->createdAt,
             'updatedAt' => $this->updatedAt,
-            'order' => $this->order,
+            'sellProcess' => $this->sellProcess,
         ];
     }
 

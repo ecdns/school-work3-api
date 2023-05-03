@@ -30,6 +30,7 @@ class User implements EntityInterface
     private string $password;
 
     #[ORM\ManyToOne(targetEntity: Role::class, inversedBy: 'users')]
+    #[ORM\JoinColumn(name: 'role_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
     private Role $role;
 
     #[ORM\Column(type: 'string')]
@@ -55,8 +56,8 @@ class User implements EntityInterface
     #[ORM\OneToOne(mappedBy: 'user', targetEntity: UserSettings::class, cascade: ['persist', 'remove'])]
     private UserSettings|null $userSettings;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Order::class)]
-    private Collection $orders;
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: SellProcess::class)]
+    private Collection $sellProcesses;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Customer::class)]
     private Collection $customers;
@@ -227,14 +228,14 @@ class User implements EntityInterface
         $this->userSettings = $userSettings;
     }
 
-    public function getOrders(): Collection
+    public function getSellProcesses(): Collection
     {
-        return $this->orders;
+        return $this->sellProcesses;
     }
 
-    public function setOrders(Collection $orders): void
+    public function setSellProcesses(Collection $sellProcesses): void
     {
-        $this->orders = $orders;
+        $this->sellProcesses = $sellProcesses;
     }
 
     public function getCustomers(): Collection
@@ -352,7 +353,7 @@ class User implements EntityInterface
             'passwordConfirmedAt' => $this->getPasswordConfirmedAt()?->format('Y-m-d H:i:s'),
             'isEnabled' => $this->getIsEnabled(),
             'userSettings' => $this->getUserSettings()->toArray(),
-            'orders' => $this->getOrders()->map(fn(Order $order) => $order->toArray())->toArray(),
+            'sellProcesses' => $this->getSellProcesses()->map(fn(SellProcess $sellProcess) => $sellProcess->toArray())->toArray(),
             'customers' => $this->getCustomers()->map(fn(Customer $customer) => $customer->toArray())->toArray(),
             'tasks' => $this->getTasks()->map(fn(Task $task) => $task->toArray())->toArray(),
             'projects' => $this->getProjects()->map(fn(Project $project) => $project->toArray())->toArray(),

@@ -7,9 +7,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-#[ORM\Table(name: 'order_status')]
+#[ORM\Table(name: 'sell_process_status')]
 #[ORM\HasLifecycleCallbacks]
-class OrderStatus implements EntityInterface
+class SellProcessStatus implements EntityInterface
 {
 
     #[ORM\Id]
@@ -26,8 +26,8 @@ class OrderStatus implements EntityInterface
     #[ORM\Column(type: 'datetime', nullable: true)]
     private DateTime|null $updatedAt = null;
 
-    #[ORM\OneToMany(mappedBy: 'orderStatus', targetEntity: Order::class)]
-    private Collection $orders;
+    #[ORM\OneToMany(mappedBy: 'sell_process_status', targetEntity: SellProcess::class)]
+    private Collection $sellProcesses;
 
     public function __construct(string $name)
     {
@@ -66,14 +66,14 @@ class OrderStatus implements EntityInterface
         $this->updatedAt = new DateTime();
     }
 
-    public function getOrders(): Collection
+    public function getSellProcesses(): Collection
     {
-        return $this->orders;
+        return $this->sellProcesses;
     }
 
-    public function setOrders(Collection $orders): void
+    public function setSellProcesses(Collection $sellProcesses): void
     {
-        $this->orders = $orders;
+        $this->sellProcesses = $sellProcesses;
     }
 
     public function __toString(): string
@@ -98,7 +98,7 @@ class OrderStatus implements EntityInterface
             'name' => $this->name,
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
-            'orders' => $this->orders->map(fn (Order $order) => $order->toArray())->toArray(),
+            'sellProcesses' => $this->sellProcesses->map(fn(SellProcess $sellProcess) => $sellProcess->toArray())->toArray(),
         ];
     }
 

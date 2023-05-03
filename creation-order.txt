@@ -1,0 +1,54 @@
+# PRE-DEFINED MODELS
+
+  - role
+  - vat
+  - product_family
+  - quantity_unit
+  - customer_status
+  - project_status
+  - estimate_status
+  - contract_type
+  - license
+  - sell_process_status
+  - task_status
+
+# CREATION ORDER OF MODELS
+
+  company -----> company_settings
+     |
+     v
+    user ---> user_settings
+     |
+     v
+  supplier
+     |
+     v
+  product
+     |
+     v
+  customer
+     |
+     v
+  project ---> project_user ---> task_user
+     |                ^           ^
+     |                |           |
+     v                |           |
+project_customer   message       task
+     |
+     v
+  sell_process
+     |
+     v
+  estimate
+     |
+     v
+  order_line <--- order_payment
+     |
+     v
+  contract
+     |
+     v
+  invoice
+
+
+

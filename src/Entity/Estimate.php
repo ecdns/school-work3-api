@@ -59,27 +59,27 @@ class Estimate implements EntityInterface
     #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Project $project;
 
-    #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'estimates')]
-    #[ORM\JoinColumn(name: 'order_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private Order $order;
+    #[ORM\ManyToOne(targetEntity: SellProcess::class, inversedBy: 'estimates')]
+    #[ORM\JoinColumn(name: 'sell_process_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private SellProcess $sellProcess;
 
     #[ORM\OneToMany(mappedBy: 'estimate', targetEntity: Product::class)]
     private ReadableCollection $estimateProducts;
 
-    public function __construct(string $name, string $description, DateTime $createdAt, EstimateStatus $estimateStatus, Order $order)
+    public function __construct(string $name, string $description, DateTime $createdAt, EstimateStatus $estimateStatus, SellProcess $sellProcess)
     {
         $this->name = $name;
         $this->description = $description;
-        $this->order = $order;
-        $this->project = $this->order->getProject();
-        $this->company = $this->project->getCompany();
-        $this->user = $this->project->getUser();
-        $this->customer = $this->project->getCustomer();
-        $this->totalExcludingTax = $this->order->getTotalExcludingTax();
-        $this->totalIncludingTax = $this->order->getTotalIncludingTax();
+        $this->sellProcess = $sellProcess;
+        $this->project = $this->sellProcess->getProject();
+        $this->company = $this->sellProcess->getCompany();
+        $this->user = $this->sellProcess->getUser();
+        $this->customer = $this->sellProcess->getCustomer();
+        $this->totalExcludingTax = $this->sellProcess->getTotalExcludingTax();
+        $this->totalIncludingTax = $this->sellProcess->getTotalIncludingTax();
         $this->createdAt = $createdAt;
         $this->estimateStatus = $estimateStatus;
-        $this->estimateProducts = $this->order->getOrderLines()->map(fn($orderLine) => $orderLine->getProduct());
+        $this->estimateProducts = $this->sellProcess->getOrderLines()->map(fn($orderLine) => $orderLine->getProduct());
     }
 
     public function getId(): int
@@ -209,14 +209,14 @@ class Estimate implements EntityInterface
         $this->project = $project;
     }
 
-    public function getOrder(): Order
+    public function getSellProcess(): SellProcess
     {
-        return $this->order;
+        return $this->sellProcess;
     }
 
-    public function setOrder(Order $order): void
+    public function setSellProcess(SellProcess $sellProcess): void
     {
-        $this->order = $order;
+        $this->sellProcess = $sellProcess;
     }
 
     public function getEstimateProducts(): ReadableCollection
@@ -250,7 +250,7 @@ class Estimate implements EntityInterface
             'expiredAt' => $this->expiredAt?->format('Y-m-d H:i:s'),
             'estimateStatus' => $this->estimateStatus->toArray(),
             'project' => $this->project->toArray(),
-            'order' => $this->order->toArray(),
+            'sellProcess' => $this->sellProcess->toArray(),
             'estimateProducts' => $this->estimateProducts->map(fn($estimateProduct) => $estimateProduct->toArray())->toArray(),
         ];
     }

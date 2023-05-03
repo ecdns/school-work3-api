@@ -27,9 +27,9 @@ class OrderLine implements EntityInterface
     private float $totalExcludingTax;
 
     // order
-    #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'orderLines')]
-    #[ORM\JoinColumn(name: 'order_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private Order $order;
+    #[ORM\ManyToOne(targetEntity: SellProcess::class, inversedBy: 'orderLines')]
+    #[ORM\JoinColumn(name: 'sell_process_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private SellProcess $sellProcess;
 
     // product
     #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'orderLines')]
@@ -42,10 +42,10 @@ class OrderLine implements EntityInterface
     #[ORM\Column(type: 'datetime', nullable: true)]
     private DateTime|null $updatedAt = null;
 
-    public function __construct(int $quantity, Order $order, Product $product)
+    public function __construct(int $quantity, SellProcess $sellProcess, Product $product)
     {
         $this->quantity = $quantity;
-        $this->order = $order;
+        $this->sellProcess = $sellProcess;
         $this->product = $product;
         $this->totalIncludingTax = $this->getTotalIncludingTax();
         $this->totalExcludingTax = $this->getTotalExcludingTax();
@@ -111,9 +111,9 @@ class OrderLine implements EntityInterface
         $this->updatedAt = new DateTime();
     }
 
-    public function getOrder(): Order
+    public function getSellProcess(): SellProcess
     {
-        return $this->order;
+        return $this->sellProcess;
     }
 
     public function getProduct(): Product
@@ -121,9 +121,9 @@ class OrderLine implements EntityInterface
         return $this->product;
     }
 
-    public function setOrder(Order $order): void
+    public function setSellProcess(SellProcess $sellProcess): void
     {
-        $this->order = $order;
+        $this->sellProcess = $sellProcess;
     }
 
     public function setProduct(Product $product): void
@@ -155,7 +155,7 @@ class OrderLine implements EntityInterface
             'totalExcludingTax' => $this->totalExcludingTax,
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
-            'order' => $this->order->toArray(),
+            'sellProcess' => $this->sellProcess->toArray(),
             'product' => $this->product->toArray(),
         ];
     }
@@ -169,7 +169,7 @@ class OrderLine implements EntityInterface
             'totalExcludingTax' => $this->totalExcludingTax,
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
-            'order' => $this->order->toFullArray(),
+            'order' => $this->sellProcess->toFullArray(),
             'product' => $this->product->toFullArray(),
         ];
     }

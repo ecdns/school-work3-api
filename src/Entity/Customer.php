@@ -64,6 +64,9 @@ class Customer implements EntityInterface
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Message::class)]
     private Collection $messages;
 
+    #[ORM\OneToMany(mappedBy: 'customer', targetEntity: SellProcess::class)]
+    private Collection $sellProcesses;
+
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Estimate::class)]
     private Collection $estimates;
 
@@ -76,7 +79,7 @@ class Customer implements EntityInterface
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Contract::class)]
     private Collection $contracts;
 
-    #[ORM\ManyToMany(targetEntity: Project::class, mappedBy: 'customers')]
+    #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Project::class)]
     private Collection $projects;
 
     public function __construct(string $firstName, string $lastName, string $email, string $address, string $city, string $country, string $zipCode, string $phone, string $customerCompanyName, Company $company, User $user, CustomerStatus $status)
@@ -302,6 +305,16 @@ class Customer implements EntityInterface
         $this->projects = $projects;
     }
 
+    public function getSellProcesses(): Collection
+    {
+        return $this->sellProcesses;
+    }
+
+    public function setSellProcesses(Collection $sellProcesses): void
+    {
+        $this->sellProcesses = $sellProcesses;
+    }
+
     public function __toString(): string
     {
         return $this->getFirstName() . ' ' . $this->getLastName();
@@ -326,6 +339,7 @@ class Customer implements EntityInterface
             'user' => $this->getUser(),
             'status' => $this->getStatus(),
             'messages' => $this->getMessages(),
+            'sellProcesses' => $this->getSellProcesses(),
             'estimates' => $this->getEstimates(),
             'invoices' => $this->getInvoices(),
             'orderForms' => $this->getOrderForms(),

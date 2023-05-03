@@ -42,6 +42,7 @@ class Company implements EntityInterface
     private string $logoPath;
 
     #[ORM\ManyToOne(targetEntity: License::class, inversedBy: 'companies')]
+    #[ORM\JoinColumn(name: 'license_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
     private License $license;
 
     #[ORM\Column(type: 'datetime')]
@@ -70,6 +71,9 @@ class Company implements EntityInterface
 
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Product::class)]
     private Collection $products;
+
+    #[ORM\OneToMany(mappedBy: 'company', targetEntity: SellProcess::class)]
+    private Collection $sellProcesses;
 
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: OrderForm::class)]
     private Collection $orderForms;
@@ -401,6 +405,19 @@ class Company implements EntityInterface
         $this->projects = $projects;
     }
 
+    public function getSellProcesses(): array
+    {
+        $sellProcesses = [];
+        foreach ($this->sellProcesses as $sellProcess) {
+            $sellProcesses[] = $sellProcess->getName();
+        }
+        return $sellProcesses;
+    }
+
+    public function setSellProcesses(Collection $sellProcesses): void
+    {
+        $this->sellProcesses = $sellProcesses;
+    }
 
 
     public function toArray(): array
@@ -446,6 +463,7 @@ class Company implements EntityInterface
             'customers' => $this->getCustomers(),
             'suppliers' => $this->getSuppliers(),
             'products' => $this->getProducts(),
+            'sellProcesses' => $this->getSellProcesses(),
             'orderForms' => $this->getOrderForms(),
             'invoices' => $this->getInvoices(),
             'estimates' => $this->getEstimates(),
