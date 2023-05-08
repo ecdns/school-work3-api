@@ -3,6 +3,5 @@
 vendor
 composer.lock
 .env
-.htaccess
 TestDoctrine
 sandbox
