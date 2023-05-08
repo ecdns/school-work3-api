@@ -7,9 +7,13 @@ namespace Router;
 use Controller\CompanyController;
 use Controller\CompanySettingsController;
 use Controller\LicenseController;
+use Controller\QuantityUnitController;
 use Controller\RoleController;
 use Controller\UserController;
 use Controller\UserSettingsController;
+use Controller\VatController;
+use Entity\QuantityUnit;
+use Entity\Vat;
 use Service\Request;
 use Doctrine\ORM\EntityManager;
 use Exception;
@@ -73,6 +77,20 @@ class Router
             $r->addRoute('GET', '/role/{id:\d+}', 'getRoleById');
             $r->addRoute('PUT', '/role/{id:\d+}', 'updateRole');
             $r->addRoute('DELETE', '/role/{id:\d+}', 'deleteRole');
+
+            // vat routes
+            $r->addRoute('POST', '/vat', 'addVat');
+            $r->addRoute('GET', '/vat', 'getVats');
+            $r->addRoute('GET', '/vat/{id:\d+}', 'getVatById');
+            $r->addRoute('PUT', '/vat/{id:\d+}', 'updateVat');
+            $r->addRoute('DELETE', '/vat/{id:\d+}', 'deleteVat');
+
+            // quantityUnit routes
+            $r->addRoute('POST', '/quantityUnit', 'addQuantityUnit');
+            $r->addRoute('GET', '/quantityUnit', 'getQuantityUnits');
+            $r->addRoute('GET', '/quantityUnit/{id:\d+}', 'getQuantityUnitById');
+            $r->addRoute('PUT', '/quantityUnit/{id:\d+}', 'updateQuantityUnit');
+            $r->addRoute('DELETE', '/quantityUnit/{id:\d+}', 'deleteQuantityUnit');
         });
     }
 
@@ -100,8 +118,12 @@ class Router
                 return new CompanySettingsController($entityManager);
             case "/user-settings":
                 return new UserSettingsController($entityManager);
+            case "/vat":
+                return new VatController($entityManager);
+            case "/quantityUnit":
+                return new QuantityUnitController($entityManager);
             default:
-                Request::handleErrorAndQuit(404, new Exception('Not found'));
+                return Request::handleErrorAndQuit(404, new Exception('Not found'));
         }
 
     }

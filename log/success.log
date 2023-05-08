@@ -1,0 +1,19 @@
+2023-05-08 21:42:40 - /role - POST - PostmanRuntime/7.32.2 - 172.20.0.1 - Role created
+2023-05-08 21:45:37 - /license - POST - PostmanRuntime/7.32.2 - 172.20.0.1 - License created
+2023-05-08 21:47:15 - /company - POST - PostmanRuntime/7.32.2 - 172.20.0.1 - Company created
+2023-05-08 21:47:25 - /user - POST - PostmanRuntime/7.32.2 - 172.20.0.1 - User created
+2023-05-08 21:47:49 - /company-settings - POST - PostmanRuntime/7.32.2 - 172.20.0.1 - Company settings created
+2023-05-08 21:48:06 - /user-settings - POST - PostmanRuntime/7.32.2 - 172.20.0.1 - User settings created successfully
+2023-05-08 21:48:25 - /user/1 - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - User found
+2023-05-08 23:20:19 - /vat - GET - Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 - 172.20.0.1 - Vats found
+2023-05-08 23:29:56 - /vat - POST - PostmanRuntime/7.32.2 - 172.20.0.1 - Vat created
+2023-05-08 23:30:10 - /vat - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - Vats found
+2023-05-08 23:30:26 - /vat/1 - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - Vat found
+2023-05-09 00:06:53 - /quantityUnit - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - QuantityUnit found
+2023-05-09 00:31:53 - /quantityUnit - POST - PostmanRuntime/7.32.2 - 172.20.0.1 - QuantityUnit created
+2023-05-09 00:32:11 - /quantityUnit - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - QuantityUnit found
+2023-05-09 00:34:48 - /quantityUnit/1 - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - QuantityUnit found
+2023-05-09 00:46:26 - /quantityUnit/1 - PUT - PostmanRuntime/7.32.2 - 172.20.0.1 - QuantityUnit updated
+2023-05-09 00:46:48 - /quantityUnit - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - QuantityUnit found
+2023-05-09 00:48:21 - /quantityUnit/1 - PUT - PostmanRuntime/7.32.2 - 172.20.0.1 - QuantityUnit updated
+2023-05-09 00:48:34 - /quantityUnit - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - QuantityUnit found
