@@ -20,10 +20,10 @@ class ProductController extends AbstractController
     private EntityManager $entityManager;
     private const REQUIRED_FIELDS = ['name', 'description', 'buyPrice', 'sellPrice', 'quantity', 'discount', 'isDiscount', 'productFamily', 'vat', 'company', 'quantityUnit', 'supplier'];
 
-        public function __construct(EntityManager $entityManager)
-        {
-            $this->entityManager = $entityManager;
-        }
+    public function __construct(EntityManager $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
 
     public function addProduct(): void
     {
@@ -31,20 +31,20 @@ class ProductController extends AbstractController
         $requestBody = file_get_contents('php://input');
 
         // it will look like this:
-        // {
-        //     "name": "Jambon",
-        //     "description": "Jambon de Paris",
-        //     "buyPrice": 10,
-        //     "sellPrice": 15,
-        //     "quantity": 10,
-        //     "discount": 0,
-        //     "isDiscount": false,
-        //     "productFamily": 1,
-        //     "vat": 1,
-        //     "company": 1,
-        //     "quantityUnit": 1,
-        //     "supplier": 1
-        // }
+//         {
+//             "name": "Jambon",
+//             "description": "Jambon de Paris",
+//             "buyPrice": 10,
+//             "sellPrice": 15,
+//             "quantity": 10,
+//             "discount": 0,
+//             "isDiscount": false,
+//             "productFamily": 1,
+//             "vat": 1,
+//             "company": 1,
+//             "quantityUnit": 1,
+//             "supplier": 1
+//         }
 
 
         // decode the json
@@ -71,8 +71,39 @@ class ProductController extends AbstractController
         $supplier = $requestBody['supplier'];
 
 
+        try {
+            $productFamilyObject = $this->entityManager->getRepository(ProductFamily::class)->findOneBy(['id' => $productFamily]);
+        } catch (Exception $e) {
+            Request::handleErrorAndQuit(500, $e);
+        }
+
+        try {
+            $vatObject = $this->entityManager->getRepository(Vat::class)->findOneBy(['id' => $vat]);
+        } catch (Exception $e) {
+            Request::handleErrorAndQuit(500, $e);
+        }
+
+        try {
+            $companyObject = $this->entityManager->getRepository(Company::class)->findOneBy(['id' => $company]);
+        } catch (Exception $e) {
+            Request::handleErrorAndQuit(500, $e);
+        }
+
+        try {
+            $quantityUnitObject = $this->entityManager->getRepository(QuantityUnit::class)->findOneBy(['id' => $quantityUnit]);
+        } catch (Exception $e) {
+            Request::handleErrorAndQuit(500, $e);
+        }
+
+        try {
+            $supplierObject = $this->entityManager->getRepository(Supplier::class)->findOneBy(['id' => $supplier]);
+        } catch (Exception $e) {
+            Request::handleErrorAndQuit(500, $e);
+        }
+
+
         // create a new product
-        $product = new Product($name, $description, $buyPrice, $sellPrice, $quantity, $discount, $isDiscount, $productFamily, $vat, $company, $quantityUnit, $supplier);
+        $product = new Product($name, $description, $buyPrice, $sellPrice, $quantity, $discount, $isDiscount, $productFamilyObject, $vatObject, $companyObject, $quantityUnitObject, $supplierObject);
 
         // persist the role
         try {
@@ -96,7 +127,27 @@ class ProductController extends AbstractController
         Request::handleSuccessAndQuit(201, 'Product created');
     }
 
-    public function getProductByCompany(int $id): void
+    public function getProducts(): void
+    {
+        // get all roles
+        try {
+            //get all products by company
+            $products = $this->entityManager->getRepository(Product::class)->findAll();
+        } catch (Exception $e) {
+            Request::handleErrorAndQuit(500, $e);
+        }
+
+        // set the response
+        $response = [];
+        foreach ($products as $product) {
+            $response[] = $product->toArray();
+        }
+
+        // handle the response
+        Request::handleSuccessAndQuit(200, 'Products found', $response);
+    }
+
+    public function getProductsByCompany(int $id): void
     {
         // get all roles
         try {
@@ -178,8 +229,6 @@ class ProductController extends AbstractController
         //     "supplier": 1
         // }
 
-        // decode the json
-        $requestBody = json_decode($requestBody, true);
 
         // get the product data from the request body
         $name = $requestBody['name'];
@@ -195,6 +244,19 @@ class ProductController extends AbstractController
         $quantityUnit = $requestBody['quantityUnit'];
         $supplier = $requestBody['supplier'];
 
+        try {
+            $productFamilyObject = $this->entityManager->getRepository(ProductFamily::class)->findOneBy(['id' => $productFamily]);
+
+            $vatObject = $this->entityManager->getRepository(Vat::class)->findOneBy(['id' => $vat]);
+
+            $companyObject = $this->entityManager->getRepository(Company::class)->findOneBy(['id' => $company]);
+
+            $quantityUnitObject = $this->entityManager->getRepository(QuantityUnit::class)->findOneBy(['id' => $quantityUnit]);
+
+            $supplierObject = $this->entityManager->getRepository(Supplier::class)->findOneBy(['id' => $supplier]);
+        } catch (Exception $e) {
+            Request::handleErrorAndQuit(500, $e);
+        }
 
 
         // update the product
@@ -205,11 +267,11 @@ class ProductController extends AbstractController
         $product->setQuantity($quantity ?? $product->getQuantity());
         $product->setDiscount($discount ?? $product->getDiscount());
         $product->setIsDiscount($isDiscount ?? $product->getIsDiscount());
-        $product->setProductFamily($productFamily ?? $product->getProductFamily());
-        $product->setVat($vat ?? $product->getVat());
-        $product->setCompany($company ?? $product->getCompany());
-        $product->setQuantityUnit($quantityUnit ?? $product->getQuantityUnit());
-        $product->setSupplier($supplier ?? $product->getSupplier());
+        $product->setProductFamily($productFamilyObject ?? $product->getProductFamily());
+        $product->setVat($vatObject ?? $product->getVat());
+        $product->setCompany($companyObject ?? $product->getCompany());
+        $product->setQuantityUnit($quantityUnitObject ?? $product->getQuantityUnit());
+        $product->setSupplier($supplierObject ?? $product->getSupplier());
 
         // persist the role
         try {

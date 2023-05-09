@@ -7,3 +7,10 @@
 2023-05-09 00:04:40 - /quantityUnits - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - Not found
 2023-05-09 00:04:55 - /quantityUnit - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - Not found
 2023-05-09 00:12:39 - /%20hjb - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - Not found
+2023-05-09 21:12:01 - /favicon.ico - GET - http://localhost:8080/vat - Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 - 172.20.0.1 - Not found
+2023-05-09 21:41:13 - /productFamily - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - Class 'Controller\ProductFamily' does not exist
+2023-05-09 21:54:34 - /productFamily/1 - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - ProductFamily not found
+2023-05-09 21:54:44 - /productFamily/ - POST - PostmanRuntime/7.32.2 - 172.20.0.1 - Not found
+2023-05-09 21:55:13 - /productFamily/1 - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - ProductFamily not found
+2023-05-09 22:51:40 - /supplier/1 - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - Supplier not found
+2023-05-09 23:03:17 - /supplier - POST - PostmanRuntime/7.32.2 - 172.20.0.1 - An exception occurred while executing a query: SQLSTATE[HY000]: General error: 1364 Field 'supplierCompanyName' doesn't have a default value
