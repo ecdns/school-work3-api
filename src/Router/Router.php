@@ -7,9 +7,14 @@ namespace Router;
 use Controller\CompanyController;
 use Controller\CompanySettingsController;
 use Controller\LicenseController;
+use Controller\ProductController;
+use Controller\ProductFamilyController;
+use Controller\QuantityUnitController;
 use Controller\RoleController;
+use Controller\SupplierController;
 use Controller\UserController;
 use Controller\UserSettingsController;
+use Controller\VatController;
 use Service\Request;
 use Doctrine\ORM\EntityManager;
 use Exception;
@@ -73,6 +78,42 @@ class Router
             $r->addRoute('GET', '/role/{id:\d+}', 'getRoleById');
             $r->addRoute('PUT', '/role/{id:\d+}', 'updateRole');
             $r->addRoute('DELETE', '/role/{id:\d+}', 'deleteRole');
+
+            // vat routes
+            $r->addRoute('POST', '/vat', 'addVat');
+            $r->addRoute('GET', '/vat', 'getVats');
+            $r->addRoute('GET', '/vat/{id:\d+}', 'getVatById');
+            $r->addRoute('PUT', '/vat/{id:\d+}', 'updateVat');
+            $r->addRoute('DELETE', '/vat/{id:\d+}', 'deleteVat');
+
+            // quantityUnit routes
+            $r->addRoute('POST', '/quantityUnit', 'addQuantityUnit');
+            $r->addRoute('GET', '/quantityUnit', 'getQuantityUnits');
+            $r->addRoute('GET', '/quantityUnit/{id:\d+}', 'getQuantityUnitById');
+            $r->addRoute('PUT', '/quantityUnit/{id:\d+}', 'updateQuantityUnit');
+            $r->addRoute('DELETE', '/quantityUnit/{id:\d+}', 'deleteQuantityUnit');
+
+            // ProductFamily routes
+            $r->addRoute('POST', '/productFamily', 'addProductFamily');
+            $r->addRoute('GET', '/productFamily', 'getProductFamilies');
+            $r->addRoute('GET', '/productFamily/{id:\d+}', 'getProductFamilyById');
+            $r->addRoute('PUT', '/productFamily/{id:\d+}', 'updateProductFamily');
+            $r->addRoute('DELETE', '/productFamily/{id:\d+}', 'deleteProductFamily');
+
+            // Supplier routes
+            $r->addRoute('POST', '/supplier', 'addSupplier');
+            $r->addRoute('GET', '/supplier', 'getSuppliers');
+            $r->addRoute('GET', '/supplier/{id:\d+}', 'getSupplierById');
+            $r->addRoute('PUT', '/supplier/{id:\d+}', 'updateSupplier');
+            $r->addRoute('DELETE', '/supplier/{id:\d+}', 'deleteSupplier');
+
+            // Supplier routes
+            $r->addRoute('POST', '/product', 'addProduct');
+            $r->addRoute('GET', '/product', 'getProducts');
+            $r->addRoute('GET', '/product/company/{id:\d+}', 'getProductsByCompany');
+            $r->addRoute('GET', '/product/{id:\d+}', 'getProductById');
+            $r->addRoute('PUT', '/product/{id:\d+}', 'updateProduct');
+            $r->addRoute('DELETE', '/product/{id:\d+}', 'deleteProduct');
         });
     }
 
@@ -100,8 +141,18 @@ class Router
                 return new CompanySettingsController($entityManager);
             case "/user-settings":
                 return new UserSettingsController($entityManager);
+            case "/vat":
+                return new VatController($entityManager);
+            case "/quantityUnit":
+                return new QuantityUnitController($entityManager);
+            case "/productFamily":
+                return new ProductFamilyController($entityManager);
+            case "/supplier":
+                return new SupplierController($entityManager);
+            case "/product":
+                return new ProductController($entityManager);
             default:
-                Request::handleErrorAndQuit(404, new Exception('Not found'));
+                return Request::handleErrorAndQuit(404, new Exception('Not found'));
         }
 
     }

@@ -56,11 +56,9 @@ class Supplier implements EntityInterface
     #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Company $company;
 
-    #[ORM\Column(type: 'string')]
-    private string $supplierCompanyName;
 
 
-    public function __construct(string $name, string $firstName, string $lastName, string $email, string $address, string $city, string $country, string $zipCode, string $phone, Company $company, string $supplierCompanyName)
+    public function __construct(string $name, string $firstName, string $lastName, string $email, string $address, string $city, string $country, string $zipCode, string $phone, Company $company)
     {
         $this->name = $name;
         $this->firstName = $firstName;
@@ -72,7 +70,6 @@ class Supplier implements EntityInterface
         $this->zipCode = $zipCode;
         $this->phone = $phone;
         $this->company = $company;
-        $this->supplierCompanyName = $supplierCompanyName;
     }
 
     public function getId(): int
@@ -198,15 +195,6 @@ class Supplier implements EntityInterface
         $this->updatedAt = new DateTime();
     }
 
-    public function getSupplierCompanyName(): string
-    {
-        return $this->supplierCompanyName;
-    }
-
-    public function setSupplierCompanyName(string $supplierCompanyName): void
-    {
-        $this->supplierCompanyName = $supplierCompanyName;
-    }
 
     public function getCompany(): Company
     {
@@ -230,13 +218,13 @@ class Supplier implements EntityInterface
             'name' => $this->name,
             'firstName' => $this->firstName,
             'lastName' => $this->lastName,
-            'company' => $this->supplierCompanyName,
             'email' => $this->email,
             'address' => $this->address,
             'city' => $this->city,
             'country' => $this->country,
             'zipCode' => $this->zipCode,
             'phone' => $this->phone,
+            'company' => $this->company->toArray(),
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
         ];
@@ -249,8 +237,7 @@ class Supplier implements EntityInterface
             'name' => $this->name,
             'firstName' => $this->firstName,
             'lastName' => $this->lastName,
-            'company' => $this->company->getName(),
-            'supplierCompanyName' => $this->supplierCompanyName,
+            'company' => $this->company->toArray(),
             'email' => $this->email,
             'address' => $this->address,
             'city' => $this->city,

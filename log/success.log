@@ -1,0 +1,44 @@
+2023-05-08 21:42:40 - /role - POST - PostmanRuntime/7.32.2 - 172.20.0.1 - Role created
+2023-05-08 21:45:37 - /license - POST - PostmanRuntime/7.32.2 - 172.20.0.1 - License created
+2023-05-08 21:47:15 - /company - POST - PostmanRuntime/7.32.2 - 172.20.0.1 - Company created
+2023-05-08 21:47:25 - /user - POST - PostmanRuntime/7.32.2 - 172.20.0.1 - User created
+2023-05-08 21:47:49 - /company-settings - POST - PostmanRuntime/7.32.2 - 172.20.0.1 - Company settings created
+2023-05-08 21:48:06 - /user-settings - POST - PostmanRuntime/7.32.2 - 172.20.0.1 - User settings created successfully
+2023-05-08 21:48:25 - /user/1 - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - User found
+2023-05-08 23:20:19 - /vat - GET - Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 - 172.20.0.1 - Vats found
+2023-05-08 23:29:56 - /vat - POST - PostmanRuntime/7.32.2 - 172.20.0.1 - Vat created
+2023-05-08 23:30:10 - /vat - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - Vats found
+2023-05-08 23:30:26 - /vat/1 - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - Vat found
+2023-05-09 00:06:53 - /quantityUnit - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - QuantityUnit found
+2023-05-09 00:31:53 - /quantityUnit - POST - PostmanRuntime/7.32.2 - 172.20.0.1 - QuantityUnit created
+2023-05-09 00:32:11 - /quantityUnit - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - QuantityUnit found
+2023-05-09 00:34:48 - /quantityUnit/1 - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - QuantityUnit found
+2023-05-09 00:46:26 - /quantityUnit/1 - PUT - PostmanRuntime/7.32.2 - 172.20.0.1 - QuantityUnit updated
+2023-05-09 00:46:48 - /quantityUnit - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - QuantityUnit found
+2023-05-09 00:48:21 - /quantityUnit/1 - PUT - PostmanRuntime/7.32.2 - 172.20.0.1 - QuantityUnit updated
+2023-05-09 00:48:34 - /quantityUnit - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - QuantityUnit found
+2023-05-09 21:11:59 - /vat - GET - Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 - 172.20.0.1 - Vats found
+2023-05-09 21:44:32 - /productFamily - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - ProductFamily found
+2023-05-09 21:45:42 - /productFamily - POST - PostmanRuntime/7.32.2 - 172.20.0.1 - ProductFamily created
+2023-05-09 21:45:55 - /productFamily - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - ProductFamily found
+2023-05-09 21:46:23 - /productFamily/1 - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - ProductFamily found
+2023-05-09 21:52:51 - /productFamily/1 - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - ProductFamily found
+2023-05-09 21:53:04 - /productFamily/1 - PUT - PostmanRuntime/7.32.2 - 172.20.0.1 - ProductFamily updated
+2023-05-09 21:53:12 - /productFamily/1 - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - ProductFamily found
+2023-05-09 21:54:27 - /productFamily/1 - DELETE - PostmanRuntime/7.32.2 - 172.20.0.1 - ProductFamily deleted
+2023-05-09 21:54:59 - /productFamily - POST - PostmanRuntime/7.32.2 - 172.20.0.1 - ProductFamily created
+2023-05-09 21:55:24 - /productFamily/2 - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - ProductFamily found
+2023-05-09 23:05:42 - /supplier - POST - PostmanRuntime/7.32.2 - 172.20.0.1 - Supplier created
+2023-05-09 23:06:01 - /supplier/1 - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - Supplier found
+2023-05-09 23:08:05 - /supplier - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - Supplier found
+2023-05-09 23:15:10 - /supplier - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - Supplier found
+2023-05-09 23:24:42 - /supplier/1 - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - Supplier found
+2023-05-09 23:25:10 - /supplier/1 - PUT - PostmanRuntime/7.32.2 - 172.20.0.1 - Supplier updated
+2023-05-09 23:25:23 - /supplier/1 - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - Supplier found
+2023-05-09 23:48:09 - /product - POST - PostmanRuntime/7.32.2 - 172.20.0.1 - Product created
+2023-05-09 23:50:32 - /product/1 - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - Product found
+2023-05-09 23:56:17 - /product - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - Products found
+2023-05-09 23:56:33 - /product/company/1 - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - Products found
+2023-05-09 23:58:14 - /product/1 - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - Product found
+2023-05-10 00:07:24 - /product/1 - PUT - PostmanRuntime/7.32.2 - 172.20.0.1 - Product updated
+2023-05-10 00:07:36 - /product/1 - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - Product found

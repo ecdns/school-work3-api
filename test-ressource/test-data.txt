@@ -35,8 +35,8 @@
     "password": "password",
     "job": "ceo",
     "phone": "0123456789",
-    "role": "User",
-    "company": "Apple",
+    "role": "Admin",
+    "company": "Apple"
 }
 
 
