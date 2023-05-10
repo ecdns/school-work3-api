@@ -12,15 +12,13 @@ class QuantityUnitController extends AbstractController
 
     private DAO $dao;
     private Request $request;
+    private const REQUIRED_FIELDS = ['name', 'unit', 'description'];
 
     public function __construct(DAO $dao, Request $request)
     {
         $this->dao = $dao;
         $this->request = $request;
     }
-
-    //function for adding a new quantityUnit
-    const REQUIRED_FIELDS = ['name', 'unit', 'description'];
 
     public function addQuantityUnit(): void
     {
@@ -38,7 +36,7 @@ class QuantityUnitController extends AbstractController
         $requestBody = json_decode($requestBody, true);
 
         // validate the data
-        if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
+        if (!$this->validateData($requestBody, self::REQUIRED_FIELDS)) {
             $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
@@ -124,7 +122,7 @@ class QuantityUnitController extends AbstractController
         $requestBody = json_decode($requestBody, true);
 
         // validate the data
-        if (!$this->validatePutData($requestBody, self::REQUIRED_FIELDS)) {
+        if (!$this->validateDataUpdate($requestBody, self::REQUIRED_FIELDS)) {
             $this->request->handleErrorAndQuit(400, new Exception('QuantityUnit request data'));
         }
 

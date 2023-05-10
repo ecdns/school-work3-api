@@ -39,7 +39,7 @@ class UserSettingsController extends AbstractController
         $requestBody = json_decode($requestBody, true);
 
         // validate the data
-        if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
+        if (!$this->validateData($requestBody, self::REQUIRED_FIELDS)) {
             $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
@@ -118,7 +118,7 @@ class UserSettingsController extends AbstractController
         $requestBody = json_decode($requestBody, true);
 
         // validate the data
-        if (!$this->validatePutData($requestBody, self::REQUIRED_FIELDS)) {
+        if (!$this->validateDataUpdate($requestBody, self::REQUIRED_FIELDS)) {
             $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 

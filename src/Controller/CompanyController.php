@@ -48,7 +48,7 @@ class CompanyController extends AbstractController
         $requestBody = json_decode($requestBody, true);
 
         // check if the data is valid
-        if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
+        if (!$this->validateData($requestBody, self::REQUIRED_FIELDS)) {
             $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
@@ -201,7 +201,7 @@ class CompanyController extends AbstractController
         $requestBody = json_decode($requestBody, true);
 
         // validate the request body
-        if ($this->validatePutData($requestBody, self::REQUIRED_FIELDS) === false) {
+        if ($this->validateDataUpdate($requestBody, self::REQUIRED_FIELDS) === false) {
             $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 

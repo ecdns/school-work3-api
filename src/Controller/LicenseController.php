@@ -40,7 +40,7 @@ class LicenseController extends AbstractController
         $requestBody = json_decode($requestBody, true);
 
         // check if the data is valid
-        if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
+        if (!$this->validateData($requestBody, self::REQUIRED_FIELDS)) {
             $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
@@ -126,7 +126,7 @@ class LicenseController extends AbstractController
         $requestBody = json_decode($requestBody, true);
 
         // check if the data is valid
-        if (!$this->validatePutData($requestBody, self::REQUIRED_FIELDS)) {
+        if (!$this->validateDataUpdate($requestBody, self::REQUIRED_FIELDS)) {
             $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 

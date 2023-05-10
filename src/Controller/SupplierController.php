@@ -17,15 +17,14 @@ class SupplierController extends AbstractController
 
     private DAO $dao;
     private Request $request;
+    private const REQUIRED_FIELDS = ['name', 'firstName', 'lastName', 'email', 'address', 'city', 'country', 'zipCode', 'phone', 'company'];
+
 
     public function __construct(DAO $dao, Request $request)
     {
         $this->dao = $dao;
         $this->request = $request;
     }
-
-    //function for adding a new Supplier
-    const REQUIRED_FIELDS = ['name', 'firstName', 'lastName', 'email', 'address', 'city', 'country', 'zipCode', 'phone', 'company'];
 
     public function addSupplier(): void
     {
@@ -50,7 +49,7 @@ class SupplierController extends AbstractController
         $requestBody = json_decode($requestBody, true);
 
         // validate the data
-        if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
+        if (!$this->validateData($requestBody, self::REQUIRED_FIELDS)) {
             $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
@@ -157,7 +156,7 @@ class SupplierController extends AbstractController
         $requestBody = json_decode($requestBody, true);
 
         // validate the data
-        if (!$this->validatePutData($requestBody, self::REQUIRED_FIELDS)) {
+        if (!$this->validateDataUpdate($requestBody, self::REQUIRED_FIELDS)) {
             $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 

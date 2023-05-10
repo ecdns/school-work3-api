@@ -14,15 +14,13 @@ class VatController extends AbstractController
 
     private DAO $dao;
     private Request $request;
+    private const REQUIRED_FIELDS = ['name', 'rate', 'description'];
 
     public function __construct(DAO $dao, Request $request)
     {
         $this->dao = $dao;
         $this->request = $request;
     }
-
-    //function for adding a new vat
-    const REQUIRED_FIELDS = ['name', 'rate', 'description'];
 
     public function addVat(): void
     {
@@ -40,7 +38,7 @@ class VatController extends AbstractController
         $requestBody = json_decode($requestBody, true);
 
         // validate the data
-        if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
+        if (!$this->validateData($requestBody, self::REQUIRED_FIELDS)) {
             $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
@@ -126,7 +124,7 @@ class VatController extends AbstractController
         $requestBody = json_decode($requestBody, true);
 
         // validate the data
-        if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
+        if (!$this->validateData($requestBody, self::REQUIRED_FIELDS)) {
             $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
