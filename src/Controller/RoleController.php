@@ -7,16 +7,20 @@ namespace Controller;
 use Doctrine\ORM\EntityManager;
 use Entity\Role;
 use Exception;
+use Service\DAO;
 use Service\Request;
 
 class RoleController extends AbstractController
 {
-    private EntityManager $entityManager;
+
+    private DAO $dao;
+    private Request $request;
     private const REQUIRED_FIELDS = ['name', 'description'];
 
-    public function __construct(EntityManager $entityManager)
+    public function __construct(DAO $dao, Request $request)
     {
-        $this->entityManager = $entityManager;
+        $this->dao = $dao;
+        $this->request = $request;
     }
 
     public function addRole(): void
@@ -35,7 +39,7 @@ class RoleController extends AbstractController
 
         // validate the data
         if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
+            $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
         // get the user data from the request body
@@ -45,35 +49,28 @@ class RoleController extends AbstractController
         // create a new role
         $role = new Role($name, $description);
 
-        // persist the role
+        // add the role to the database
         try {
-            $this->entityManager->persist($role);
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
-        // flush the entity manager
-        try {
-            $this->entityManager->flush();
+            $this->dao->addEntity($role);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                Request::handleErrorAndQuit(409, new Exception('Role already exists'));
+                $this->request->handleErrorAndQuit(409, new Exception('Role already exists'));
             }
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(201, 'Role created');
+        $this->request->handleSuccessAndQuit(201, 'Role created');
     }
 
     public function getRoles(): void
     {
         // get all roles
         try {
-            $roles = $this->entityManager->getRepository(Role::class)->findAll();
+            $roles = $this->dao->getAllEntities(Role::class);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // set the response
@@ -83,54 +80,34 @@ class RoleController extends AbstractController
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'Roles found', $response);
+        $this->request->handleSuccessAndQuit(200, 'Roles found', $response);
     }
 
     public function getRoleById(int $id): void
     {
         // get the role by id
         try {
-            $role = $this->entityManager->find(Role::class, $id);
+            $role = $this->dao->getOneEntityBy(Role::class, ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the role is not found
         if (!$role) {
-            Request::handleErrorAndQuit(404, new Exception('Role not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('Role not found'));
         }
 
         // set the response
         $response = $role->toArray();
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'Role found', $response);
+        $this->request->handleSuccessAndQuit(200, 'Role found', $response);
     }
 
     public function updateRole(int $id): void
     {
-        // get the role by id
-        try {
-            $role = $this->entityManager->find(Role::class, $id);
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
-        // if the role is not found
-        if (!$role) {
-            Request::handleErrorAndQuit(404, new Exception('Role not found'));
-        }
-
         // get the request body
         $requestBody = file_get_contents('php://input');
-
-        // decode the json
-        $requestBody = json_decode($requestBody, true);
-
-        // validate the data
-        if (!$this->validatePutData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
-        }
 
         // it will look like this:
         // {
@@ -141,62 +118,68 @@ class RoleController extends AbstractController
         // decode the json
         $requestBody = json_decode($requestBody, true);
 
+        // validate the data
+        if (!$this->validatePutData($requestBody, self::REQUIRED_FIELDS)) {
+            $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
+        }
+
+        // get the role by id
+        try {
+            $role = $this->dao->getOneEntityBy(Role::class, ['id' => $id]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // if the role is not found
+        if (!$role) {
+            $this->request->handleErrorAndQuit(404, new Exception('Role not found'));
+        }
+
         // get the user data from the request body
-        $name = $requestBody['name'] ?? null;
-        $description = $requestBody['description'] ?? null;
+        $name = $requestBody['name'] ?? $role->getName();
+        $description = $requestBody['description'] ?? $role->getDescription();
 
         // update the role
-        $role->setName($name ?? $role->getName());
-        $role->setDescription($description ?? $role->getDescription());
-
-        // persist the role
-        try {
-            $this->entityManager->persist($role);
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
+        $role->setName($name);
+        $role->setDescription($description);
 
         // flush the entity manager
         try {
-            $this->entityManager->flush();
+            $this->dao->updateEntity($role);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $error = $e->getMessage();
+            if (str_contains($error, 'constraint violation')) {
+                $this->request->handleErrorAndQuit(409, new Exception('Role already exists'));
+            }
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'Role updated');
-
+        $this->request->handleSuccessAndQuit(200, 'Role updated');
     }
 
     public function deleteRole(int $id): void
     {
         // get the role by id
         try {
-            $role = $this->entityManager->find(Role::class, $id);
+            $role = $this->dao->getOneEntityBy(Role::class, ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the role is not found
         if (!$role) {
-            Request::handleErrorAndQuit(404, new Exception('Role not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('Role not found'));
         }
 
         // remove the role
         try {
-            $this->entityManager->remove($role);
+            $this->dao->deleteEntity($role);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
-        // flush the entity manager
-        try {
-            $this->entityManager->flush();
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'Role deleted');
+        $this->request->handleSuccessAndQuit(200, 'Role deleted');
     }
 }

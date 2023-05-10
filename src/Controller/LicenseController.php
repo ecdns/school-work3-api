@@ -7,16 +7,19 @@ namespace Controller;
 use Doctrine\ORM\EntityManager;
 use Entity\License;
 use Exception;
+use Service\DAO;
 use Service\Request;
 
 class LicenseController extends AbstractController
 {
-    private EntityManager $entityManager;
+    private DAO $dao;
+    private Request $request;
     private const REQUIRED_FIELDS = ['name', 'description', 'price', 'maxUsers', 'validityPeriod'];
 
-    public function __construct(EntityManager $entityManager)
+    public function __construct(DAO $dao, Request $request)
     {
-        $this->entityManager = $entityManager;
+        $this->dao = $dao;
+        $this->request = $request;
     }
 
     public function addLicense(): void
@@ -38,7 +41,7 @@ class LicenseController extends AbstractController
 
         // check if the data is valid
         if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
+            $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
         // get the user data from the request body
@@ -53,33 +56,25 @@ class LicenseController extends AbstractController
 
         // persist the license
         try {
-            $this->entityManager->persist($license);
+            $this->dao->addEntity($license);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
-        // flush the entity manager
-        try {
-            $this->entityManager->flush();
-        } catch (Exception $e) {
-            $error = $e->getMessage();
-            if (str_contains($error, 'constraint violation')) {
-                Request::handleErrorAndQuit(400, new Exception('License already exists'));
+            if (str_contains($e->getMessage(), 'constraint violation')) {
+                $this->request->handleErrorAndQuit(409, new Exception('License already exists'));
             }
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(201, 'License created');
+        $this->request->handleSuccessAndQuit(201, 'License created');
     }
 
     public function getLicenses(): void
     {
         // get all the licenses from the database
         try {
-            $licenses = $this->entityManager->getRepository(License::class)->findAll();
+            $licenses = $this->dao->getAllEntities(License::class);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // set the response
@@ -89,28 +84,28 @@ class LicenseController extends AbstractController
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'Licenses found', $response);
+        $this->request->handleSuccessAndQuit(200, 'Licenses found', $response);
     }
 
     public function getLicenseById(int $id): void
     {
         // get the license from the database by its id
         try {
-            $license = $this->entityManager->getRepository(License::class)->find($id);
+            $license = $this->dao->getOneEntityBy(License::class, ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the license is not found
         if (!$license) {
-            Request::handleErrorAndQuit(404, new Exception('License not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('License not found'));
         }
 
         // set the response
         $response = $license->toArray();
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'License found', $response);
+        $this->request->handleSuccessAndQuit(200, 'License found', $response);
     }
 
     public function updateLicense(int $id): void
@@ -132,52 +127,47 @@ class LicenseController extends AbstractController
 
         // check if the data is valid
         if (!$this->validatePutData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
+            $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
-
-        // get the user data from the request body
-        $name = $requestBody['name'] ?? null;
-        $description = $requestBody['description'] ?? null;
-        $price = $requestBody['price'] ?? null;
-        $maxUsers = $requestBody['maxUsers'] ?? null;
-        $validityPeriod = $requestBody['validityPeriod'] ?? null;
 
         // get the license from the database by its id
         try {
-            $license = $this->entityManager->getRepository(License::class)->find($id);
+            $license = $this->dao->getOneEntityBy(License::class, ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the license is not found
         if (!$license) {
-            Request::handleErrorAndQuit(404, new Exception('License not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('License not found'));
         }
 
+        // get the user data from the request body
+        $name = $requestBody['name'] ?? $license->getName();
+        $description = $requestBody['description'] ?? $license->getDescription();
+        $price = $requestBody['price'] ?? $license->getPrice();
+        $maxUsers = $requestBody['maxUsers'] ?? $license->getMaxUsers();
+        $validityPeriod = $requestBody['validityPeriod'] ?? $license->getValidityPeriod();
+
         // update the license
-        $license->setName($name ?? $license->getName());
-        $license->setDescription($description ?? $license->getDescription());
-        $license->setPrice($price ?? $license->getPrice());
-        $license->setMaxUsers($maxUsers ?? $license->getMaxUsers());
-        $license->setValidityPeriod($validityPeriod ?? $license->getValidityPeriod());
+        $license->setName($name);
+        $license->setDescription($description);
+        $license->setPrice($price);
+        $license->setMaxUsers($maxUsers);
+        $license->setValidityPeriod($validityPeriod);
 
         // persist the license
         try {
-            $this->entityManager->persist($license);
+            $this->dao->updateEntity($license);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
-        // flush the entity manager
-        try {
-            $this->entityManager->flush();
-        } catch (Exception $e) {
-            $error = $e->getMessage();
-            Request::handleErrorAndQuit(500, $e);
+            if (str_contains($e->getMessage(), 'constraint violation')) {
+                $this->request->handleErrorAndQuit(409, new Exception('License already exists'));
+            }
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // set the response
-        Request::handleSuccessAndQuit(200, 'License updated');
+        $this->request->handleSuccessAndQuit(200, 'License updated');
 
     }
 
@@ -185,33 +175,24 @@ class LicenseController extends AbstractController
     {
         // get the license from the database by its id
         try {
-            $license = $this->entityManager->getRepository(License::class)->find($id);
+            $license = $this->dao->getOneEntityBy(License::class, ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the license is not found
         if (!$license) {
-            Request::handleErrorAndQuit(404, new Exception('License not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('License not found'));
         }
 
         // remove the license
         try {
-            $this->entityManager->remove($license);
+            $this->dao->deleteEntity($license);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
-        // flush the entity manager
-        try {
-            $this->entityManager->flush();
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'License deleted');
+        $this->request->handleSuccessAndQuit(200, 'License deleted');
     }
-
-
 }

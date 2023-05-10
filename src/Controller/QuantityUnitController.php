@@ -2,21 +2,21 @@
 
 namespace Controller;
 
-// controller for entity Vat
-use Doctrine\ORM\EntityManager;
 use Entity\QuantityUnit;
-use Entity\Vat;
 use Exception;
+use Service\DAO;
 use Service\Request;
 
 class QuantityUnitController extends AbstractController
 {
 
-    private EntityManager $entityManager;
+    private DAO $dao;
+    private Request $request;
 
-    public function __construct(EntityManager $entityManager)
+    public function __construct(DAO $dao, Request $request)
     {
-        $this->entityManager = $entityManager;
+        $this->dao = $dao;
+        $this->request = $request;
     }
 
     //function for adding a new quantityUnit
@@ -39,7 +39,7 @@ class QuantityUnitController extends AbstractController
 
         // validate the data
         if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
+            $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
         // get the QuantityUnit data from the request body
@@ -51,27 +51,19 @@ class QuantityUnitController extends AbstractController
         // create a new quantityUnit
         $quantityUnit = new QuantityUnit($name, $unit, $description);
 
-        // persist the quantityUnit
-        try {
-            $this->entityManager->persist($quantityUnit);
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
         // flush the entity manager
         try {
-            $this->entityManager->flush();
+            $this->dao->addEntity($quantityUnit);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                Request::handleErrorAndQuit(409, new Exception('QuantityUnit already exists'));
+                $this->request->handleErrorAndQuit(409, new Exception('QuantityUnit already exists'));
             }
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(201, 'QuantityUnit created');
-
+        $this->request->handleSuccessAndQuit(201, 'QuantityUnit created');
     }
 
     //function for getting all quantityUnit
@@ -79,9 +71,9 @@ class QuantityUnitController extends AbstractController
     {
         // get all the quantityUnit from the database
         try {
-            $quantityUnits = $this->entityManager->getRepository(QuantityUnit::class)->findAll();
+            $quantityUnits = $this->dao->getAllEntities(QuantityUnit::class);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // set the response
@@ -91,28 +83,28 @@ class QuantityUnitController extends AbstractController
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'QuantityUnit found', $response);
+        $this->request->handleSuccessAndQuit(200, 'QuantityUnit found', $response);
     }
 
     public function getQuantityUnitById(int $id): void
     {
         // get the quantityUnit from the database by its id
         try {
-            $quantityUnit = $this->entityManager->getRepository(QuantityUnit::class)->find($id);
+            $quantityUnit = $this->dao->getOneEntityBy(QuantityUnit::class, ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the quantityUnit is not found
         if (!$quantityUnit) {
-            Request::handleErrorAndQuit(404, new Exception('QuantityUnit not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('QuantityUnit not found'));
         }
 
         // set the response
         $response = $quantityUnit->toArray();
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'QuantityUnit found', $response);
+        $this->request->handleSuccessAndQuit(200, 'QuantityUnit found', $response);
     }
 
     //function for updating a quantityUnit
@@ -132,52 +124,45 @@ class QuantityUnitController extends AbstractController
         $requestBody = json_decode($requestBody, true);
 
         // validate the data
-        if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(400, new Exception('QuantityUnit request data'));
+        if (!$this->validatePutData($requestBody, self::REQUIRED_FIELDS)) {
+            $this->request->handleErrorAndQuit(400, new Exception('QuantityUnit request data'));
         }
-
-        // get the quantityUnit data from the request body
-        $name = $requestBody['name'];
-        $unit = $requestBody['unit'];
-        $description = $requestBody['description'];
 
         // get the quantityUnit from the database by its id
         try {
-            $quantityUnit = $this->entityManager->getRepository(QuantityUnit::class)->find($id);
+            $quantityUnit = $this->dao->getOneEntityBy(QuantityUnit::class, ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the quantityUnit is not found
         if (!$quantityUnit) {
-            Request::handleErrorAndQuit(404, new Exception('QuantityUnit not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('QuantityUnit not found'));
         }
+
+        // get the quantityUnit data from the request body
+        $name = $requestBody['name'] ?? $quantityUnit->getName();
+        $unit = $requestBody['unit'] ?? $quantityUnit->getUnit();
+        $description = $requestBody['description'] ?? $quantityUnit->getDescription();
 
         // update the quantityUnit
         $quantityUnit->setName($name);
         $quantityUnit->setUnit($unit);
         $quantityUnit->setDescription($description);
 
-        // persist the quantityUnit
-        try {
-            $this->entityManager->persist($quantityUnit);
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
         // flush the entity manager
         try {
-            $this->entityManager->flush();
+            $this->dao->updateEntity($quantityUnit);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                Request::handleErrorAndQuit(409, new Exception('QuantityUnit already exists'));
+                $this->request->handleErrorAndQuit(409, new Exception('QuantityUnit already exists'));
             }
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'QuantityUnit updated');
+        $this->request->handleSuccessAndQuit(200, 'QuantityUnit updated');
 
     }
 
@@ -186,33 +171,24 @@ class QuantityUnitController extends AbstractController
     {
         // get the vat from the database by its id
         try {
-            $quantityUnit = $this->entityManager->getRepository(QuantityUnit::class)->find($id);
+            $quantityUnit = $this->dao->getOneEntityBy(QuantityUnit::class, ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the vat is not found
         if (!$quantityUnit) {
-            Request::handleErrorAndQuit(404, new Exception('QuantityUnit not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('QuantityUnit not found'));
         }
 
         // remove the vat
         try {
-            $this->entityManager->remove($quantityUnit);
+            $this->dao->deleteEntity($quantityUnit);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
-        // flush the entity manager
-        try {
-            $this->entityManager->flush();
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'QuantityUnit deleted');
+        $this->request->handleSuccessAndQuit(200, 'QuantityUnit deleted');
     }
-
-
 }

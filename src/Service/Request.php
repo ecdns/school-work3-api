@@ -4,31 +4,42 @@ declare(strict_types=1);
 
 namespace Service;
 
+use JetBrains\PhpStorm\NoReturn;
 use Throwable;
 
 class Request
 {
-    public static function handleErrorAndQuit(int $httpCode, Throwable $e): void
+
+    private Http $http;
+    private Log $log;
+
+    public function __construct(Http $http, Log $log)
+    {
+        $this->http = $http;
+        $this->log = $log;
+    }
+
+    #[NoReturn] public function handleErrorAndQuit(int $httpCode, Throwable $e): void
     {
         $message = $e->getMessage();
-        Http::sendStatusResponse($httpCode, $message);
-        $context = Log::getContext();
+        $this->http->sendStatusResponse($httpCode, $message);
+        $context = $this->log->getContext();
         $error = $context . ' - ' . $message;
-        Log::addErrorLog($error);
+        $this->log->addErrorLog($error);
         exit(1);
     }
 
-    public static function handleSuccessAndQuit(int $httpCode, string $status, $data = null): void
+    #[NoReturn] public function handleSuccessAndQuit(int $httpCode, string $status, $data = null): void
     {
 
         if ($data !== null) {
-            Http::sendDataResponse($httpCode, $data);
+            $this->http->sendDataResponse($httpCode, $data);
         } else {
-            Http::sendStatusResponse($httpCode, $status);
+            $this->http->sendStatusResponse($httpCode, $status);
         }
-        $context = Log::getContext();
+        $context = $this->log->getContext();
         $success = $context . ' - ' . $status;
-        Log::addSuccessLog($success);
+        $this->log->addSuccessLog($success);
         exit(0);
     }
 }

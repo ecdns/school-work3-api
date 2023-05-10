@@ -7,17 +7,20 @@ namespace Controller;
 use Doctrine\ORM\EntityManager;
 use Entity\UserSettings;
 use Exception;
+use Service\DAO;
 use Service\Request;
 
 class UserSettingsController extends AbstractController
 {
 
-    private EntityManager $entityManager;
+    private DAO $dao;
+    private Request $request;
     private const REQUIRED_FIELDS = ['theme', 'language', 'user-id'];
 
-    public function __construct(EntityManager $entityManager)
+    public function __construct(DAO $dao, Request $request)
     {
-        $this->entityManager = $entityManager;
+        $this->dao = $dao;
+        $this->request = $request;
     }
 
     public function addUserSettings(): void
@@ -37,7 +40,7 @@ class UserSettingsController extends AbstractController
 
         // validate the data
         if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
+            $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
         // get the user settings data from the request body
@@ -47,49 +50,35 @@ class UserSettingsController extends AbstractController
 
         // get the user by its id
         try {
-            $user = $this->entityManager->find('Entity\User', $id);
+            $user = $this->dao->getOneEntityBy('Entity\User', ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the user is not found
         if (!$user) {
-            Request::handleErrorAndQuit(404, new Exception('User not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('User not found'));
         }
 
         // create a new user settings
         $userSettings = new UserSettings($theme, $language, $user);
 
-        // persist the user settings
-        try {
-            $this->entityManager->persist($userSettings);
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
         // update the user
         $user->setUserSettings($userSettings);
 
-        // persist the user
+        // add the user settings to the database (this will also update the user)
         try {
-            $this->entityManager->persist($user);
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
-        // flush the entity manager
-        try {
-            $this->entityManager->flush();
+            $this->dao->addEntity($userSettings);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                Request::handleErrorAndQuit(400, new Exception('User settings already exist'));
+                $this->request->handleErrorAndQuit(400, new Exception('User settings already exist'));
             }
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(201, 'User settings created successfully');
+        $this->request->handleSuccessAndQuit(201, 'User settings created successfully');
 
     }
 
@@ -97,21 +86,21 @@ class UserSettingsController extends AbstractController
     {
         // get the user settings
         try {
-            $userSettings = $this->entityManager->find('Entity\UserSettings', $id);
+            $userSettings = $this->dao->getOneEntityBy('Entity\UserSettings', ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the user settings are not found
         if (!$userSettings) {
-            Request::handleErrorAndQuit(404, new Exception('User settings not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('User settings not found'));
         }
 
         // prepare the user settings data
         $userSettings = $userSettings->toArray();
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'User settings found', $userSettings);
+        $this->request->handleSuccessAndQuit(200, 'User settings found', $userSettings);
     }
 
     public function updateUserSettings(int $id): void
@@ -130,76 +119,66 @@ class UserSettingsController extends AbstractController
 
         // validate the data
         if (!$this->validatePutData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
+            $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
-
-        // get the user settings data from the request body
-        $theme = $requestBody['theme'] ?? null;
-        $language = $requestBody['language'] ?? null;
 
         // get the user settings
         try {
-            $userSettings = $this->entityManager->find('Entity\UserSettings', $id);
+            $userSettings = $this->dao->getOneEntityBy('Entity\UserSettings', ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the user settings are not found
         if (!$userSettings) {
-            Request::handleErrorAndQuit(404, new Exception('User settings not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('User settings not found'));
         }
+
+        // get the user settings data from the request body
+        $theme = $requestBody['theme'] ?? $userSettings->getTheme();
+        $language = $requestBody['language'] ?? $userSettings->getLanguage();
 
         // update the user settings
-        $userSettings->setTheme($theme ?? $userSettings->getTheme());
-        $userSettings->setLanguage($language ?? $userSettings->getLanguage());
-
-        // persist the user settings
-        try {
-            $this->entityManager->persist($userSettings);
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
+        $userSettings->setTheme($theme);
+        $userSettings->setLanguage($language);
 
         // flush the entity manager
         try {
-            $this->entityManager->flush();
+            $this->dao->updateEntity($userSettings);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $error = $e->getMessage();
+            if (str_contains($error, 'constraint violation')) {
+                $this->request->handleErrorAndQuit(400, new Exception('User settings already exist'));
+            }
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'User settings updated successfully');
+        $this->request->handleSuccessAndQuit(200, 'User settings updated successfully');
     }
 
     public function deleteUserSettings(int $id): void
     {
         // get the user settings
         try {
-            $userSettings = $this->entityManager->find('Entity\UserSettings', $id);
+            $userSettings = $this->dao->getOneEntityBy('Entity\UserSettings', ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the user settings are not found
         if (!$userSettings) {
-            Request::handleErrorAndQuit(404, new Exception('User settings not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('User settings not found'));
         }
 
         // remove the user settings
         try {
-            $this->entityManager->remove($userSettings);
+            $this->dao->deleteEntity($userSettings);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
-        // flush the entity manager
-        try {
-            $this->entityManager->flush();
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'User settings deleted successfully');
+        $this->request->handleSuccessAndQuit(200, 'User settings deleted successfully');
     }
 }

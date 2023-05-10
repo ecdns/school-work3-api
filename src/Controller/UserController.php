@@ -10,16 +10,21 @@ use Entity\Role;
 use Entity\User;
 use Exception;
 use Service\Auth;
+use Service\DAO;
 use Service\Request;
 
 class UserController extends AbstractController
 {
-    private EntityManager $entityManager;
+    private DAO $dao;
+    private Request $request;
+    private Auth $auth;
     private const REQUIRED_FIELDS = ['firstName', 'lastName', 'email', 'password', 'job', 'phone', 'role', 'company'];
 
-    public function __construct(EntityManager $entityManager)
+    public function __construct(DAO $dao, Request $request, Auth $auth)
     {
-        $this->entityManager = $entityManager;
+        $this->dao = $dao;
+        $this->request = $request;
+        $this->auth = $auth;
     }
 
     public function addUser(): void
@@ -45,7 +50,7 @@ class UserController extends AbstractController
 
         // validate the data
         if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
+            $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
         // get the user data from the request body
@@ -53,7 +58,7 @@ class UserController extends AbstractController
         $lastName = $requestBody['lastName'];
         $email = $requestBody['email'];
         $password = $requestBody['password'];
-        $password = Auth::hashPassword($password); // hash the password (see Auth.php)
+        $password = $this->auth->hashPassword($password); // hash the password (see Auth.php)
         $job = $requestBody['job'];
         $phone = $requestBody['phone'];
         $role = $requestBody['role'];
@@ -62,59 +67,52 @@ class UserController extends AbstractController
 
         // get the company and role from the database
         try {
-            $role = $this->entityManager->getRepository(Role::class)->findOneBy(['name' => $role]);
-            $company = $this->entityManager->getRepository(Company::class)->findOneBy(['name' => $companyName]);
+            $role = $this->dao->getOneEntityBy(Role::class, ['name' => $role]);
+            $company = $this->dao->getOneEntityBy(Company::class, ['name' => $companyName]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the role is not found
         if (!$role) {
-            Request::handleErrorAndQuit(404, new Exception('Role not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('Role not found'));
         }
 
         // if the company is not found
         if (!$company) {
-            Request::handleErrorAndQuit(404, new Exception('Company not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('Company not found'));
         }
 
         // create a new user
         $user = new User($firstName, $lastName, $email, $password, $role, $job, $phone, $company);
 
-        // persist the user
+        // add the user to the database
         try {
-            $this->entityManager->persist($user);
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
-        // flush the entity manager
-        try {
-            $this->entityManager->flush();
+            $this->dao->addEntity($user);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                Request::handleErrorAndQuit(409, new Exception('User already exists'));
+                $this->request->handleErrorAndQuit(409, new Exception('User already exists'));
             }
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(201, 'User created');
+        $this->request->handleSuccessAndQuit(201, 'User created');
     }
 
     public function getUsers(): void
     {
         // get the users from the database
         try {
-            $users = $this->entityManager->getRepository(User::class)->findAll();
+            $users = $this->dao->getAllEntities(User::class);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if there are no users
         if (!$users) {
-            Request::handleErrorAndQuit(404, new Exception('No users found'));
+            $this->request->handleErrorAndQuit(404, new Exception('No users found'));
         }
 
         // get the users data
@@ -124,28 +122,28 @@ class UserController extends AbstractController
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'Users found', $usersData);
+        $this->request->handleSuccessAndQuit(200, 'Users found', $usersData);
     }
 
     public function getUserById(int $id): void
     {
         // get the user from the database by its id
         try {
-            $user = $this->entityManager->getRepository(User::class)->find($id);
+            $user = $this->dao->getOneEntityBy(User::class, ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the user doesn't exist
         if (!$user) {
-            Request::handleErrorAndQuit(404, new Exception('User not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('User not found'));
         }
 
         // get the user data
         $userData = $user->toArray();
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'User found', $userData);
+        $this->request->handleSuccessAndQuit(200, 'User found', $userData);
     }
 
     public function updateUser(int $id): void
@@ -170,108 +168,92 @@ class UserController extends AbstractController
 
         // validate the data
         if (!$this->validatePutData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
+            $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
-
-
-        // get the user data from the request body
-        $firstName = $requestBody['firstName'] ?? null;
-        $lastName = $requestBody['lastName'] ?? null;
-        $email = $requestBody['email'] ?? null;
-        $password = $requestBody['password'] ?? null;
-        $job = $requestBody['job'] ?? null;
-        $phone = $requestBody['phone'] ?? null;
-        $role = $requestBody['role'] ?? null;
-        $companyName = $requestBody['company'] ?? null;
 
         // get the user from the database by its id
         try {
-            $user = $this->entityManager->getRepository(User::class)->find($id);
+            $user = $this->dao->getOneEntityBy(User::class, ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the user doesn't exist
         if (!$user) {
-            Request::handleErrorAndQuit(404, new Exception('User not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('User not found'));
         }
+
+        // get the user data from the request body
+        $firstName = $requestBody['firstName'] ?? $user->getFirstName();
+        $lastName = $requestBody['lastName'] ?? $user->getLastName();
+        $email = $requestBody['email'] ?? $user->getEmail();
+        $password = $requestBody['password'] ?? $user->getPassword();
+        $job = $requestBody['job'] ?? $user->getJob();
+        $phone = $requestBody['phone'] ?? $user->getPhone();
+        $role = $requestBody['role'] ?? $user->getRole()->getName();
+        $companyName = $requestBody['company'] ?? $user->getCompany()->getName();
 
         // get the company and role from the database
         try {
-            $role = $this->entityManager->getRepository(Role::class)->findOneBy(['name' => $user->getRole()->getName()]);
-            $company = $this->entityManager->getRepository(Company::class)->findOneBy(['name' => $user->getCompany()->getName()]);
+            $role = $this->dao->getOneEntityBy(Role::class, ['name' => $role]);
+            $company = $this->dao->getOneEntityBy(Company::class, ['name' => $companyName]);
+
+            if (!$role || !$company) {
+                $this->request->handleErrorAndQuit(404, new Exception('Role or company not found'));
+            }
+
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
-        // if the role doesn't exist
-        if (!$role) {
-            Request::handleErrorAndQuit(404, new Exception('Role not found'));
-        }
-
-        // if the company doesn't exist
-        if (!$company) {
-            Request::handleErrorAndQuit(404, new Exception('Company not found'));
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // update the user data
-        $user->setFirstName($firstName ?? $user->getFirstName());
-        $user->setLastName($lastName ?? $user->getLastName());
-        $user->setEmail($email ?? $user->getEmail());
-        $user->setPassword($password ?? $user->getPassword());
-        $user->setJob($job ?? $user->getJob());
-        $user->setPhone($phone ?? $user->getPhone());
+        $user->setFirstName($firstName);
+        $user->setLastName($lastName);
+        $user->setEmail($email);
+        $user->setPassword($password);
+        $user->setJob($job);
+        $user->setPhone($phone);
         $user->setRole($role);
         $user->setCompany($company);
 
-        // persist the user
+        // update the user in the database
         try {
-            $this->entityManager->persist($user);
+            $this->dao->updateEntity($user);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
-        // flush the entity manager
-        try {
-            $this->entityManager->flush();
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $error = $e->getMessage();
+            if (str_contains($error, 'constraint violation')) {
+                $this->request->handleErrorAndQuit(409, new Exception('User already exists'));
+            }
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'User updated');
+        $this->request->handleSuccessAndQuit(200, 'User updated');
     }
 
     public function deleteUser(int $id): void
     {
         // get the user from the database by its id
         try {
-            $user = $this->entityManager->getRepository(User::class)->find($id);
+            $user = $this->dao->getOneEntityBy(User::class, ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the user doesn't exist
         if (!$user) {
-            Request::handleErrorAndQuit(404, new Exception('User not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('User not found'));
         }
 
         // remove the user
         try {
-            $this->entityManager->remove($user);
+            $this->dao->deleteEntity($user);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
-        // flush the entity manager
-        try {
-            $this->entityManager->flush();
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'User deleted');
+        $this->request->handleSuccessAndQuit(200, 'User deleted');
     }
 
     public function loginUser(): void
@@ -294,28 +276,28 @@ class UserController extends AbstractController
 
         // get the user from the database by its email
         try {
-            $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+            $user = $this->dao->getOneEntityBy(User::class, ['email' => $email]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the user doesn't exist
         if (!$user) {
-            Request::handleErrorAndQuit(404, new Exception('User not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('User not found'));
         }
 
         // if the password is incorrect
-        if (!Auth::isValidPassword($password, $user->getPassword())) {
-            Request::handleErrorAndQuit(401, new Exception('Incorrect password'));
+        if ($this->auth->isValidPassword($password, $user->getPassword())) {
+            $this->request->handleErrorAndQuit(401, new Exception('Incorrect password'));
         }
 
         // check if the user company is active
         if (!$user->getCompany()->getIsEnabled()) {
-            Request::handleErrorAndQuit(401, new Exception('Company is not active'));
+            $this->request->handleErrorAndQuit(401, new Exception('Company is not active'));
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'User logged in');
+        $this->request->handleSuccessAndQuit(200, 'User logged in');
     }
 
 }

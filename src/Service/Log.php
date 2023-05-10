@@ -7,9 +7,10 @@ namespace Service;
 class Log
 {
 
-    public static function getContext(): string
+    public function getContext(): string
     {
         $context = '';
+
         if (isset($_SERVER['REQUEST_URI'])) {
             $context = $_SERVER['REQUEST_URI'];
         }
@@ -34,10 +35,10 @@ class Log
     }
 
     // Unused for now
-    public static function getFullContext(): string
+    public function getFullContext(): string
     {
 
-        $context = self::getContext();
+        $context = $this->getContext();
 
         // get the whole backtrace and add it to the context
         $backtrace = debug_backtrace();
@@ -56,14 +57,14 @@ class Log
 
     public static function addSuccessLog(string $message): void
     {
-        $file = fopen('log/success.log', 'a+');
+        $file = fopen('../log/success.log', 'a+');
         fwrite($file, date('Y-m-d H:i:s') . ' - ' . $message . PHP_EOL);
         fclose($file);
     }
 
     public static function addErrorLog(string $message): void
     {
-        $file = fopen('log/error.log', 'a+');
+        $file = fopen('../log/error.log', 'a+');
         fwrite($file, date('Y-m-d H:i:s') . ' - ' . $message . PHP_EOL);
         fclose($file);
     }

@@ -13,16 +13,20 @@ use Entity\Role;
 use Entity\Supplier;
 use Entity\Vat;
 use Exception;
+use Service\DAO;
 use Service\Request;
 
 class ProductController extends AbstractController
 {
-    private EntityManager $entityManager;
+    
+    private DAO $dao;
+    private Request $request;
     private const REQUIRED_FIELDS = ['name', 'description', 'buyPrice', 'sellPrice', 'quantity', 'discount', 'isDiscount', 'productFamily', 'vat', 'company', 'quantityUnit', 'supplier'];
 
-    public function __construct(EntityManager $entityManager)
+    public function __construct(DAO $dao, Request $request)
     {
-        $this->entityManager = $entityManager;
+        $this->dao = $dao;
+        $this->request = $request;
     }
 
     public function addProduct(): void
@@ -52,7 +56,7 @@ class ProductController extends AbstractController
 
         // validate the data
         if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
+            $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
 
@@ -71,60 +75,58 @@ class ProductController extends AbstractController
         $supplier = $requestBody['supplier'];
 
 
+        // get the product family from the database by its id
         try {
-            $productFamilyObject = $this->entityManager->getRepository(ProductFamily::class)->findOneBy(['id' => $productFamily]);
+            $productFamilyObject = $this->dao->getOneEntityBy(ProductFamily::class, ['id' => $productFamily]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
+        // get the vat from the database by its id
         try {
-            $vatObject = $this->entityManager->getRepository(Vat::class)->findOneBy(['id' => $vat]);
+            $vatObject = $this->dao->getOneEntityBy(Vat::class, ['id' => $vat]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
+        // get the company from the database by its id
         try {
-            $companyObject = $this->entityManager->getRepository(Company::class)->findOneBy(['id' => $company]);
+            $companyObject = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
+        // get the quantity unit from the database by its id
         try {
-            $quantityUnitObject = $this->entityManager->getRepository(QuantityUnit::class)->findOneBy(['id' => $quantityUnit]);
+            $quantityUnitObject = $this->dao->getOneEntityBy(QuantityUnit::class, ['id' => $quantityUnit]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
+        // get the supplier from the database by its id
         try {
-            $supplierObject = $this->entityManager->getRepository(Supplier::class)->findOneBy(['id' => $supplier]);
+            $supplierObject = $this->dao->getOneEntityBy(Supplier::class, ['id' => $supplier]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
 
         // create a new product
         $product = new Product($name, $description, $buyPrice, $sellPrice, $quantity, $discount, $isDiscount, $productFamilyObject, $vatObject, $companyObject, $quantityUnitObject, $supplierObject);
 
-        // persist the role
+        // add the product to the database
         try {
-            $this->entityManager->persist($product);
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
-        // flush the entity manager
-        try {
-            $this->entityManager->flush();
+            $this->dao->addEntity($product);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                Request::handleErrorAndQuit(409, new Exception('Product already exists'));
+                $this->request->handleErrorAndQuit(409, new Exception('Product already exists'));
             }
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(201, 'Product created');
+        $this->request->handleSuccessAndQuit(201, 'Product created');
     }
 
     public function getProducts(): void
@@ -132,9 +134,9 @@ class ProductController extends AbstractController
         // get all roles
         try {
             //get all products by company
-            $products = $this->entityManager->getRepository(Product::class)->findAll();
+            $products = $this->dao->getAllEntities(Product::class);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // set the response
@@ -144,7 +146,7 @@ class ProductController extends AbstractController
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'Products found', $response);
+        $this->request->handleSuccessAndQuit(200, 'Products found', $response);
     }
 
     public function getProductsByCompany(int $id): void
@@ -152,9 +154,9 @@ class ProductController extends AbstractController
         // get all roles
         try {
             //get all products by company
-            $products = $this->entityManager->getRepository(Product::class)->findBy(['company' => $id]);
+            $products = $this->dao->getEntitiesBy(Product::class, ['company' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // set the response
@@ -164,44 +166,32 @@ class ProductController extends AbstractController
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'Products found', $response);
+        $this->request->handleSuccessAndQuit(200, 'Products found', $response);
     }
 
     public function getProductById(int $id): void
     {
         // get the role by id
         try {
-            $product = $this->entityManager->find(Product::class, $id);
+            $product = $this->dao->getOneEntityBy(Product::class, ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the role is not found
         if (!$product) {
-            Request::handleErrorAndQuit(404, new Exception('Product not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('Product not found'));
         }
 
         // set the response
         $response = $product->toArray();
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'Product found', $response);
+        $this->request->handleSuccessAndQuit(200, 'Product found', $response);
     }
 
     public function updateProduct(int $id): void
     {
-        // get the role by id
-        try {
-            $product = $this->entityManager->find(Product::class, $id);
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
-        // if the role is not found
-        if (!$product) {
-            Request::handleErrorAndQuit(404, new Exception('Product not found'));
-        }
-
         // get the request body
         $requestBody = file_get_contents('php://input');
 
@@ -210,7 +200,19 @@ class ProductController extends AbstractController
 
         // validate the data
         if (!$this->validatePutData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
+            $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
+        }
+
+        // get the product by id
+        try {
+            $product = $this->dao->getOneEntityBy(Product::class, ['id' => $id]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // if the product is not found
+        if (!$product) {
+            $this->request->handleErrorAndQuit(404, new Exception('Product not found'));
         }
 
         // it will look like this:
@@ -231,64 +233,63 @@ class ProductController extends AbstractController
 
 
         // get the product data from the request body
-        $name = $requestBody['name'];
-        $description = $requestBody['description'];
-        $buyPrice = $requestBody['buyPrice'];
-        $sellPrice = $requestBody['sellPrice'];
-        $quantity = $requestBody['quantity'];
-        $discount = $requestBody['discount'];
-        $isDiscount = $requestBody['isDiscount'];
-        $productFamily = $requestBody['productFamily'];
-        $vat = $requestBody['vat'];
-        $company = $requestBody['company'];
-        $quantityUnit = $requestBody['quantityUnit'];
-        $supplier = $requestBody['supplier'];
+        $name = $requestBody['name'] ?? $product->getName();
+        $description = $requestBody['description'] ?? $product->getDescription();
+        $buyPrice = $requestBody['buyPrice'] ?? $product->getBuyPrice();
+        $sellPrice = $requestBody['sellPrice'] ?? $product->getSellPrice();
+        $quantity = $requestBody['quantity'] ?? $product->getQuantity();
+        $discount = $requestBody['discount'] ?? $product->getDiscount();
+        $isDiscount = $requestBody['isDiscount'] ?? $product->getIsDiscount();
+        $productFamily = $requestBody['productFamily'] ?? $product->getProductFamily()->getId();
+        $vat = $requestBody['vat'] ?? $product->getVat()->getId();
+        $company = $requestBody['company'] ?? $product->getCompany()->getId();
+        $quantityUnit = $requestBody['quantityUnit'] ?? $product->getQuantityUnit()->getId();
+        $supplier = $requestBody['supplier'] ?? $product->getSupplier()->getId();
 
         try {
-            $productFamilyObject = $this->entityManager->getRepository(ProductFamily::class)->findOneBy(['id' => $productFamily]);
 
-            $vatObject = $this->entityManager->getRepository(Vat::class)->findOneBy(['id' => $vat]);
+            $productFamily = $this->dao->getOneEntityBy(ProductFamily::class, ['id' => $productFamily]);
+            $vat = $this->dao->getOneEntityBy(Vat::class, ['id' => $vat]);
+            $company = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
+            $quantityUnit = $this->dao->getOneEntityBy(QuantityUnit::class, ['id' => $quantityUnit]);
+            $supplier = $this->dao->getOneEntityBy(Supplier::class, ['id' => $supplier]);
 
-            $companyObject = $this->entityManager->getRepository(Company::class)->findOneBy(['id' => $company]);
+            if (!$productFamily || !$vat || !$company || !$quantityUnit || !$supplier) {
+                $this->request->handleErrorAndQuit(404, new Exception('Product family, vat, company, quantity unit or supplier not found'));
+            }
 
-            $quantityUnitObject = $this->entityManager->getRepository(QuantityUnit::class)->findOneBy(['id' => $quantityUnit]);
-
-            $supplierObject = $this->entityManager->getRepository(Supplier::class)->findOneBy(['id' => $supplier]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
 
         // update the product
-        $product->setName($name ?? $product->getName());
-        $product->setDescription($description ?? $product->getDescription());
-        $product->setBuyPrice($buyPrice ?? $product->getBuyPrice());
-        $product->setSellPrice($sellPrice ?? $product->getSellPrice());
-        $product->setQuantity($quantity ?? $product->getQuantity());
-        $product->setDiscount($discount ?? $product->getDiscount());
-        $product->setIsDiscount($isDiscount ?? $product->getIsDiscount());
-        $product->setProductFamily($productFamilyObject ?? $product->getProductFamily());
-        $product->setVat($vatObject ?? $product->getVat());
-        $product->setCompany($companyObject ?? $product->getCompany());
-        $product->setQuantityUnit($quantityUnitObject ?? $product->getQuantityUnit());
-        $product->setSupplier($supplierObject ?? $product->getSupplier());
+        $product->setName($name);
+        $product->setDescription($description);
+        $product->setBuyPrice($buyPrice);
+        $product->setSellPrice($sellPrice);
+        $product->setQuantity($quantity);
+        $product->setDiscount($discount);
+        $product->setIsDiscount($isDiscount);
+        $product->setProductFamily($productFamily);
+        $product->setVat($vat);
+        $product->setCompany($company);
+        $product->setQuantityUnit($quantityUnit);
+        $product->setSupplier($supplier);
 
-        // persist the role
+        // update the product in the database
         try {
-            $this->entityManager->persist($product);
+            $this->dao->updateEntity($product);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
-        // flush the entity manager
-        try {
-            $this->entityManager->flush();
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $error = $e->getMessage();
+            if (str_contains($error, 'constraint violation')) {
+                $this->request->handleErrorAndQuit(409, new Exception('Product already exists'));
+            }
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'Product updated');
+        $this->request->handleSuccessAndQuit(200, 'Product updated');
 
     }
 
@@ -296,31 +297,24 @@ class ProductController extends AbstractController
     {
         // get the product by id
         try {
-            $product = $this->entityManager->find(Product::class, $id);
+            $product = $this->dao->getOneEntityBy(Product::class, ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the product is not found
         if (!$product) {
-            Request::handleErrorAndQuit(404, new Exception('Product not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('Product not found'));
         }
 
         // remove the product
         try {
-            $this->entityManager->remove($product);
+            $this->dao->deleteEntity($product);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
-        // flush the entity manager
-        try {
-            $this->entityManager->flush();
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'Product deleted');
+        $this->request->handleSuccessAndQuit(200, 'Product deleted');
     }
 }

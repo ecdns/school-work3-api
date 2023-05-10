@@ -6,16 +6,19 @@ namespace Controller;
 use Doctrine\ORM\EntityManager;
 use Entity\Vat;
 use Exception;
+use Service\DAO;
 use Service\Request;
 
 class VatController extends AbstractController
 {
 
-    private EntityManager $entityManager;
+    private DAO $dao;
+    private Request $request;
 
-    public function __construct(EntityManager $entityManager)
+    public function __construct(DAO $dao, Request $request)
     {
-        $this->entityManager = $entityManager;
+        $this->dao = $dao;
+        $this->request = $request;
     }
 
     //function for adding a new vat
@@ -38,7 +41,7 @@ class VatController extends AbstractController
 
         // validate the data
         if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
+            $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
         // get the vat data from the request body
@@ -49,26 +52,19 @@ class VatController extends AbstractController
         // create a new vat
         $vat = new Vat($name, $rate, $description);
 
-        // persist the vat
-        try {
-            $this->entityManager->persist($vat);
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
         // flush the entity manager
         try {
-            $this->entityManager->flush();
+            $this->dao->addEntity($vat);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                Request::handleErrorAndQuit(409, new Exception('Vat already exists'));
+                $this->request->handleErrorAndQuit(409, new Exception('Vat already exists'));
             }
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(201, 'Vat created');
+        $this->request->handleSuccessAndQuit(201, 'Vat created');
 
     }
 
@@ -77,9 +73,9 @@ class VatController extends AbstractController
     {
         // get all the licenses from the database
         try {
-            $vats = $this->entityManager->getRepository(Vat::class)->findAll();
+            $vats = $this->dao->getAllEntities(Vat::class);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // set the response
@@ -89,28 +85,28 @@ class VatController extends AbstractController
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'Vats found', $response);
+        $this->request->handleSuccessAndQuit(200, 'Vats found', $response);
     }
 
     public function getVatById(int $id): void
     {
         // get the license from the database by its id
         try {
-            $vat = $this->entityManager->getRepository(Vat::class)->find($id);
+            $vat = $this->dao->getOneEntityBy(Vat::class, ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the license is not found
         if (!$vat) {
-            Request::handleErrorAndQuit(404, new Exception('Vat not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('Vat not found'));
         }
 
         // set the response
         $response = $vat->toArray();
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'Vat found', $response);
+        $this->request->handleSuccessAndQuit(200, 'Vat found', $response);
     }
 
     //function for updating a vat
@@ -131,51 +127,44 @@ class VatController extends AbstractController
 
         // validate the data
         if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
+            $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
-
-        // get the vat data from the request body
-        $name = $requestBody['name'];
-        $rate = $requestBody['rate'];
-        $description = $requestBody['description'];
 
         // get the vat from the database by its id
         try {
-            $vat = $this->entityManager->getRepository(Vat::class)->find($id);
+            $vat = $this->dao->getOneEntityBy(Vat::class, ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the vat is not found
         if (!$vat) {
-            Request::handleErrorAndQuit(404, new Exception('Vat not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('Vat not found'));
         }
+
+        // get the vat data from the request body
+        $name = $requestBody['name'] ?? $vat->getName();
+        $rate = $requestBody['rate'] ?? $vat->getRate();
+        $description = $requestBody['description'] ?? $vat->getDescription();
 
         // update the vat
         $vat->setName($name);
         $vat->setRate($rate);
         $vat->setDescription($description);
 
-        // persist the vat
-        try {
-            $this->entityManager->persist($vat);
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
         // flush the entity manager
         try {
-            $this->entityManager->flush();
+            $this->dao->updateEntity($vat);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                Request::handleErrorAndQuit(409, new Exception('Vat already exists'));
+                $this->request->handleErrorAndQuit(409, new Exception('Vat already exists'));
             }
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'Vat updated');
+        $this->request->handleSuccessAndQuit(200, 'Vat updated');
 
     }
 
@@ -184,33 +173,24 @@ class VatController extends AbstractController
     {
         // get the vat from the database by its id
         try {
-            $vat = $this->entityManager->getRepository(Vat::class)->find($id);
+            $vat = $this->dao->getOneEntityBy(Vat::class, ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the vat is not found
         if (!$vat) {
-            Request::handleErrorAndQuit(404, new Exception('Vat not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('Vat not found'));
         }
 
         // remove the vat
         try {
-            $this->entityManager->remove($vat);
+            $this->dao->deleteEntity($vat);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
-        // flush the entity manager
-        try {
-            $this->entityManager->flush();
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'Vat deleted');
+        $this->request->handleSuccessAndQuit(200, 'Vat deleted');
     }
-
-
 }

@@ -6,16 +6,19 @@ namespace Controller;
 use Doctrine\ORM\EntityManager;
 use Entity\ProductFamily;
 use Exception;
+use Service\DAO;
 use Service\Request;
 
 class ProductFamilyController extends AbstractController
 {
 
-    private EntityManager $entityManager;
-
-    public function __construct(EntityManager $entityManager)
+    private DAO $dao;
+    private Request $request;
+    
+    public function __construct(DAO $dao, Request $request)
     {
-        $this->entityManager = $entityManager;
+        $this->dao = $dao;
+        $this->request = $request;
     }
 
     //function for adding a new productFamily
@@ -37,7 +40,7 @@ class ProductFamilyController extends AbstractController
 
         // validate the data
         if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
+            $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
         // get the ProductFamily data from the request body
@@ -49,24 +52,17 @@ class ProductFamilyController extends AbstractController
 
         // persist the productFamily
         try {
-            $this->entityManager->persist($productFamily);
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
-        // flush the entity manager
-        try {
-            $this->entityManager->flush();
+            $this->dao->addEntity($productFamily);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                Request::handleErrorAndQuit(409, new Exception('ProductFamily already exists'));
+                $this->request->handleErrorAndQuit(409, new Exception('ProductFamily already exists'));
             }
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(201, 'ProductFamily created');
+        $this->request->handleSuccessAndQuit(201, 'ProductFamily created');
 
     }
 
@@ -75,9 +71,9 @@ class ProductFamilyController extends AbstractController
     {
         // get all the ProductFamily from the database
         try {
-            $productFamilies = $this->entityManager->getRepository(ProductFamily::class)->findAll();
+            $productFamilies = $this->dao->getAllEntities(ProductFamily::class);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // set the response
@@ -87,28 +83,28 @@ class ProductFamilyController extends AbstractController
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'ProductFamily found', $response);
+        $this->request->handleSuccessAndQuit(200, 'ProductFamily found', $response);
     }
 
     public function getProductFamilyById(int $id): void
     {
         // get the license from the database by its id
         try {
-            $productFamily = $this->entityManager->getRepository(ProductFamily::class)->find($id);
+            $productFamily = $this->dao->getOneEntityBy(ProductFamily::class, ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the license is not found
         if (!$productFamily) {
-            Request::handleErrorAndQuit(404, new Exception('ProductFamily not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('ProductFamily not found'));
         }
 
         // set the response
         $response = $productFamily->toArray();
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'ProductFamily found', $response);
+        $this->request->handleSuccessAndQuit(200, 'ProductFamily found', $response);
     }
 
     //function for updating a productFamily
@@ -117,35 +113,35 @@ class ProductFamilyController extends AbstractController
         // get the request body
         $requestBody = file_get_contents('php://input');
 
-        // it will look like this:
+        // it will look like this :
         // {
         //     "name": "Salle de Bain",
-        //     "description": "Catégorie regroupant tous les produits pour la salle de bain"
+        //     "description" : "Catégorie regroupant tous les produits pour la salle de bain"
         // }
 
         // decode the json
         $requestBody = json_decode($requestBody, true);
 
         // validate the data
-        if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
+        if (!$this->validatePutData($requestBody, self::REQUIRED_FIELDS)) {
+            $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
-
-        // get the ProductFamily data from the request body
-        $name = $requestBody['name'];
-        $description = $requestBody['description'];
 
         // get the ProductFamily from the database by its id
         try {
-            $productFamily = $this->entityManager->getRepository(ProductFamily::class)->find($id);
+            $productFamily = $this->dao->getOneEntityBy(ProductFamily::class, ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the productFamily is not found
         if (!$productFamily) {
-            Request::handleErrorAndQuit(404, new Exception('ProductFamily not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('ProductFamily not found'));
         }
+
+        // get the ProductFamily data from the request body
+        $name = $requestBody['name'] ?? $productFamily->getName();
+        $description = $requestBody['description'] ?? $productFamily->getDescription();
 
         // update the productFamily
         $productFamily->setName($name);
@@ -153,24 +149,17 @@ class ProductFamilyController extends AbstractController
 
         // persist the productFamily
         try {
-            $this->entityManager->persist($productFamily);
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
-        // flush the entity manager
-        try {
-            $this->entityManager->flush();
+            $this->dao->updateEntity($productFamily);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                Request::handleErrorAndQuit(409, new Exception('ProductFamily already exists'));
+                $this->request->handleErrorAndQuit(409, new Exception('ProductFamily already exists'));
             }
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'ProductFamily updated');
+        $this->request->handleSuccessAndQuit(200, 'ProductFamily updated');
 
     }
 
@@ -179,33 +168,25 @@ class ProductFamilyController extends AbstractController
     {
         // get the ProductFamily from the database by its id
         try {
-            $productFamily = $this->entityManager->getRepository(ProductFamily::class)->find($id);
+            $productFamily = $this->dao->getOneEntityBy(ProductFamily::class, ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the ProductFamily is not found
         if (!$productFamily) {
-            Request::handleErrorAndQuit(404, new Exception('ProductFamily not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('ProductFamily not found'));
         }
 
         // remove the ProductFamily
         try {
-            $this->entityManager->remove($productFamily);
+            $this->dao->deleteEntity($productFamily);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
-        // flush the entity manager
-        try {
-            $this->entityManager->flush();
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'ProductFamily deleted');
+        $this->request->handleSuccessAndQuit(200, 'ProductFamily deleted');
     }
-
 
 }

@@ -9,16 +9,19 @@ use Entity\License;
 use Entity\ProductFamily;
 use Entity\Supplier;
 use Exception;
+use Service\DAO;
 use Service\Request;
 
 class SupplierController extends AbstractController
 {
 
-    private EntityManager $entityManager;
+    private DAO $dao;
+    private Request $request;
 
-    public function __construct(EntityManager $entityManager)
+    public function __construct(DAO $dao, Request $request)
     {
-        $this->entityManager = $entityManager;
+        $this->dao = $dao;
+        $this->request = $request;
     }
 
     //function for adding a new Supplier
@@ -48,7 +51,7 @@ class SupplierController extends AbstractController
 
         // validate the data
         if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
+            $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
         // get the Supplier data from the request body
@@ -63,35 +66,29 @@ class SupplierController extends AbstractController
         $phone = $requestBody['phone'];
         $company = $requestBody['company'];
 
+        // get the company from the database by its name
         try {
-            $companyObject = $this->entityManager->getRepository(Company::class)->findOneBy(['id' => $company]);
+            $companyObject = $this->dao->getOneEntityBy(Company::class, ['name' => $company]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // create a new Supplier
         $supplier = new Supplier($name, $firstName, $lastName, $email, $address, $city, $country, $zipCode, $phone, $companyObject);
 
-        // persist the Supplier
-        try {
-            $this->entityManager->persist($supplier);
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
         // flush the entity manager
         try {
-            $this->entityManager->flush();
+            $this->dao->addEntity($supplier);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                Request::handleErrorAndQuit(409, new Exception('Supplier already exists'));
+                $this->request->handleErrorAndQuit(409, new Exception('Supplier already exists'));
             }
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(201, 'Supplier created');
+        $this->request->handleSuccessAndQuit(201, 'Supplier created');
 
     }
 
@@ -100,9 +97,9 @@ class SupplierController extends AbstractController
     {
         // get all the Supplier from the database
         try {
-            $suppliers = $this->entityManager->getRepository(Supplier::class)->findAll();
+            $suppliers = $this->dao->getAllEntities(Supplier::class);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // set the response
@@ -112,28 +109,28 @@ class SupplierController extends AbstractController
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'Supplier found', $response);
+        $this->request->handleSuccessAndQuit(200, 'Supplier found', $response);
     }
 
     public function getSupplierById(int $id): void
     {
         // get the supplier from the database by its id
         try {
-            $supplier = $this->entityManager->getRepository(Supplier::class)->find($id);
+            $supplier = $this->dao->getOneEntityBy(Supplier::class, ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the license is not found
         if (!$supplier) {
-            Request::handleErrorAndQuit(404, new Exception('Supplier not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('Supplier not found'));
         }
 
         // set the response
         $response = $supplier->toArray();
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'Supplier found', $response);
+        $this->request->handleSuccessAndQuit(200, 'Supplier found', $response);
     }
 
     //function for updating a supplier
@@ -160,38 +157,42 @@ class SupplierController extends AbstractController
         $requestBody = json_decode($requestBody, true);
 
         // validate the data
-        if (!$this->validatePostData($requestBody, self::REQUIRED_FIELDS)) {
-            Request::handleErrorAndQuit(400, new Exception('Invalid request data'));
+        if (!$this->validatePutData($requestBody, self::REQUIRED_FIELDS)) {
+            $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
-        // get the Supplier data from the request body
-        $name = $requestBody['name'];
-        $firstName = $requestBody['firstName'];
-        $lastName = $requestBody['lastName'];
-        $email = $requestBody['email'];
-        $address = $requestBody['address'];
-        $city = $requestBody['city'];
-        $country = $requestBody['country'];
-        $zipCode = $requestBody['zipCode'];
-        $phone = $requestBody['phone'];
-        $company = $requestBody['company'];
-
-        // get the ProductFamily from the database by its id
+        // get the supplier from the database by its id
         try {
-            $supplier = $this->entityManager->getRepository(Supplier::class)->find($id);
+            $supplier = $this->dao->getOneEntityBy(Supplier::class, ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
-        try {
-            $companyObject = $this->entityManager->getRepository(Company::class)->findOneBy(['id' => $company]);
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the productFamily is not found
         if (!$supplier) {
-            Request::handleErrorAndQuit(404, new Exception('Supplier not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('Supplier not found'));
+        }
+
+        // get the Supplier data from the request body
+        $name = $requestBody['name'] ?? $supplier->getName();
+        $firstName = $requestBody['firstName'] ?? $supplier->getFirstName();
+        $lastName = $requestBody['lastName'] ?? $supplier->getLastName();
+        $email = $requestBody['email'] ?? $supplier->getEmail();
+        $address = $requestBody['address'] ?? $supplier->getAddress();
+        $city = $requestBody['city'] ?? $supplier->getCity();
+        $country = $requestBody['country'] ?? $supplier->getCountry();
+        $zipCode = $requestBody['zipCode'] ?? $supplier->getZipCode();
+        $phone = $requestBody['phone'] ?? $supplier->getPhone();
+        $company = $requestBody['company'] ?? $supplier->getCompany()->getId();
+
+        try {
+            $company = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        if (!$company) {
+            $this->request->handleErrorAndQuit(404, new Exception('Company not found'));
         }
 
         // update the productFamily
@@ -204,28 +205,21 @@ class SupplierController extends AbstractController
         $supplier->setCountry($country);
         $supplier->setZipCode($zipCode);
         $supplier->setPhone($phone);
-        $supplier->setCompany($companyObject);
-
-        // persist the productFamily
-        try {
-            $this->entityManager->persist($supplier);
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
+        $supplier->setCompany($company);
 
         // flush the entity manager
         try {
-            $this->entityManager->flush();
+            $this->dao->updateEntity($supplier);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                Request::handleErrorAndQuit(409, new Exception('Supplier already exists'));
+                $this->request->handleErrorAndQuit(409, new Exception('Supplier already exists'));
             }
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'Supplier updated');
+        $this->request->handleSuccessAndQuit(200, 'Supplier updated');
 
     }
 
@@ -234,32 +228,25 @@ class SupplierController extends AbstractController
     {
         // get the Supplier from the database by its id
         try {
-            $supplier = $this->entityManager->getRepository(Supplier::class)->find($id);
+            $supplier = $this->dao->getOneEntityBy(Supplier::class, ['id' => $id]);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the Supplier is not found
         if (!$supplier) {
-            Request::handleErrorAndQuit(404, new Exception('Supplier not found'));
+            $this->request->handleErrorAndQuit(404, new Exception('Supplier not found'));
         }
 
         // remove the Supplier
         try {
-            $this->entityManager->remove($supplier);
+            $this->dao->deleteEntity($supplier);
         } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
-        }
-
-        // flush the entity manager
-        try {
-            $this->entityManager->flush();
-        } catch (Exception $e) {
-            Request::handleErrorAndQuit(500, $e);
+            $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        Request::handleSuccessAndQuit(200, 'Supplier deleted');
+        $this->request->handleSuccessAndQuit(200, 'Supplier deleted');
     }
 
 
