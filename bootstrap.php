@@ -31,3 +31,5 @@ $dbParams = [
 $config = ORMSetup::createAttributeMetadataConfiguration($paths, $isDevMode);
 $connection = DriverManager::getConnection($dbParams, $config);
 $entityManager = new EntityManager($connection, $config);
+
+return $dbParams;
