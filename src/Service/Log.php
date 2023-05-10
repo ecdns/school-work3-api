@@ -55,21 +55,21 @@ class Log
         return $context;
     }
 
-    public static function addSuccessLog(string $message): void
+    public function addSuccessLog(string $message): void
     {
         $file = fopen('../log/success.log', 'a+');
         fwrite($file, date('Y-m-d H:i:s') . ' - ' . $message . PHP_EOL);
         fclose($file);
     }
 
-    public static function addErrorLog(string $message): void
+    public function addErrorLog(string $message): void
     {
         $file = fopen('../log/error.log', 'a+');
         fwrite($file, date('Y-m-d H:i:s') . ' - ' . $message . PHP_EOL);
         fclose($file);
     }
 
-    public static function getLog($type): array
+    public function getLog($type): array
     {
         $file = fopen('log/' . $type . '.log', 'r'); // 'r
         $log = [];
@@ -80,7 +80,7 @@ class Log
         return $log;
     }
 
-    public static function emptyLog($type): void
+    public function emptyLog($type): void
     {
         $file = fopen('log/' . $type . '.log', 'w');
         fclose($file);
