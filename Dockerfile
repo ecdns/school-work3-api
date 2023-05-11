@@ -16,6 +16,9 @@ COPY . /var/www/back
 # Set the working directory to the application directory
 WORKDIR /var/www/back
 
+# give permission to the log folder to write logs
+RUN chmod -R 777 /var/www/back/log
+
 # Install dependencies required for composer
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
