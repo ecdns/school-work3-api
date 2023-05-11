@@ -102,3 +102,10 @@
 2023-05-10 17:28:56 - /license/1 - DELETE - PostmanRuntime/7.32.2 - 172.20.0.1 - License deleted
 2023-05-10 17:39:15 - /license - POST - PostmanRuntime/7.32.2 - 172.20.0.1 - License created
 2023-05-10 17:39:22 - /license - GET - PostmanRuntime/7.32.2 - 172.20.0.1 - Licenses found
+2023-05-10 20:58:12 - /license - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - License created
+2023-05-10 20:58:57 - /company - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Company created
+2023-05-11 22:27:48 - /contractType - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - ContractType created
+2023-05-11 22:28:00 - /contractType - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - ContractType found
+2023-05-11 22:28:09 - /contractType/1 - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - ContractType found
+2023-05-11 22:28:51 - /contractType/1 - PUT - PostmanRuntime/7.32.2 - 172.18.0.1 - ContractType updated
+2023-05-11 22:29:14 - /contractType/1 - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - ContractType found

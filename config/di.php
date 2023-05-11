@@ -87,6 +87,16 @@ $builder->addDefinitions([
     'Controller\VatController' => DI\autowire()
         ->constructorParameter('dao', DI\get('Service\DAO'))
         ->constructorParameter('request', DI\get('Service\Request')),
+    'Controller\ContractTypeController' => DI\autowire()
+        ->constructorParameter('dao', DI\get('Service\DAO'))
+        ->constructorParameter('request', DI\get('Service\Request')),
+    'Controller\ProjectController' => DI\autowire()
+        ->constructorParameter('dao', DI\get('Service\DAO'))
+        ->constructorParameter('request', DI\get('Service\Request')),
+    'Controller\ProjectStatusController' => DI\autowire()
+        ->constructorParameter('dao', DI\get('Service\DAO'))
+        ->constructorParameter('request', DI\get('Service\Request')),
+
 
 ]);
 

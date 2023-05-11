@@ -18,7 +18,7 @@ class Project implements EntityInterface
     private int $id;
 
     #[ORM\Column(type: 'string')]
-    private string $title;
+    private string $name;
 
     #[ORM\Column(type: 'string')]
     private string $description;
@@ -54,11 +54,10 @@ class Project implements EntityInterface
     #[ORM\JoinColumn(name: 'project_status', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private ProjectStatus $projectStatus;
 
-    public function __construct(string $title, string $description, Company $company, User $creator ,DateTime $createdAt, Customer $customer, ProjectStatus $projectStatus)
+    public function __construct(string $name, string $description, Company $company, User $creator , Customer $customer, ProjectStatus $projectStatus)
     {
-        $this->title = $title;
+        $this->name = $name;
         $this->description = $description;
-        $this->createdAt = $createdAt;
         $this->company = $company;
         $this->creator = $creator;
         $this->customer = $customer;
@@ -70,14 +69,14 @@ class Project implements EntityInterface
         return $this->id;
     }
 
-    public function getTitle(): string
+    public function getName(): string
     {
-        return $this->title;
+        return $this->name;
     }
 
-    public function setTitle(string $title): void
+    public function setName(string $name): void
     {
-        $this->title = $title;
+        $this->name = $name;
     }
 
     public function getDescription(): string
@@ -258,7 +257,7 @@ class Project implements EntityInterface
     {
         return [
             'id' => $this->id,
-            'title' => $this->title,
+            'name' => $this->name,
             'description' => $this->description,
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
@@ -270,7 +269,7 @@ class Project implements EntityInterface
     {
         return [
             'id' => $this->id,
-            'title' => $this->title,
+            'name' => $this->name,
             'description' => $this->description,
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),

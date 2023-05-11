@@ -6,9 +6,14 @@ namespace Service;
 
 use Controller\CompanyController;
 use Controller\CompanySettingsController;
+use Controller\ContractTypeController;
+use Controller\CustomerController;
+use Controller\CustomerStatusController;
 use Controller\LicenseController;
 use Controller\ProductController;
 use Controller\ProductFamilyController;
+use Controller\ProjectController;
+use Controller\ProjectStatusController;
 use Controller\QuantityUnitController;
 use Controller\RoleController;
 use Controller\SupplierController;
@@ -17,6 +22,7 @@ use Controller\UserSettingsController;
 use Controller\VatController;
 use DI\Container;
 use Doctrine\ORM\EntityManager;
+use Entity\ContractType;
 use Exception;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
@@ -117,6 +123,38 @@ class Router
             $r->addRoute('GET', '/product/{id:\d+}', [ProductController::class, 'getProductById']);
             $r->addRoute('PUT', '/product/{id:\d+}', [ProductController::class, 'updateProduct']);
             $r->addRoute('DELETE', '/product/{id:\d+}', [ProductController::class, 'deleteProduct']);
+
+            // Project routes
+            $r->addRoute('POST', '/project', [ProjectController::class, 'addProject']);
+            $r->addRoute('GET', '/project', [ProjectController::class, 'getProjects']);
+            $r->addRoute('GET', '/project/{id:\d+}', [ProjectController::class, 'getProjectById']);
+            $r->addRoute('GET', '/project/company/{id:\d+}', [ProjectController::class, 'getProjectsByCompany']);
+            $r->addRoute('PUT', '/project/{id:\d+}', [ProjectController::class, 'updateProject']);
+            $r->addRoute('DELETE', '/project/{id:\d+}', [ProjectController::class, 'deleteProject']);
+
+            // ProjectStatus routes
+            $r->addRoute('POST', '/projectStatus', [ProjectStatusController::class, 'addProjectStatus']);
+            $r->addRoute('GET', '/projectStatus', [ProjectStatusController::class, 'getProjectStatuses']);
+            $r->addRoute('GET', '/projectStatus/{id:\d+}', [ProjectStatusController::class, 'getProjectStatusById']);
+            $r->addRoute('PUT', '/projectStatus/{id:\d+}', [ProjectStatusController::class, 'updateProjectStatus']);
+            $r->addRoute('DELETE', '/projectStatus/{id:\d+}', [ProjectStatusController::class, 'deleteProjectStatus']);
+
+            // Customer routes
+            $r->addRoute('POST', '/customer', [CustomerController::class, 'addCustomer']);
+            $r->addRoute('GET', '/customer', [CustomerController::class, 'getCustomers']);
+            $r->addRoute('GET', '/customer/{id:\d+}', [CustomerController::class, 'getCustomerById']);
+            $r->addRoute('GET', '/customer/company/{id:\d+}', [CustomerController::class, 'getCustomersByCompany']);
+            $r->addRoute('PUT', '/customer/{id:\d+}', [CustomerController::class, 'updateCustomer']);
+            $r->addRoute('DELETE', '/customer/{id:\d+}', [CustomerController::class, 'deleteCustomer']);
+
+            //CustomerStatus routes
+            $r->addRoute('POST', '/customerStatus', [CustomerStatusController::class, 'addCustomerStatus']);
+            $r->addRoute('GET', '/customerStatus', [CustomerStatusController::class, 'getCustomerStatuses']);
+            $r->addRoute('GET', '/customerStatus/{id:\d+}', [CustomerStatusController::class, 'getCustomerStatusById']);
+            $r->addRoute('PUT', '/customerStatus/{id:\d+}', [CustomerStatusController::class, 'updateCustomerStatus']);
+            $r->addRoute('DELETE', '/customerStatus/{id:\d+}', [CustomerStatusController::class, 'deleteCustomerStatus']);
+
+
         });
     }
 
