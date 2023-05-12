@@ -96,6 +96,12 @@ $builder->addDefinitions([
     'Controller\ProjectStatusController' => DI\autowire()
         ->constructorParameter('dao', DI\get('Service\DAO'))
         ->constructorParameter('request', DI\get('Service\Request')),
+    'Controller\Customer' => DI\autowire()
+        ->constructorParameter('dao', DI\get('Service\DAO'))
+        ->constructorParameter('request', DI\get('Service\Request')),
+    'Controller\CustomerStatus' => DI\autowire()
+        ->constructorParameter('dao', DI\get('Service\DAO'))
+        ->constructorParameter('request', DI\get('Service\Request')),
 
 
 ]);

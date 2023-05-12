@@ -28,10 +28,10 @@ class ProjectStatusController extends AbstractController
         $requestBody = file_get_contents('php://input');
 
         // it will look like this:
-        // {
-        //     "name": "ProjectStatus 1",
-        //     "description": "This is the first projectStatus"
-        // }
+//         {
+//             "name": "ProjectStatus 1",
+//             "description": "This is the first projectStatus"
+//         }
 
         // decode the json
         $requestBody = json_decode($requestBody, true);
@@ -65,7 +65,7 @@ class ProjectStatusController extends AbstractController
     }
 
     //function for getting all ProjectStatus
-    public function getProductFamilies(): void
+    public function getProjectStatuses(): void
     {
         // get all the ProjectStatus from the database
         try {

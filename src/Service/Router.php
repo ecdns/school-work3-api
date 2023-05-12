@@ -143,7 +143,7 @@ class Router
             $r->addRoute('POST', '/customer', [CustomerController::class, 'addCustomer']);
             $r->addRoute('GET', '/customer', [CustomerController::class, 'getCustomers']);
             $r->addRoute('GET', '/customer/{id:\d+}', [CustomerController::class, 'getCustomerById']);
-            $r->addRoute('GET', '/customer/company/{id:\d+}', [CustomerController::class, 'getCustomersByCompany']);
+            $r->addRoute('GET', '/customer/company/{id:\d+}', [CustomerController::class, 'getCustomerByCompany']);
             $r->addRoute('PUT', '/customer/{id:\d+}', [CustomerController::class, 'updateCustomer']);
             $r->addRoute('DELETE', '/customer/{id:\d+}', [CustomerController::class, 'deleteCustomer']);
 

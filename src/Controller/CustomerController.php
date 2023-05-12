@@ -36,19 +36,19 @@ class CustomerController extends AbstractController
         $requestBody = file_get_contents('php://input');
 
         // it will look like this:
-        // {
-        //     "firstName": "John",
-        //     "lastName": "Doe",
-        //     "email": "john.doe@example",
-        //     "address": "John Doe Street 1",
-        //     "city": "John Doe City",
-        //     "country": "John Doe Country",
-        //     "zipCode": "12345",
-        //     "phone": "123456789",
-        //     "company": 1,
-        //     "user": 1,
-        //     "status": 1
-        // }
+//         {
+//             "firstName": "John",
+//             "lastName": "Doe",
+//             "email": "john.doe@example",
+//             "address": "John Doe Street 1",
+//             "city": "John Doe City",
+//             "country": "John Doe Country",
+//             "zipCode": "12345",
+//             "phone": "123456789",
+//             "company": 1,
+//             "user": 1,
+//             "status": 1
+//         }
 
         // decode the json
         $requestBody = json_decode($requestBody, true);
@@ -139,7 +139,7 @@ class CustomerController extends AbstractController
         }
 
         // construct the response with the customer data
-        $response = $customer->toFullArrayWithUsers();
+        $response = $customer->toArray();
 
         // set the response
         $this->request->handleSuccessAndQuit(200, 'Customer found', $response);
@@ -151,18 +151,21 @@ class CustomerController extends AbstractController
     {
         // get the customer from the database by its id
         try {
-            $customer = $this->dao->getOneEntityBy(Customer::class, ['company' => $id]);
+            $customers = $this->dao->getEntitiesBy(Customer::class, ['company' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the customer is not found, return an error
-        if (!$customer) {
+        if (!$customers) {
             $this->request->handleErrorAndQuit(404, new Exception('Customer not found'));
         }
 
-        // construct the response with the customer data
-        $response = $customer->toFullArrayWithUsers();
+        // construct the response with the companies data
+        $response = [];
+        foreach ($customers as $customer) {
+            $response[] = $customer->toArray();
+        }
 
         // set the response
         $this->request->handleSuccessAndQuit(200, 'Customer found', $response);
@@ -218,7 +221,7 @@ class CustomerController extends AbstractController
         $phone = $requestBody['phone'] ?? $customer->getPhone();
         $company = $requestBody['company'] ?? $customer->getCompany()->getId();
         $user = $requestBody['user'] ?? $customer->getUser()->getId();
-        $status = $requestBody['status'] ?? $customer->getCustomerStatus()->getId();
+        $status = $requestBody['status'] ?? $customer->getStatus()->getId();
 
         // get the controller from the database by its name
         try {
@@ -244,7 +247,7 @@ class CustomerController extends AbstractController
         $customer->setPhone($phone);
         $customer->setCompany($companyObject);
         $customer->setUser($userObject);
-        $customer->setCustomerStatus($customerStatusObject);
+        $customer->setStatus($customerStatusObject);
 
         // update the customer
         try {

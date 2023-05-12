@@ -31,3 +31,10 @@
 2023-05-11 22:24:34 - /product/ - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Not found
 2023-05-11 22:25:23 - /product - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Invalid request data
 2023-05-11 22:26:47 - /product - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Invalid request data
+2023-05-12 14:31:47 - /projectStatus - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - An exception occurred in the driver: SQLSTATE[HY000] [2002] No such file or directory
+2023-05-12 14:37:32 - /projectStatus/1 - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - ProjectStatus not found
+2023-05-12 14:38:57 - /projectStatus/ - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Not found
+2023-05-12 14:43:19 - /customer - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Company, User or CustomerStatus not found
+2023-05-12 14:47:13 - /comany - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Not found
+2023-05-12 14:51:45 - /customer/company/1 - PUT - PostmanRuntime/7.32.2 - 172.18.0.1 - Method not allowed. Allowed methods: GET
+2023-05-12 15:18:27 - /project/1 - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Project not found

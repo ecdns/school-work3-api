@@ -73,9 +73,6 @@ class Customer implements EntityInterface
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: OrderForm::class)]
     private Collection $orderForms;
 
-    #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Contract::class)]
-    private Collection $contracts;
-
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Project::class)]
     private Collection $projects;
 
@@ -272,15 +269,6 @@ class Customer implements EntityInterface
         $this->orderForms = $orderForms;
     }
 
-    public function getContracts(): Collection
-    {
-        return $this->contracts;
-    }
-
-    public function setContracts(Collection $contracts): void
-    {
-        $this->contracts = $contracts;
-    }
 
     public function getProjects(): Collection
     {
@@ -329,7 +317,6 @@ class Customer implements EntityInterface
             'estimates' => $this->getEstimates(),
             'invoices' => $this->getInvoices(),
             'orderForms' => $this->getOrderForms(),
-            'contracts' => $this->getContracts(),
             'projects' => $this->getProjects(),
         ];
     }

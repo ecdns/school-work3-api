@@ -84,9 +84,6 @@ class Company implements EntityInterface
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Estimate::class)]
     private Collection $estimates;
 
-    #[ORM\OneToMany(mappedBy: 'company', targetEntity: Contract::class)]
-    private Collection $contracts;
-
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Project::class)]
     private Collection $projects;
 
@@ -367,19 +364,6 @@ class Company implements EntityInterface
         $this->estimates = $estimates;
     }
 
-    public function getContracts(): array
-    {
-        $contracts = [];
-        foreach ($this->contracts as $contract) {
-            $contracts[] = $contract->getName();
-        }
-        return $contracts;
-    }
-
-    public function setContracts(Collection $contracts): void
-    {
-        $this->contracts = $contracts;
-    }
 
     public function getCompanySettings(): array
     {
@@ -467,7 +451,6 @@ class Company implements EntityInterface
             'orderForms' => $this->getOrderForms(),
             'invoices' => $this->getInvoices(),
             'estimates' => $this->getEstimates(),
-            'contracts' => $this->getContracts(),
             'companySettings' => $this->getCompanySettings() ? $this->getCompanySettings() : null,
             'projects' => $this->getProjects(),
         ];

@@ -94,21 +94,22 @@ class Project implements EntityInterface
         return $this->createdAt;
     }
 
-    #[ORM\PrePersist]
-    public function setCreatedAt(DateTime $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
 
     public function getUpdatedAt(): DateTime|null
     {
         return $this->updatedAt;
     }
 
-    #[ORM\PreUpdate]
-    public function setUpdatedAt(DateTime|null $updatedAt): void
+    #[ORM\PrePersist]
+    public function setCreatedAt(): void
     {
-        $this->updatedAt = $updatedAt;
+        $this->createdAt = new DateTime();
+    }
+
+    #[ORM\PreUpdate]
+    public function setUpdatedAt(): void
+    {
+        $this->updatedAt = new DateTime();
     }
 
     public function getCompany(): Company

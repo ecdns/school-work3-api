@@ -65,7 +65,7 @@ class CustomerStatusController extends AbstractController
     }
 
     //function for getting all CustomerStatus
-    public function getProductFamilies(): void
+    public function getCustomerStatuses(): void
     {
         // get all the CustomerStatus from the database
         try {

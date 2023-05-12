@@ -33,14 +33,14 @@ class ProjectController extends AbstractController
         $requestBody = file_get_contents('php://input');
 
         // it will look like this:
-        // {
-        //     "name": "Project 1",
-        //     "description": "This is the first project",
-        //     "company": 1,
-        //     "creator": 1,
-        //     "customer": 1,
-        //     "projectStatus": 1
-        // }
+//        {
+//            "name": "Project 1",
+//             "description": "This is the first project",
+//             "company": 1,
+//             "creator": 1,
+//             "customer": 1,
+//             "projectStatus": 1
+//         }
 
 
         // decode the json
