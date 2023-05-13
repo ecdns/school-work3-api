@@ -1,5 +1,9 @@
-# Définition du job "clone"
-clone:
+stages:
+  - deploy
+
+# Définition du job "deploy"
+Deploiement:
+  stage: deploy
   # Spécification du runner
   tags:
     - shell
