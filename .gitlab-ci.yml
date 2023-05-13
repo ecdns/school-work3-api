@@ -22,6 +22,8 @@ stages:          # List of stages for jobs, and their order of execution
 deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
+  tags:
+    - shell
   script:
     - echo "Deploying application..."
     - (echo "Extinction du docker" && cd ~/Cube-3-back && docker compose down) || echo "Projet non trouvé"
