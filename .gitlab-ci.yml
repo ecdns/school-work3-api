@@ -26,5 +26,5 @@ deploy-job:      # This job runs in the deploy stage.
     - echo "Deploying application..."
     - (cd ~/Cube-3-back && docker compose down) || echo "Projet non trouvé"
     - apt-get update && apt-get install -y git  # Installation de Git
-    - (cd ~/Cube-3-back && git pull --rebase && echo "Update du projet") || (cd ~/ && git clone $CI_PROJECT_URL && echo "Clonage du projet")   # Clonage du projet
+    - (cd ~/Cube-3-back && git pull --rebase && echo "Update du projet") || (cd ~/ && git clone https://dodolereporter:$TOKEN_GITLAB@gitlab.com/ecdns1/Cube-3-back.git && echo "Clonage du projet")   # Clonage du projet
     - cd ~/Cube-3-back && echo "Démarage du projet"
