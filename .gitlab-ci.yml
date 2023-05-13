@@ -16,6 +16,8 @@ stages:
 deploy:
   stage: deploy
   script:
+  - apt-get update && apt-get install -y sshpass # installer sshpass si nécessaire
+  
     # Connexion au serveur distant via SSH avec authentification par mot de passe
     - sshpass -p "$SSH_PASSWORD" ssh -p "$SSH_PORT" "$SSH_USER"@"$SSH_HOST" "echo Connected"
 
