@@ -24,7 +24,7 @@ deploy-job:      # This job runs in the deploy stage.
   environment: production
   script:
     - echo "Deploying application..."
-    - (cd ~/Cube-3-back && docker compose down) || echo "Projet non trouvé"
-    - apt-get update && apt-get install -y git  # Installation de Git
-    - (cd ~/Cube-3-back && git pull --rebase && echo "Update du projet") || (cd ~/ && git clone https://dodolereporter:$TOKEN_GITLAB@gitlab.com/ecdns1/Cube-3-back.git && echo "Clonage du projet")   # Clonage du projet
-    - cd ~/Cube-3-back && echo "Démarage du projet"
+    - (echo "Extinction du docker" && cd ~/Cube-3-back && docker compose down) || echo "Projet non trouvé"
+    - echo "Installation de git" && apt-get update && apt-get install -y git  # Installation de Git
+    - (cd ~/Cube-3-back && git pull --rebase && echo "Update du projet") || (echo "Clonage du projet" && cd ~/ && git clone https://dodolereporter:$TOKEN_GITLAB@gitlab.com/ecdns1/Cube-3-back.git)   # Clonage du projet
+    - echo "Démarage du projet && cd ~/Cube-3-back && docker compose up
