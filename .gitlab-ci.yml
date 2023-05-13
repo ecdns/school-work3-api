@@ -1,35 +1,11 @@
-# Spécifier l'image de base pour les jobs
-image: debian:stable-slim
+# Définition du job "clone"
+clone:
+  # Spécification du runner
+  tags:
+    - shell
 
-# Définition des variables d'environnement
-variables:
-  SSH_USER: "$SSH_USER"
-  SSH_PASSWORD: "$SSH_PASSWORD"
-  SSH_HOST: "$SSH_HOST"
-  SSH_PORT: "$SSH_PORT"
-  PROJECT_PATH: "$PROJECT_PATH"
-
-# Jobs de la pipeline
-stages:
-  - deploy
-
-deploy:
-  stage: deploy
+  # Définition des étapes du job
   script:
-    - echo "SSH_USER=$SSH_USER"
-    - echo "SSH_PASSWORD=$SSH_PASSWORD"
-    - echo "SSH_HOST=$SSH_HOST"
-    - echo "SSH_PORT=$SSH_PORT"
-    - echo "PROJECT_PATH=$PROJECT_PATH"
-    - apt-get update && apt-get install -y sshpass # installer sshpass si nécessaire
-  
-    # Connexion au serveur distant via SSH avec authentification par mot de passe
-    - sshpass -p "$SSH_PASSWORD" ssh -p "$SSH_PORT" "$SSH_USER"@"$SSH_HOST" "echo Connected"
-
-    # Cloner le dépôt Git ou récupérer les dernières modifications
-    - sshpass -p "$SSH_PASSWORD" ssh -p "$SSH_PORT" "$SSH_USER"@"$SSH_HOST" "( cd ~/Cube-3-back && git pull --rebase ) || git clone $PROJECT_PATH"
-
-    # Lancement de la composition Docker
-    - sshpass -p "$SSH_PASSWORD" ssh -p "$SSH_PORT" "$SSH_USER"@"$SSH_HOST" "cd ~/Cube-3-back && docker compose down && docker compose down"
-    
-  when: manual
+    - apt-get update && apt-get install -y git  # Installation de Git
+    - (cd ~/Cube-3-back/ && git pull --rebase) || ( cd ~/ && git clone $CI_PROJECT_URL)  # Clonage du projet
+    - cd ~/Cube-3-back/ && docker compose down && docker compose up
