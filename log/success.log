@@ -170,3 +170,18 @@
 2023-05-22 12:14:36 - /project - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Projects found
 2023-05-22 12:14:40 - /project - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Projects found
 2023-05-22 12:15:37 - /project/1 - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Project found
+2023-05-23 00:29:26 - /license - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - License created
+2023-05-23 00:29:56 - /company - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Company created
+2023-05-23 00:30:10 - /role - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Role created
+2023-05-23 00:30:52 - /user - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - User created
+2023-05-23 00:31:12 - /companySettings - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Company settings created
+2023-05-23 00:31:30 - /userSettings - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - User settings created successfully
+2023-05-23 00:32:33 - /projectStatus - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - ProjectStatus created
+2023-05-23 00:34:10 - /customerStatus - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - CustomerStatus created
+2023-05-23 00:35:06 - /customer - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Customer created
+2023-05-23 00:35:58 - /project - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Project created
+2023-05-23 00:38:01 - /supplier - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Supplier created
+2023-05-23 00:40:22 - /productFamily - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - ProductFamily created
+2023-05-23 00:41:42 - /vat - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Vat created
+2023-05-23 00:42:42 - /quantityUnit - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - QuantityUnit created
+2023-05-23 00:43:28 - /product - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Product created
