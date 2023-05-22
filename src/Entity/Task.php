@@ -35,16 +35,16 @@ class Task implements EntityInterface
     public DateTime|null $updatedAt = null;
 
     #[ORM\OneToMany(mappedBy: 'task', targetEntity: TaskStatus::class)]
-    public Collection $taskStatuses;
+    public TaskStatus $taskStatuses;
 
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'tasks')]
-    private Collection $users;
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'tasks')]
+    private User $users;
 
     #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'tasks')]
     #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     public Project $project;
 
-    public function __construct(string $title, string $description, string $location, string $dueDate, Project $project, Collection $users)
+    public function __construct(string $title, string $description, string $location, string $dueDate, Project $project, User $users)
     {
         $this->title = $title;
         $this->description = $description;
@@ -121,15 +121,16 @@ class Task implements EntityInterface
         return $this->updatedAt;
     }
 
-    public function getTaskStatuses(): Collection
+    public function getTaskStatuses(): TaskStatus
     {
         return $this->taskStatuses;
     }
 
-    public function getUsers(): Collection
+    public function getUsers(): User
     {
         return $this->users;
     }
+
 
     public function getProject(): Project
     {
@@ -143,22 +144,12 @@ class Task implements EntityInterface
 
     public function addTaskStatus(TaskStatus $taskStatus): void
     {
-        $this->taskStatuses->add($taskStatus);
+        $this->taskStatuses = $taskStatus;
     }
 
-    public function addUser(User $user): void
+    public function setUser(User $user): void
     {
-        $this->users->add($user);
-    }
-
-    public function removeTaskStatus(TaskStatus $taskStatus): void
-    {
-        $this->taskStatuses->removeElement($taskStatus);
-    }
-
-    public function removeUser(User $user): void
-    {
-        $this->users->removeElement($user);
+        $this->users = $user;
     }
 
     public function __toString(): string
@@ -189,8 +180,8 @@ class Task implements EntityInterface
             'dueDate' => $this->dueDate,
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
-            'taskStatuses' => $this->taskStatuses->map(fn (TaskStatus $taskStatus) => $taskStatus->toArray())->toArray(),
-            'users' => $this->users->map(fn (User $user) => $user->toArray())->toArray(),
+            'taskStatuses' => $this->taskStatuses->toArray(),
+            'users' => $this->users->toArray(),
             'project' => $this->project->toArray(),
         ];
     }

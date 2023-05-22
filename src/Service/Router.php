@@ -55,10 +55,10 @@ class Router
             $r->addRoute('DELETE', '/user/{id:\d+}', [UserController::class, 'deleteUser']);
 
             // user settings routes
-            $r->addRoute('POST', '/user-settings', [UserSettingsController::class, 'addUserSettings']);
-            $r->addRoute('GET', '/user-settings/{id:\d+}', [UserSettingsController::class, 'getUserSettingsById']);
-            $r->addRoute('PUT', '/user-settings/{id:\d+}', [UserSettingsController::class, 'updateUserSettings']);
-            $r->addRoute('DELETE', '/user-settings/{id:\d+}', [UserSettingsController::class, 'deleteUserSettings']);
+            $r->addRoute('POST', '/userSettings', [UserSettingsController::class, 'addUserSettings']);
+            $r->addRoute('GET', '/userSettings/{id:\d+}', [UserSettingsController::class, 'getUserSettingsById']);
+            $r->addRoute('PUT', '/userSettings/{id:\d+}', [UserSettingsController::class, 'updateUserSettings']);
+            $r->addRoute('DELETE', '/userSettings/{id:\d+}', [UserSettingsController::class, 'deleteUserSettings']);
 
             // company routes
             $r->addRoute('POST', '/company', [CompanyController::class, 'addCompany']);
@@ -69,10 +69,10 @@ class Router
             $r->addRoute('DELETE', '/company/{id:\d+}', [CompanyController::class, 'deleteCompany']);
 
             // company settings routes
-            $r->addRoute('POST', '/company-settings', [CompanySettingsController::class, 'addCompanySettings']);
-            $r->addRoute('GET', '/company-settings/{id:\d+}', [CompanySettingsController::class, 'getCompanySettingsById']);
-            $r->addRoute('PUT', '/company-settings/{id:\d+}', [CompanySettingsController::class, 'updateCompanySettings']);
-            $r->addRoute('DELETE', '/company-settings/{id:\d+}', [CompanySettingsController::class, 'deleteCompanySettings']);
+            $r->addRoute('POST', '/companySettings', [CompanySettingsController::class, 'addCompanySettings']);
+            $r->addRoute('GET', '/companySettings/{id:\d+}', [CompanySettingsController::class, 'getCompanySettingsById']);
+            $r->addRoute('PUT', '/companySettings/{id:\d+}', [CompanySettingsController::class, 'updateCompanySettings']);
+            $r->addRoute('DELETE', '/companySettings/{id:\d+}', [CompanySettingsController::class, 'deleteCompanySettings']);
 
             // license routes
             $r->addRoute('POST', '/license', [LicenseController::class, 'addLicense']);

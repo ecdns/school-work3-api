@@ -38,3 +38,23 @@
 2023-05-12 14:47:13 - /comany - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Not found
 2023-05-12 14:51:45 - /customer/company/1 - PUT - PostmanRuntime/7.32.2 - 172.18.0.1 - Method not allowed. Allowed methods: GET
 2023-05-12 15:18:27 - /project/1 - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Project not found
+2023-05-22 08:45:11 - / - GET - Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 - 172.18.0.1 - Not found
+2023-05-22 08:45:11 - /favicon.ico - GET - http://localhost:8080/ - Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 - 172.18.0.1 - Not found
+2023-05-22 08:45:18 - / - GET - Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 - 172.18.0.1 - Not found
+2023-05-22 08:45:27 - /user - GET - Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 - 172.18.0.1 - No users found
+2023-05-22 09:03:03 - /user - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Role not found
+2023-05-22 09:03:11 - /user - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Role not found
+2023-05-22 09:04:54 - /favicon.ico - GET - http://localhost:8080/user - Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 - 172.18.0.1 - Not found
+2023-05-22 11:03:17 - /user - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Role not found
+2023-05-22 11:03:58 - /user - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - No users found
+2023-05-22 11:20:09 - /license - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - An exception occurred in the driver: SQLSTATE[HY000] [2002] Connection refused
+2023-05-22 11:21:30 - /company - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Invalid request data
+2023-05-22 11:48:58 - /companySettings - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Not found
+2023-05-22 11:50:07 - /companySettings - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Method not allowed. Allowed methods: POST
+2023-05-22 11:50:18 - /companySettings - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Method not allowed. Allowed methods: POST
+2023-05-22 12:07:17 - /customerTask - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Not found
+2023-05-22 12:08:44 - /customerTask - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Not found
+2023-05-22 12:09:41 - /customerTask - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Not found
+2023-05-22 12:10:58 - /taskStatus - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Not found
+2023-05-22 12:11:56 - /project - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Invalid request data
+2023-05-22 12:14:25 - /projet - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Not found

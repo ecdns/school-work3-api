@@ -62,13 +62,13 @@ class UserController extends AbstractController
         $job = $requestBody['job'];
         $phone = $requestBody['phone'];
         $role = $requestBody['role'];
-        $companyName = $requestBody['company'];
+        $company= $requestBody['company'];
 
 
         // get the company and role from the database
         try {
-            $role = $this->dao->getOneEntityBy(Role::class, ['name' => $role]);
-            $company = $this->dao->getOneEntityBy(Company::class, ['name' => $companyName]);
+            $role = $this->dao->getOneEntityBy(Role::class, ['id' => $role]);
+            $company = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -191,12 +191,12 @@ class UserController extends AbstractController
         $job = $requestBody['job'] ?? $user->getJob();
         $phone = $requestBody['phone'] ?? $user->getPhone();
         $role = $requestBody['role'] ?? $user->getRole()->getName();
-        $companyName = $requestBody['company'] ?? $user->getCompany()->getName();
+        $company = $requestBody['company'] ?? $user->getCompany()->getName();
 
         // get the company and role from the database
         try {
-            $role = $this->dao->getOneEntityBy(Role::class, ['name' => $role]);
-            $company = $this->dao->getOneEntityBy(Company::class, ['name' => $companyName]);
+            $role = $this->dao->getOneEntityBy(Role::class, ['id' => $role]);
+            $company = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
 
             if (!$role || !$company) {
                 $this->request->handleErrorAndQuit(404, new Exception('Role or company not found'));

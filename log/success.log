@@ -146,3 +146,27 @@
 2023-05-12 15:19:29 - /project - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Projects found
 2023-05-12 15:19:43 - /project/company/1 - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Projects found
 2023-05-12 15:20:10 - /project/1 - DELETE - PostmanRuntime/7.32.2 - 172.18.0.1 - Project deleted
+2023-05-22 08:56:20 - /license - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - License created
+2023-05-22 08:56:44 - /company - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Company created
+2023-05-22 11:03:27 - /role - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Roles found
+2023-05-22 11:03:47 - /role - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Role created
+2023-05-22 11:03:51 - /role - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Roles found
+2023-05-22 11:04:17 - /user - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - User created
+2023-05-22 11:20:30 - /license - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Licenses found
+2023-05-22 11:20:34 - /license - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - License created
+2023-05-22 11:21:00 - /role - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Role created
+2023-05-22 11:21:13 - /company - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Company created
+2023-05-22 11:21:35 - /user - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - User created
+2023-05-22 11:23:57 - /user - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Users found
+2023-05-22 11:44:35 - /user - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Users found
+2023-05-22 11:50:12 - /companySettings - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Company settings created
+2023-05-22 11:50:51 - /userSettings - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - User settings created successfully
+2023-05-22 12:03:48 - /user - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Users found
+2023-05-22 12:05:55 - /company - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Companies found
+2023-05-22 12:10:30 - /customerStatus - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - CustomerStatus created
+2023-05-22 12:11:47 - /projectStatus - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - ProjectStatus created
+2023-05-22 12:14:08 - /customer - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Customer created
+2023-05-22 12:14:31 - /project - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Project created
+2023-05-22 12:14:36 - /project - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Projects found
+2023-05-22 12:14:40 - /project - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Projects found
+2023-05-22 12:15:37 - /project/1 - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Project found
