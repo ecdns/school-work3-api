@@ -29,7 +29,7 @@ class TaskStatus implements EntityInterface
     private DateTime|null $updatedAt = null;
 
     #[ORM\OneToMany(mappedBy: 'taskStatus', targetEntity: Task::class)]
-    private Task $tasks;
+    private Collection $tasks;
 
     public function __construct(string $name, string $description)
     {
@@ -83,13 +83,12 @@ class TaskStatus implements EntityInterface
     {
         return $this->updatedAt;
     }
-
-    public function getTasks(): Task
+    public function getTasks(): Collection
     {
         return $this->tasks;
     }
 
-    public function setTasks(Task $tasks): void
+    public function setTasks(Collection $tasks): void
     {
         $this->tasks = $tasks;
     }
@@ -118,7 +117,6 @@ class TaskStatus implements EntityInterface
             'description' => $this->description,
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
-            'tasks' => $this->tasks->map(fn (Task $task) => $task->toArray())->toArray(),
         ];
     }
 

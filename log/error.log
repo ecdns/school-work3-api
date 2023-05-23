@@ -66,3 +66,6 @@
 2023-05-23 00:32:25 - /projectStatus - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Invalid request data
 2023-05-23 00:33:34 - /project - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Company, User, Customer or ProjectStatus not found
 2023-05-23 00:40:00 - /productFamilly - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Not found
+2023-05-24 00:02:30 - /taskStatus - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - An exception occurred in the driver: SQLSTATE[HY000] [2002] Connection refused
+2023-05-24 00:14:25 - /task - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - An exception occurred in the driver: SQLSTATE[HY000] [2002] Connection refused
+2023-05-24 00:25:45 - /task/ - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Not found

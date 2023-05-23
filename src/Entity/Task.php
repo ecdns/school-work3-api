@@ -34,8 +34,9 @@ class Task implements EntityInterface
     #[ORM\Column(type: 'datetime', nullable: true)]
     public DateTime|null $updatedAt = null;
 
-    #[ORM\OneToMany(mappedBy: 'task', targetEntity: TaskStatus::class)]
-    public TaskStatus $taskStatuses;
+    #[ORM\ManyToOne(targetEntity: TaskStatus::class, inversedBy: 'tasks')]
+    #[ORM\JoinColumn(name: 'task_status_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    public TaskStatus $taskStatus;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'tasks')]
     private User $users;
@@ -44,7 +45,7 @@ class Task implements EntityInterface
     #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     public Project $project;
 
-    public function __construct(string $title, string $description, string $location, string $dueDate, Project $project, User $users)
+    public function __construct(string $title, string $description, string $location, string $dueDate, Project $project, User $users, TaskStatus $taskStatus)
     {
         $this->title = $title;
         $this->description = $description;
@@ -52,6 +53,7 @@ class Task implements EntityInterface
         $this->dueDate = $dueDate;
         $this->project = $project;
         $this->users = $users;
+        $this->taskStatus = $taskStatus;
     }
 
     public function getId(): int
@@ -121,9 +123,9 @@ class Task implements EntityInterface
         return $this->updatedAt;
     }
 
-    public function getTaskStatuses(): TaskStatus
+    public function getTaskStatus(): TaskStatus
     {
-        return $this->taskStatuses;
+        return $this->taskStatus;
     }
 
     public function getUsers(): User
@@ -142,9 +144,9 @@ class Task implements EntityInterface
         $this->project = $project;
     }
 
-    public function addTaskStatus(TaskStatus $taskStatus): void
+    public function setTaskStatus(TaskStatus $taskStatus): void
     {
-        $this->taskStatuses = $taskStatus;
+        $this->taskStatus = $taskStatus;
     }
 
     public function setUser(User $user): void
@@ -167,6 +169,7 @@ class Task implements EntityInterface
             'dueDate' => $this->dueDate,
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
+            'taskStatus' => $this->taskStatus->toArray(),
         ];
     }
 
@@ -180,7 +183,7 @@ class Task implements EntityInterface
             'dueDate' => $this->dueDate,
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
-            'taskStatuses' => $this->taskStatuses->toArray(),
+            'taskStatuses' => $this->taskStatus->toArray(),
             'users' => $this->users->toArray(),
             'project' => $this->project->toArray(),
         ];

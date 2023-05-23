@@ -2,9 +2,8 @@
 
 namespace Controller;
 
-// controller for entity ProjectStatus
+// controller for entity TaskStatus
 use Doctrine\ORM\EntityManager;
-use Entity\ProjectStatus;
 use Entity\TaskStatus;
 use Exception;
 use Service\DAO;
@@ -30,8 +29,8 @@ class TaskStatusController extends AbstractController
 
         // it will look like this:
 //         {
-//             "name": "ProjectStatus 1",
-//             "description": "This is the first projectStatus"
+//             "name": "TaskStatus 1",
+//             "description": "This is the first taskStatus"
 //         }
 
         // decode the json
@@ -42,16 +41,16 @@ class TaskStatusController extends AbstractController
             $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
-        // get the ProjectStatus data from the request body
+        // get the TaskStatus data from the request body
         $name = $requestBody['name'];
         $description = $requestBody['description'];
 
-        // create a new projectStatus
-        $projectStatus = new TaskStatus($name, $description);
+        // create a new taskStatus
+        $taskStatus = new TaskStatus($name, $description);
 
-        // persist the projectStatus
+        // persist the taskStatus
         try {
-            $this->dao->addEntity($projectStatus);
+            $this->dao->addEntity($taskStatus);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -61,61 +60,61 @@ class TaskStatusController extends AbstractController
         }
 
         // handle the response
-        $this->request->handleSuccessAndQuit(201, 'ProjectStatus created');
+        $this->request->handleSuccessAndQuit(201, 'TaskStatus created');
 
     }
 
-    //function for getting all ProjectStatus
-    public function getProjectStatuses(): void
+    //function for getting all TaskStatus
+    public function getTaskStatuses(): void
     {
-        // get all the ProjectStatus from the database
+        // get all the TaskStatus from the database
         try {
-            $productFamilies = $this->dao->getAllEntities(ProjectStatus::class);
+            $productFamilies = $this->dao->getAllEntities(TaskStatus::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
 
         // set the response
         $response = [];
-        foreach ($productFamilies as $projectStatus) {
-            $response[] = $projectStatus->toArray();
+        foreach ($productFamilies as $taskStatus) {
+            $response[] = $taskStatus->toArray();
         }
 
         // handle the response
-        $this->request->handleSuccessAndQuit(200, 'ProjectStatus found', $response);
+        $this->request->handleSuccessAndQuit(200, 'TaskStatus found', $response);
     }
 
-    public function getProjectStatusById(int $id): void
+    public function getTaskStatusById(int $id): void
     {
         // get the license from the database by its id
         try {
-            $projectStatus = $this->dao->getOneEntityBy(ProjectStatus::class, ['id' => $id]);
+            $taskStatus = $this->dao->getOneEntityBy(TaskStatus::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the license is not found
-        if (!$projectStatus) {
-            $this->request->handleErrorAndQuit(404, new Exception('ProjectStatus not found'));
+        if (!$taskStatus) {
+            $this->request->handleErrorAndQuit(404, new Exception('TaskStatus not found'));
         }
 
         // set the response
-        $response = $projectStatus->toArray();
+        $response = $taskStatus->toArray();
 
         // handle the response
-        $this->request->handleSuccessAndQuit(200, 'ProjectStatus found', $response);
+        $this->request->handleSuccessAndQuit(200, 'TaskStatus found', $response);
     }
 
-    //function for updating a projectStatus
-    public function updateProjectStatus(int $id): void
+    //function for updating a taskStatus
+    public function updateTaskStatus(int $id): void
     {
         // get the request body
         $requestBody = file_get_contents('php://input');
 
         // it will look like this:
         // {
-        //     "name": "ProjectStatus 1",
-        //     "description": "This is the first projectStatus"
+        //     "name": "TaskStatus 1",
+        //     "description": "This is the first taskStatus"
         // }
 
         // decode the json
@@ -126,66 +125,66 @@ class TaskStatusController extends AbstractController
             $this->request->handleErrorAndQuit(400, new Exception('Invalid request data'));
         }
 
-        // get the ProjectStatus from the database by its id
+        // get the TaskStatus from the database by its id
         try {
-            $projectStatus = $this->dao->getOneEntityBy(ProjectStatus::class, ['id' => $id]);
+            $taskStatus = $this->dao->getOneEntityBy(TaskStatus::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
 
-        // if the projectStatus is not found
-        if (!$projectStatus) {
-            $this->request->handleErrorAndQuit(404, new Exception('ProjectStatus not found'));
+        // if the taskStatus is not found
+        if (!$taskStatus) {
+            $this->request->handleErrorAndQuit(404, new Exception('TaskStatus not found'));
         }
 
-        // get the ProjectStatus data from the request body
-        $name = $requestBody['name'] ?? $projectStatus->getName();
-        $description = $requestBody['description'] ?? $projectStatus->getDescription();
+        // get the TaskStatus data from the request body
+        $name = $requestBody['name'] ?? $taskStatus->getName();
+        $description = $requestBody['description'] ?? $taskStatus->getDescription();
 
-        // update the projectStatus
-        $projectStatus->setName($name);
-        $projectStatus->setDescription($description);
+        // update the taskStatus
+        $taskStatus->setName($name);
+        $taskStatus->setDescription($description);
 
-        // persist the projectStatus
+        // persist the taskStatus
         try {
-            $this->dao->updateEntity($projectStatus);
+            $this->dao->updateEntity($taskStatus);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
-                $this->request->handleErrorAndQuit(409, new Exception('ProjectStatus already exists'));
+                $this->request->handleErrorAndQuit(409, new Exception('TaskStatus already exists'));
             }
             $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        $this->request->handleSuccessAndQuit(200, 'ProjectStatus updated');
+        $this->request->handleSuccessAndQuit(200, 'TaskStatus updated');
 
     }
 
-    //function for deleting a ProjectStatus
-    public function deleteProjectStatus(int $id): void
+    //function for deleting a TaskStatus
+    public function deleteTaskStatus(int $id): void
     {
-        // get the ProjectStatus from the database by its id
+        // get the TaskStatus from the database by its id
         try {
-            $projectStatus = $this->dao->getOneEntityBy(ProjectStatus::class, ['id' => $id]);
+            $taskStatus = $this->dao->getOneEntityBy(TaskStatus::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
 
-        // if the ProjectStatus is not found
-        if (!$projectStatus) {
-            $this->request->handleErrorAndQuit(404, new Exception('ProjectStatus not found'));
+        // if the TaskStatus is not found
+        if (!$taskStatus) {
+            $this->request->handleErrorAndQuit(404, new Exception('TaskStatus not found'));
         }
 
-        // remove the ProjectStatus
+        // remove the TaskStatus
         try {
-            $this->dao->deleteEntity($projectStatus);
+            $this->dao->deleteEntity($taskStatus);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
 
         // handle the response
-        $this->request->handleSuccessAndQuit(200, 'ProjectStatus deleted');
+        $this->request->handleSuccessAndQuit(200, 'TaskStatus deleted');
     }
 
 }

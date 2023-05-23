@@ -17,6 +17,8 @@ use Controller\ProjectStatusController;
 use Controller\QuantityUnitController;
 use Controller\RoleController;
 use Controller\SupplierController;
+use Controller\TaskController;
+use Controller\TaskStatusController;
 use Controller\UserController;
 use Controller\UserSettingsController;
 use Controller\VatController;
@@ -153,6 +155,23 @@ class Router
             $r->addRoute('GET', '/customerStatus/{id:\d+}', [CustomerStatusController::class, 'getCustomerStatusById']);
             $r->addRoute('PUT', '/customerStatus/{id:\d+}', [CustomerStatusController::class, 'updateCustomerStatus']);
             $r->addRoute('DELETE', '/customerStatus/{id:\d+}', [CustomerStatusController::class, 'deleteCustomerStatus']);
+
+            //Task routes
+            $r->addRoute('POST', '/task', [TaskController::class, 'addTask']);
+            $r->addRoute('GET', '/task', [TaskController::class, 'getTasks']);
+            $r->addRoute('GET', '/task/{id:\d+}', [TaskController::class, 'getTaskById']);
+            $r->addRoute('GET', '/task/project/{id:\d+}', [TaskController::class, 'getTasksByProject']);
+            $r->addRoute('GET', '/task/user/{id:\d+}', [TaskController::class, 'getTasksByUser']);
+            $r->addRoute('PUT', '/task/{id:\d+}', [TaskController::class, 'updateTask']);
+            $r->addRoute('DELETE', '/task/{id:\d+}', [TaskController::class, 'deleteTask']);
+
+            //TaskStatus routes
+            $r->addRoute('POST', '/taskStatus', [TaskStatusController::class, 'addTaskStatus']);
+            $r->addRoute('GET', '/taskStatus', [TaskStatusController::class, 'getTaskStatuses']);
+            $r->addRoute('GET', '/taskStatus/{id:\d+}', [TaskStatusController::class, 'getTaskStatusById']);
+            $r->addRoute('PUT', '/taskStatus/{id:\d+}', [TaskStatusController::class, 'updateTaskStatus']);
+            $r->addRoute('DELETE', '/taskStatus/{id:\d+}', [TaskStatusController::class, 'deleteTaskStatus']);
+
 
 
         });
