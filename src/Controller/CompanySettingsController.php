@@ -53,7 +53,7 @@ class CompanySettingsController extends AbstractController
 
         // get the company from the database by its name
         try {
-            $company = $this->dao->getOneEntityBy(Company::class, ['name' => $company]);
+            $company = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

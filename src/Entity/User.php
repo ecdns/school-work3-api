@@ -62,7 +62,7 @@ class User implements EntityInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Customer::class)]
     private Collection $customers;
 
-    #[ORM\ManyToMany(targetEntity: Task::class, mappedBy: 'users')]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Task::class)]
     private Collection $tasks;
 
     #[ORM\ManyToMany(targetEntity: Project::class, mappedBy: 'users')]
@@ -355,7 +355,7 @@ class User implements EntityInterface
             'userSettings' => $this->getUserSettings()->toArray(),
             'sellProcesses' => $this->getSellProcesses()->map(fn(SellProcess $sellProcess) => $sellProcess->toArray())->toArray(),
             'customers' => $this->getCustomers()->map(fn(Customer $customer) => $customer->toArray())->toArray(),
-            'tasks' => $this->getTasks()->map(fn(Task $task) => $task->toArray())->toArray(),
+            'tasks' => $this->getTasks()->toArray(),
             'projects' => $this->getProjects()->map(fn(Project $project) => $project->toArray())->toArray(),
             'invoices' => $this->getInvoices()->map(fn(Invoice $invoice) => $invoice->toArray())->toArray(),
             'estimates' => $this->getEstimates()->map(fn(Estimate $estimate) => $estimate->toArray())->toArray(),

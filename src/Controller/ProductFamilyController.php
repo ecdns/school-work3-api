@@ -28,10 +28,10 @@ class ProductFamilyController extends AbstractController
         $requestBody = file_get_contents('php://input');
 
         // it will look like this:
-        // {
-        //     "name": "Salle de Bain",
-        //     "description": "Catégorie regroupant tous les produits pour la salle de bain"
-        // }
+//         {
+//             "name": "Salle de Bain",
+//             "description": "Catégorie regroupant tous les produits pour la salle de bain"
+//         }
 
         // decode the json
         $requestBody = json_decode($requestBody, true);

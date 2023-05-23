@@ -27,12 +27,12 @@ class VatController extends AbstractController
         // get the request body
         $requestBody = file_get_contents('php://input');
 
-        // it will look like this:
-        // {
-        //     "name": "20%",
-        //     "rate": 20,
-        //     "description": "20% VAT"
-        // }
+//         it will look like this:
+//         {
+//             "name": "20%",
+//             "rate": 20,
+//             "description": "20% VAT"
+//         }
 
         // decode the json
         $requestBody = json_decode($requestBody, true);

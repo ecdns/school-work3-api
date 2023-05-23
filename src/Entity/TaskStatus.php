@@ -83,7 +83,6 @@ class TaskStatus implements EntityInterface
     {
         return $this->updatedAt;
     }
-
     public function getTasks(): Collection
     {
         return $this->tasks;
@@ -118,7 +117,6 @@ class TaskStatus implements EntityInterface
             'description' => $this->description,
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
-            'tasks' => $this->tasks->map(fn (Task $task) => $task->toArray())->toArray(),
         ];
     }
 

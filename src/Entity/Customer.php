@@ -46,9 +46,6 @@ class Customer implements EntityInterface
     #[ORM\Column(type: 'datetime', nullable: true)]
     private DateTime|null $updatedAt = null;
 
-    #[ORM\Column(type: 'string')]
-    private string $customerCompanyName;
-
     #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'customers')]
     #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id',onDelete: 'CASCADE')]
     private Company $company;
@@ -76,13 +73,10 @@ class Customer implements EntityInterface
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: OrderForm::class)]
     private Collection $orderForms;
 
-    #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Contract::class)]
-    private Collection $contracts;
-
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Project::class)]
     private Collection $projects;
 
-    public function __construct(string $firstName, string $lastName, string $email, string $address, string $city, string $country, string $zipCode, string $phone, string $customerCompanyName, Company $company, User $user, CustomerStatus $status)
+    public function __construct(string $firstName, string $lastName, string $email, string $address, string $city, string $country, string $zipCode, string $phone, Company $company, User $user, CustomerStatus $status)
     {
         $this->firstName = $firstName;
         $this->lastName = $lastName;
@@ -92,7 +86,6 @@ class Customer implements EntityInterface
         $this->country = $country;
         $this->zipCode = $zipCode;
         $this->phone = $phone;
-        $this->customerCompanyName = $customerCompanyName;
         $this->company = $company;
         $this->user = $user;
         $this->status = $status;
@@ -205,15 +198,6 @@ class Customer implements EntityInterface
         $this->updatedAt = new DateTime();
     }
 
-    public function getCustomerCompanyName(): string
-    {
-        return $this->customerCompanyName;
-    }
-
-    public function setCustomerCompanyName(string $customerCompanyName): void
-    {
-        $this->customerCompanyName = $customerCompanyName;
-    }
 
     public function getCompany(): Company
     {
@@ -285,15 +269,6 @@ class Customer implements EntityInterface
         $this->orderForms = $orderForms;
     }
 
-    public function getContracts(): Collection
-    {
-        return $this->contracts;
-    }
-
-    public function setContracts(Collection $contracts): void
-    {
-        $this->contracts = $contracts;
-    }
 
     public function getProjects(): Collection
     {
@@ -334,7 +309,6 @@ class Customer implements EntityInterface
             'phone' => $this->getPhone(),
             'createdAt' => $this->getCreatedAt(),
             'updatedAt' => $this->getUpdatedAt(),
-            'customerCompanyName' => $this->getCustomerCompanyName(),
             'company' => $this->getCompany(),
             'user' => $this->getUser(),
             'status' => $this->getStatus(),
@@ -343,7 +317,6 @@ class Customer implements EntityInterface
             'estimates' => $this->getEstimates(),
             'invoices' => $this->getInvoices(),
             'orderForms' => $this->getOrderForms(),
-            'contracts' => $this->getContracts(),
             'projects' => $this->getProjects(),
         ];
     }

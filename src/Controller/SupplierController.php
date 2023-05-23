@@ -32,18 +32,18 @@ class SupplierController extends AbstractController
         $requestBody = file_get_contents('php://input');
 
         // it will look like this:
-        // {
-        //     "name": "Aubade",
-        //     "firstName": "Jean",
-        //     "lastName": "Dupont",
-        //     "email": "jean.dupont@aubade",
-        //     "address": "1 rue de la lingerie",
-        //     "city": "Paris",
-        //     "country": "France",
-        //     "zipCode": "75000",
-        //     "phone": "0123456789",
-        //     "company": 1
-        // }
+//         {
+//             "name": "Aubade",
+//             "firstName": "Jean",
+//             "lastName": "Dupont",
+//             "email": "jean.dupont@aubade",
+//             "address": "1 rue de la lingerie",
+//             "city": "Paris",
+//             "country": "France",
+//             "zipCode": "75000",
+//             "phone": "0123456789",
+//             "company": 1
+//         }
 
         // decode the json
         $requestBody = json_decode($requestBody, true);
@@ -67,7 +67,7 @@ class SupplierController extends AbstractController
 
         // get the company from the database by its name
         try {
-            $companyObject = $this->dao->getOneEntityBy(Company::class, ['name' => $company]);
+            $companyObject = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
