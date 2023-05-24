@@ -6,7 +6,6 @@ namespace Service;
 
 use Controller\CompanyController;
 use Controller\CompanySettingsController;
-use Controller\ContractTypeController;
 use Controller\CustomerController;
 use Controller\CustomerStatusController;
 use Controller\EstimateController;
@@ -25,8 +24,6 @@ use Controller\UserController;
 use Controller\UserSettingsController;
 use Controller\VatController;
 use DI\Container;
-use Doctrine\ORM\EntityManager;
-use Entity\ContractType;
 use Exception;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
