@@ -23,6 +23,39 @@ class RoleController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/role",
+     *     tags={"Roles"},
+     *     summary="Add a new role",
+     *     description="Add a new role to the database",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Role object that needs to be added to the database",
+     *         @OA\JsonContent(ref="#/components/schemas/Role")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Role created",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Role created")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Role already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function addRole(): void
     {
         // get the request body
@@ -64,6 +97,27 @@ class RoleController extends AbstractController
         $this->request->handleSuccessAndQuit(201, 'Role created');
     }
 
+
+    /**
+     * @OA\Get(
+     *     path="/role/all",
+     *     tags={"Roles"},
+     *     summary="Get all roles",
+     *     description="Get all roles from the database",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Roles found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Role")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getRoles(): void
     {
         // get all roles
@@ -83,6 +137,36 @@ class RoleController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Roles found', $response);
     }
 
+
+
+    /**
+     * @OA\Get(
+     *     path="/role/{id}",
+     *     tags={"Roles"},
+     *     summary="Get a role by id",
+     *     description="Get a role from the database by its id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the role to get",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Role found",
+     *         @OA\JsonContent(ref="#/components/schemas/Role")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Role not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getRoleById(int $id): void
     {
         // get the role by id
@@ -104,6 +188,47 @@ class RoleController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Role found', $response);
     }
 
+
+    /**
+     * @OA\Put(
+     *     path="/role/{id}",
+     *     tags={"Roles"},
+     *     summary="Update a role by id",
+     *     description="Update a role from the database by its id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the role to update",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Role object that needs to be updated",
+     *         @OA\JsonContent(ref="#/components/schemas/Role")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Role updated"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Role not found"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Role already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function updateRole(int $id): void
     {
         // get the request body
@@ -158,6 +283,34 @@ class RoleController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Role updated');
     }
 
+
+    /**
+     * @OA\Delete(
+     *     path="/role/{id}",
+     *     tags={"Roles"},
+     *     summary="Delete a role by id",
+     *     description="Delete a role from the database by its id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the role to delete",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Role deleted"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Role not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function deleteRole(int $id): void
     {
         // get the role by id
@@ -182,4 +335,5 @@ class RoleController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'Role deleted');
     }
+
 }

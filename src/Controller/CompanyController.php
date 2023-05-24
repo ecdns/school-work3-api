@@ -25,6 +25,37 @@ class CompanyController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/company",
+     *     tags={"Company"},
+     *     summary="Add a new company",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/CompanyRequest")
+     *     ),
+     *     @OA\Response(
+     *         response="201",
+     *         description="Company created"
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="License not found"
+     *     ),
+     *     @OA\Response(
+     *         response="409",
+     *         description="Company already exists"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function addCompany(): void
     {
         // get the request body
@@ -114,6 +145,27 @@ class CompanyController extends AbstractController
 
     }
 
+
+    /**
+     * @OA\Get(
+     *     path="/company/all",
+     *     tags={"Company"},
+     *     summary="Get all companies",
+     *     description="Returns a list of all companies",
+     *     @OA\Response(
+     *         response="200",
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Company")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getCompanies(): void
     {
         // get the companies from the database
@@ -134,6 +186,39 @@ class CompanyController extends AbstractController
 
     }
 
+
+
+    /**
+     * @OA\Get(
+     *     path="/company/{id}",
+     *     tags={"Company"},
+     *     summary="Get a company by ID",
+     *     description="Returns a company by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the company to return",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Company")
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Company not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getCompanyById(int $id): void
     {
         // get the company from the database by its id
@@ -156,6 +241,38 @@ class CompanyController extends AbstractController
 
     }
 
+
+
+    /**
+     * @OA\Get(
+     *     path="/company/{name}",
+     *     tags={"Company"},
+     *     summary="Get a company by name",
+     *     description="Returns a company by name",
+     *     @OA\Parameter(
+     *         name="name",
+     *         in="path",
+     *         description="Name of the company to return",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Company")
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Company not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getCompanyByName(string $name): void
     {
         // get the company from the database by its name
@@ -178,6 +295,45 @@ class CompanyController extends AbstractController
 
     }
 
+
+    /**
+     * @OA\Put(
+     *     path="/company/{id}",
+     *     tags={"Company"},
+     *     summary="Update a company by id",
+     *     description="Updates a company by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Id of the company to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Company data to update",
+     *         @OA\JsonContent(ref="#/components/schemas/Company")
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Successful operation",
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Company not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function updateCompany(int $id): void
     {
         // get the request body
@@ -285,6 +441,35 @@ class CompanyController extends AbstractController
 
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/company/{id}",
+     *     tags={"Company"},
+     *     summary="Delete a company by id",
+     *     description="Deletes a company by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Id of the company to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Successful operation"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Company not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function deleteCompany(int $id): void
     {
         // get the company from the database by its id

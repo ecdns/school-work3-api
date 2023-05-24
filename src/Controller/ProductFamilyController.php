@@ -22,16 +22,45 @@ class ProductFamilyController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/product-family",
+     *     tags={"ProductFamily"},
+     *     summary="Add a new ProductFamily",
+     *     description="Add a new ProductFamily",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="ProductFamily object that needs to be added",
+     *         @OA\JsonContent(ref="#/components/schemas/ProductFamily")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="ProductFamily created",
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="ProductFamily already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function addProductFamily(): void
     {
         // get the request body
         $requestBody = file_get_contents('php://input');
 
         // it will look like this:
-//         {
-//             "name": "Salle de Bain",
-//             "description": "Catégorie regroupant tous les produits pour la salle de bain"
-//         }
+        //         {
+        //             "name": "Salle de Bain",
+        //             "description": "Catégorie regroupant tous les produits pour la salle de bain"
+        //         }
 
         // decode the json
         $requestBody = json_decode($requestBody, true);
@@ -64,7 +93,26 @@ class ProductFamilyController extends AbstractController
 
     }
 
-    //function for getting all ProductFamily
+    /**
+     * @OA\Get(
+     *     path="/product-family/all",
+     *     tags={"ProductFamily"},
+     *     summary="Get all ProductFamilies",
+     *     description="Get all ProductFamilies",
+     *     @OA\Response(
+     *         response=200,
+     *         description="ProductFamilies found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/ProductFamily")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function getProductFamilies(): void
     {
         // get all the ProductFamily from the database
@@ -84,6 +132,38 @@ class ProductFamilyController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'ProductFamily found', $response);
     }
 
+
+    /**
+     * @OA\Get(
+     *     path="/product-family/{id}",
+     *     tags={"ProductFamily"},
+     *     summary="Get a ProductFamily by ID",
+     *     description="Get a ProductFamily by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the ProductFamily to get",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="ProductFamily found",
+     *         @OA\JsonContent(ref="#/components/schemas/ProductFamily")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="ProductFamily not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function getProductFamilyById(int $id): void
     {
         // get the license from the database by its id
@@ -105,7 +185,49 @@ class ProductFamilyController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'ProductFamily found', $response);
     }
 
-    //function for updating a productFamily
+    /**
+     * @OA\Put(
+     *     path="/product-family/{id}",
+     *     tags={"ProductFamily"},
+     *     summary="Update a ProductFamily by ID",
+     *     description="Update a ProductFamily by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the ProductFamily to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="ProductFamily object that needs to be updated",
+     *         @OA\JsonContent(ref="#/components/schemas/ProductFamily")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="ProductFamily updated",
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="ProductFamily not found"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="ProductFamily already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function updateProductFamily(int $id): void
     {
         // get the request body
@@ -161,7 +283,37 @@ class ProductFamilyController extends AbstractController
 
     }
 
-    //function for deleting a ProductFamily
+
+    /**
+     * @OA\Delete(
+     *     path="/product-family/{id}",
+     *     tags={"ProductFamily"},
+     *     summary="Delete a ProductFamily by ID",
+     *     description="Delete a ProductFamily by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the ProductFamily to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="ProductFamily deleted"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="ProductFamily not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function deleteProductFamily(int $id): void
     {
         // get the ProductFamily from the database by its id

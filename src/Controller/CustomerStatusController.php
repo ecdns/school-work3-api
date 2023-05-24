@@ -22,6 +22,36 @@ class CustomerStatusController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/customer-status",
+     *     tags={"CustomerStatus"},
+     *     summary="Add a new CustomerStatus",
+     *     description="Add a new CustomerStatus",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="CustomerStatus object that needs to be added",
+     *         @OA\JsonContent(ref="#/components/schemas/CustomerStatus")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="CustomerStatus created",
+     *         @OA\JsonContent(ref="#/components/schemas/CustomerStatus")
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="CustomerStatus already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function addCustomerStatus(): void
     {
         // get the request body
@@ -64,7 +94,27 @@ class CustomerStatusController extends AbstractController
 
     }
 
-    //function for getting all CustomerStatus
+
+    /**
+     * @OA\Get(
+     *     path="/customer-status/all",
+     *     tags={"CustomerStatus"},
+     *     summary="Get all CustomerStatuses",
+     *     description="Get all CustomerStatuses",
+     *     @OA\Response(
+     *         response=200,
+     *         description="CustomerStatuses found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/CustomerStatus")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function getCustomerStatuses(): void
     {
         // get all the CustomerStatus from the database
@@ -84,6 +134,39 @@ class CustomerStatusController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'CustomerStatus found', $response);
     }
 
+
+
+    /**
+     * @OA\Get(
+     *     path="/customer-status/{id}",
+     *     tags={"CustomerStatus"},
+     *     summary="Get a CustomerStatus by ID",
+     *     description="Get a CustomerStatus by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the CustomerStatus to get",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="CustomerStatus found",
+     *         @OA\JsonContent(ref="#/components/schemas/CustomerStatus")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="CustomerStatus not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function getCustomerStatusById(int $id): void
     {
         // get the license from the database by its id
@@ -105,7 +188,50 @@ class CustomerStatusController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'CustomerStatus found', $response);
     }
 
-    //function for updating a customerStatus
+
+    /**
+     * @OA\Put(
+     *     path="/customer-status/{id}",
+     *     tags={"CustomerStatus"},
+     *     summary="Update a CustomerStatus by ID",
+     *     description="Update a CustomerStatus by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the CustomerStatus to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         description="CustomerStatus object that needs to be updated",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/CustomerStatus")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="CustomerStatus updated"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="CustomerStatus not found"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="CustomerStatus already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function updateCustomerStatus(int $id): void
     {
         // get the request body
@@ -161,7 +287,37 @@ class CustomerStatusController extends AbstractController
 
     }
 
-    //function for deleting a CustomerStatus
+
+    /**
+     * @OA\Delete(
+     *     path="/customer-status/{id}",
+     *     tags={"CustomerStatus"},
+     *     summary="Delete a CustomerStatus by ID",
+     *     description="Delete a CustomerStatus by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the CustomerStatus to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="CustomerStatus deleted"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="CustomerStatus not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function deleteCustomerStatus(int $id): void
     {
         // get the CustomerStatus from the database by its id

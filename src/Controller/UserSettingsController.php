@@ -23,6 +23,35 @@ class UserSettingsController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/user-settings",
+     *     tags={"User Settings"},
+     *     summary="Add user settings",
+     *     description="Add user settings",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="User settings object that needs to be added",
+     *         @OA\JsonContent(ref="#/components/schemas/UserSettings")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="User settings created successfully"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function addUserSettings(): void
     {
         // get the request body
@@ -82,6 +111,39 @@ class UserSettingsController extends AbstractController
 
     }
 
+
+
+    /**
+     * @OA\Get(
+     *     path="/user-settings/{id}",
+     *     tags={"User Settings"},
+     *     summary="Get user settings by id",
+     *     description="Get user settings by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of user settings to return",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User settings found",
+     *         @OA\JsonContent(ref="#/components/schemas/UserSettings")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User settings not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getUserSettingsById(int $id): void
     {
         // get the user settings
@@ -103,6 +165,46 @@ class UserSettingsController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'User settings found', $userSettings);
     }
 
+
+    /**
+     * @OA\Put(
+     *     path="/user-settings/{id}",
+     *     tags={"User Settings"},
+     *     summary="Update user settings by id",
+     *     description="Update user settings by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of user settings to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="User settings object that needs to be updated",
+     *         @OA\JsonContent(ref="#/components/schemas/UserSettings")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User settings updated successfully"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data or user settings already exist"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User settings not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function updateUserSettings(int $id): void
     {
         // get the request body
@@ -157,6 +259,37 @@ class UserSettingsController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'User settings updated successfully');
     }
 
+
+    /**
+     * @OA\Delete(
+     *     path="/user-settings/{id}",
+     *     tags={"User Settings"},
+     *     summary="Delete user settings by id",
+     *     description="Delete user settings by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of user settings to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User settings deleted successfully"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User settings not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function deleteUserSettings(int $id): void
     {
         // get the user settings

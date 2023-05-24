@@ -22,6 +22,35 @@ class TaskStatusController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/task-status",
+     *     tags={"TaskStatus"},
+     *     summary="Add a new TaskStatus",
+     *     description="Add a new TaskStatus",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="TaskStatus object that needs to be added",
+     *         @OA\JsonContent(ref="#/components/schemas/TaskStatus")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="TaskStatus created"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="TaskStatus already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function addTaskStatus(): void
     {
         // get the request body
@@ -64,7 +93,26 @@ class TaskStatusController extends AbstractController
 
     }
 
-    //function for getting all TaskStatus
+    /**
+     * @OA\Get(
+     *     path="/task-status/all",
+     *     tags={"TaskStatus"},
+     *     summary="Get all TaskStatuses",
+     *     description="Get all TaskStatuses",
+     *     @OA\Response(
+     *         response=200,
+     *         description="TaskStatuses found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/TaskStatus")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getTaskStatuses(): void
     {
         // get all the TaskStatus from the database
@@ -84,6 +132,39 @@ class TaskStatusController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'TaskStatus found', $response);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/task-status/{id}",
+     *     tags={"TaskStatus"},
+     *     summary="Get TaskStatus by ID",
+     *     description="Get TaskStatus by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the TaskStatus to get",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="TaskStatus found",
+     *         @OA\JsonContent(
+     *             ref="#/components/schemas/TaskStatus"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="TaskStatus not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getTaskStatusById(int $id): void
     {
         // get the license from the database by its id
@@ -105,7 +186,49 @@ class TaskStatusController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'TaskStatus found', $response);
     }
 
-    //function for updating a taskStatus
+    /**
+     * @OA\Put(
+     *     path="/task-status/{id}",
+     *     tags={"TaskStatus"},
+     *     summary="Update TaskStatus by ID",
+     *     description="Update TaskStatus by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the TaskStatus to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="TaskStatus object that needs to be updated",
+     *         @OA\JsonContent(ref="#/components/schemas/TaskStatus")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="TaskStatus updated"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="TaskStatus not found"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="TaskStatus already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function updateTaskStatus(int $id): void
     {
         // get the request body
@@ -161,7 +284,37 @@ class TaskStatusController extends AbstractController
 
     }
 
-    //function for deleting a TaskStatus
+
+    /**
+     * @OA\Delete(
+     *     path="/task-status/{id}",
+     *     tags={"TaskStatus"},
+     *     summary="Delete TaskStatus by ID",
+     *     description="Delete TaskStatus by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the TaskStatus to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="TaskStatus deleted"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="TaskStatus not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function deleteTaskStatus(int $id): void
     {
         // get the TaskStatus from the database by its id
@@ -186,5 +339,6 @@ class TaskStatusController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'TaskStatus deleted');
     }
+
 
 }

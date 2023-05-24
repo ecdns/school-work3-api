@@ -22,6 +22,35 @@ class ProjectStatusController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/project-status",
+     *     tags={"ProjectStatus"},
+     *     summary="Add a new ProjectStatus",
+     *     description="Add a new ProjectStatus",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="ProjectStatus object that needs to be added",
+     *         @OA\JsonContent(ref="#/components/schemas/ProjectStatus")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="ProjectStatus created"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="ProjectStatus already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function addProjectStatus(): void
     {
         // get the request body
@@ -64,7 +93,26 @@ class ProjectStatusController extends AbstractController
 
     }
 
-    //function for getting all ProjectStatus
+    /**
+     * @OA\Get(
+     *     path="/project-status/all",
+     *     tags={"ProjectStatus"},
+     *     summary="Get all ProjectStatuses",
+     *     description="Get all ProjectStatuses",
+     *     @OA\Response(
+     *         response=200,
+     *         description="ProjectStatuses found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/ProjectStatus")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function getProjectStatuses(): void
     {
         // get all the ProjectStatus from the database
@@ -84,6 +132,39 @@ class ProjectStatusController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'ProjectStatus found', $response);
     }
 
+
+
+    /**
+     * @OA\Get(
+     *     path="/project-status/{id}",
+     *     tags={"ProjectStatus"},
+     *     summary="Get a ProjectStatus by ID",
+     *     description="Get a ProjectStatus by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the ProjectStatus to get",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="ProjectStatus found",
+     *         @OA\JsonContent(ref="#/components/schemas/ProjectStatus")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="ProjectStatus not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function getProjectStatusById(int $id): void
     {
         // get the license from the database by its id
@@ -105,7 +186,52 @@ class ProjectStatusController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'ProjectStatus found', $response);
     }
 
+
     //function for updating a projectStatus
+    /**
+     * @OA\Put(
+     *     path="/project-status/{id}",
+     *     tags={"ProjectStatus"},
+     *     summary="Update a ProjectStatus by ID",
+     *     description="Update a ProjectStatus by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the ProjectStatus to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="ProjectStatus object that needs to be updated",
+     *         @OA\JsonContent(ref="#/components/schemas/ProjectStatus")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="ProjectStatus updated",
+     *         @OA\JsonContent(ref="#/components/schemas/ProjectStatus")
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="ProjectStatus not found"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="ProjectStatus already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function updateProjectStatus(int $id): void
     {
         // get the request body
@@ -161,7 +287,37 @@ class ProjectStatusController extends AbstractController
 
     }
 
-    //function for deleting a ProjectStatus
+    /**
+     * @OA\Delete(
+     *     path="/project-status/{id}",
+     *     tags={"ProjectStatus"},
+     *     summary="Delete a ProjectStatus by ID",
+     *     description="Delete a ProjectStatus by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the ProjectStatus to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="ProjectStatus deleted"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="ProjectStatus not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function deleteProjectStatus(int $id): void
     {
         // get the ProjectStatus from the database by its id
@@ -186,5 +342,6 @@ class ProjectStatusController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'ProjectStatus deleted');
     }
+
 
 }

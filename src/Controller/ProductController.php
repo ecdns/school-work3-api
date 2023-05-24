@@ -29,6 +29,33 @@ class ProductController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/product",
+     *     tags={"Product"},
+     *     summary="Add a new product",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Product")
+     *     ),
+     *     @OA\Response(
+     *         response="201",
+     *         description="Product created",
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Invalid request data",
+     *     ),
+     *     @OA\Response(
+     *         response="409",
+     *         description="Product already exists",
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error",
+     *     )
+     * )
+     */
     public function addProduct(): void
     {
         // get the request body
@@ -129,6 +156,27 @@ class ProductController extends AbstractController
         $this->request->handleSuccessAndQuit(201, 'Product created');
     }
 
+
+    /**
+     * @OA\Get(
+     *     path="/product/all",
+     *     tags={"Products"},
+     *     summary="Get all products",
+     *     description="Returns all products",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Product")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *     )
+     * )
+     */
     public function getProducts(): void
     {
         // get all roles
@@ -149,6 +197,39 @@ class ProductController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Products found', $response);
     }
 
+
+
+    /**
+     * @OA\Get(
+     *     path="/product/{id}",
+     *     tags={"Products"},
+     *     summary="Get a product by id",
+     *     description="Returns a product by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the product to get",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Product")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Product not found",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *     )
+     * )
+     */
     public function getProductsByCompany(int $id): void
     {
         // get all roles
@@ -169,6 +250,38 @@ class ProductController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Products found', $response);
     }
 
+
+    /**
+     * @OA\Get(
+     *     path="/product/{id}",
+     *     tags={"Products"},
+     *     summary="Get a product by id",
+     *     description="Returns a product by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the product to get",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Product")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Product not found",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *     )
+     * )
+     */
     public function getProductById(int $id): void
     {
         // get the role by id
@@ -190,6 +303,45 @@ class ProductController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Product found', $response);
     }
 
+    /**
+     * @OA\Put(
+     *     path="/product/{id}",
+     *     tags={"Products"},
+     *     summary="Update a product by id",
+     *     description="Updates a product by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the product to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Product object that needs to be updated",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Product")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data",
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Product family, vat, company, quantity unit or supplier not found",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *     )
+     * )
+     */
     public function updateProduct(int $id): void
     {
         // get the request body
@@ -293,6 +445,37 @@ class ProductController extends AbstractController
 
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/product/{id}",
+     *     tags={"Products"},
+     *     summary="Delete a product by id",
+     *     description="Deletes a product by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the product to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Product")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Product not found",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *     )
+     * )
+     */
     public function deleteProduct(int $id): void
     {
         // get the product by id

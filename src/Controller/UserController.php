@@ -27,6 +27,37 @@ class UserController extends AbstractController
         $this->auth = $auth;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/user",
+     *     tags={"User"},
+     *     summary="Add a new user",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/User")
+     *     ),
+     *     @OA\Response(
+     *         response="201",
+     *         description="User created"
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Role or company not found"
+     *     ),
+     *     @OA\Response(
+     *         response="409",
+     *         description="User already exists"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function addUser(): void
     {
 
@@ -37,7 +68,7 @@ class UserController extends AbstractController
         // {
         //     "firstName": "John",
         //     "lastName": "Doe",
-        //     "email": "john.doe@gmail.com",
+        //     "email": "john.doe@gmail",
         //     "password": "password",
         //     "job": "Developer",
         //     "phone": "0123456789",
@@ -101,6 +132,33 @@ class UserController extends AbstractController
         $this->request->handleSuccessAndQuit(201, 'User created');
     }
 
+
+    /**
+     * Get all users
+     *
+     * @OA\Get(
+     *     path="/user/all",
+     *     tags={"Users"},
+     *     summary="Get all users",
+     *     description="Returns all users",
+     *     @OA\Response(
+     *         response="200",
+     *         description="Users found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/User")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="No users found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getUsers(): void
     {
         // get the users from the database
@@ -125,6 +183,40 @@ class UserController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Users found', $usersData);
     }
 
+
+    /**
+     * Get user by ID
+     *
+     * @OA\Get(
+     *     path="/user/{id}",
+     *     tags={"Users"},
+     *     summary="Get user by ID",
+     *     description="Returns a user by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the user to return",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="User found",
+     *         @OA\JsonContent(ref="#/components/schemas/User")
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="User not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getUserById(int $id): void
     {
         // get the user from the database by its id
@@ -146,6 +238,53 @@ class UserController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'User found', $userData);
     }
 
+
+
+    /**
+     * Update user by ID
+     *
+     * @OA\Put(
+     *     path="/user/{id}",
+     *     tags={"Users"},
+     *     summary="Update user by ID",
+     *     description="Updates a user by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the user to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="User data to update",
+     *         @OA\JsonContent(ref="#/components/schemas/User")
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="User updated"
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="User not found"
+     *     ),
+     *     @OA\Response(
+     *         response="409",
+     *         description="User already exists"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function updateUser(int $id): void
     {
         // get the request body
@@ -231,6 +370,38 @@ class UserController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'User updated');
     }
 
+    /**
+     * Delete user by ID
+     *
+     * @OA\Delete(
+     *     path="/user/{id}",
+     *     tags={"Users"},
+     *     summary="Delete user by ID",
+     *     description="Deletes a user by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the user to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="User deleted"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="User not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function deleteUser(int $id): void
     {
         // get the user from the database by its id
@@ -256,16 +427,46 @@ class UserController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'User deleted');
     }
 
+
+    /**
+     * Login user
+     *
+     * @OA\Post(
+     *     path="/user/login",
+     *     tags={"Users"},
+     *     summary="Login user",
+     *     description="Logs in a user",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="User credentials",
+     *         @OA\JsonContent(
+     *             required={"email","password"},
+     *             @OA\Property(property="email", type="string", format="email", example="john.doe@gmail.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="password")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="User logged in"
+     *     ),
+     *     @OA\Response(
+     *         response="401",
+     *         description="Incorrect password or company is not active"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="User not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function loginUser(): void
     {
         // get the request body
         $requestBody = file_get_contents('php://input');
-
-        // it will look like this:
-        // {
-        //     "email": "john.doe@gmail",
-        //     "password": "password"
-        // }
 
         // decode the json
         $requestBody = json_decode($requestBody, true);

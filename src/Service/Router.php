@@ -53,7 +53,7 @@ class Router
                 // user routes
                 $r->addRoute('POST', '/user/login', [UserController::class, 'loginUser']);
                 $r->addRoute('POST', '/user', [UserController::class, 'addUser']);
-                $r->addRoute('GET', '/user', [UserController::class, 'getUsers']);
+                $r->addRoute('GET', '/user/all', [UserController::class, 'getUsers']);
                 $r->addRoute('GET', '/user/{id:\d+}', [UserController::class, 'getUserById']);
                 $r->addRoute('PUT', '/user/{id:\d+}', [UserController::class, 'updateUser']);
                 $r->addRoute('DELETE', '/user/{id:\d+}', [UserController::class, 'deleteUser']);
@@ -64,13 +64,13 @@ class Router
                 $r->addRoute('PUT', '/userSettings/{id:\d+}', [UserSettingsController::class, 'updateUserSettings']);
                 $r->addRoute('DELETE', '/userSettings/{id:\d+}', [UserSettingsController::class, 'deleteUserSettings']);
 
-                // company routes
-                $r->addRoute('POST', '/company', [CompanyController::class, 'addCompany']);
-                $r->addRoute('GET', '/company', [CompanyController::class, 'getCompanies']);
-                $r->addRoute('GET', '/company/{id:\d+}', [CompanyController::class, 'getCompanyById']);
-                $r->addRoute('GET', '/company/{name}', [CompanyController::class, 'getCompanyByName']);
-                $r->addRoute('PUT', '/company/{id:\d+}', [CompanyController::class, 'updateCompany']);
-                $r->addRoute('DELETE', '/company/{id:\d+}', [CompanyController::class, 'deleteCompany']);
+            // company routes
+            $r->addRoute('POST', '/company', [CompanyController::class, 'addCompany']);
+            $r->addRoute('GET', '/company/all', [CompanyController::class, 'getCompanies']);
+            $r->addRoute('GET', '/company/{id:\d+}', [CompanyController::class, 'getCompanyById']);
+            $r->addRoute('GET', '/company/{name}', [CompanyController::class, 'getCompanyByName']);
+            $r->addRoute('PUT', '/company/{id:\d+}', [CompanyController::class, 'updateCompany']);
+            $r->addRoute('DELETE', '/company/{id:\d+}', [CompanyController::class, 'deleteCompany']);
 
                 // company settings routes
                 $r->addRoute('POST', '/companySettings', [CompanySettingsController::class, 'addCompanySettings']);
@@ -78,101 +78,101 @@ class Router
                 $r->addRoute('PUT', '/companySettings/{id:\d+}', [CompanySettingsController::class, 'updateCompanySettings']);
                 $r->addRoute('DELETE', '/companySettings/{id:\d+}', [CompanySettingsController::class, 'deleteCompanySettings']);
 
-                // license routes
-                $r->addRoute('POST', '/license', [LicenseController::class, 'addLicense']);
-                $r->addRoute('GET', '/license', [LicenseController::class, 'getLicenses']);
-                $r->addRoute('GET', '/license/{id:\d+}', [LicenseController::class, 'getLicenseById']);
-                $r->addRoute('PUT', '/license/{id:\d+}', [LicenseController::class, 'updateLicense']);
-                $r->addRoute('DELETE', '/license/{id:\d+}', [LicenseController::class, 'deleteLicense']);
+            // license routes
+            $r->addRoute('POST', '/license', [LicenseController::class, 'addLicense']);
+            $r->addRoute('GET', '/license/all', [LicenseController::class, 'getLicenses']);
+            $r->addRoute('GET', '/license/{id:\d+}', [LicenseController::class, 'getLicenseById']);
+            $r->addRoute('PUT', '/license/{id:\d+}', [LicenseController::class, 'updateLicense']);
+            $r->addRoute('DELETE', '/license/{id:\d+}', [LicenseController::class, 'deleteLicense']);
 
-                // role routes
-                $r->addRoute('POST', '/role', [RoleController::class, 'addRole']);
-                $r->addRoute('GET', '/role', [RoleController::class, 'getRoles']);
-                $r->addRoute('GET', '/role/{id:\d+}', [RoleController::class, 'getRoleById']);
-                $r->addRoute('PUT', '/role/{id:\d+}', [RoleController::class, 'updateRole']);
-                $r->addRoute('DELETE', '/role/{id:\d+}', [RoleController::class, 'deleteRole']);
+            // role routes
+            $r->addRoute('POST', '/role', [RoleController::class, 'addRole']);
+            $r->addRoute('GET', '/role/all', [RoleController::class, 'getRoles']);
+            $r->addRoute('GET', '/role/{id:\d+}', [RoleController::class, 'getRoleById']);
+            $r->addRoute('PUT', '/role/{id:\d+}', [RoleController::class, 'updateRole']);
+            $r->addRoute('DELETE', '/role/{id:\d+}', [RoleController::class, 'deleteRole']);
 
-                // vat routes
-                $r->addRoute('POST', '/vat', [VatController::class, 'addVat']);
-                $r->addRoute('GET', '/vat', [VatController::class, 'getVats']);
-                $r->addRoute('GET', '/vat/{id:\d+}', [VatController::class, 'getVatById']);
-                $r->addRoute('PUT', '/vat/{id:\d+}', [VatController::class, 'updateVat']);
-                $r->addRoute('DELETE', '/vat/{id:\d+}', [VatController::class, 'deleteVat']);
+            // vat routes
+            $r->addRoute('POST', '/vat', [VatController::class, 'addVat']);
+            $r->addRoute('GET', '/vat/all', [VatController::class, 'getVats']);
+            $r->addRoute('GET', '/vat/{id:\d+}', [VatController::class, 'getVatById']);
+            $r->addRoute('PUT', '/vat/{id:\d+}', [VatController::class, 'updateVat']);
+            $r->addRoute('DELETE', '/vat/{id:\d+}', [VatController::class, 'deleteVat']);
 
-                // quantityUnit routes
-                $r->addRoute('POST', '/quantityUnit', [QuantityUnitController::class, 'addQuantityUnit']);
-                $r->addRoute('GET', '/quantityUnit', [QuantityUnitController::class, 'getQuantityUnits']);
-                $r->addRoute('GET', '/quantityUnit/{id:\d+}', [QuantityUnitController::class, 'getQuantityUnitById']);
-                $r->addRoute('PUT', '/quantityUnit/{id:\d+}', [QuantityUnitController::class, 'updateQuantityUnit']);
-                $r->addRoute('DELETE', '/quantityUnit/{id:\d+}', [QuantityUnitController::class, 'deleteQuantityUnit']);
+            // quantityUnit routes
+            $r->addRoute('POST', '/quantityUnit', [QuantityUnitController::class, 'addQuantityUnit']);
+            $r->addRoute('GET', '/quantityUnit/all', [QuantityUnitController::class, 'getQuantityUnits']);
+            $r->addRoute('GET', '/quantityUnit/{id:\d+}', [QuantityUnitController::class, 'getQuantityUnitById']);
+            $r->addRoute('PUT', '/quantityUnit/{id:\d+}', [QuantityUnitController::class, 'updateQuantityUnit']);
+            $r->addRoute('DELETE', '/quantityUnit/{id:\d+}', [QuantityUnitController::class, 'deleteQuantityUnit']);
 
-                // ProductFamily routes
-                $r->addRoute('POST', '/productFamily', [ProductFamilyController::class, 'addProductFamily']);
-                $r->addRoute('GET', '/productFamily', [ProductFamilyController::class, 'getProductFamilies']);
-                $r->addRoute('GET', '/productFamily/{id:\d+}', [ProductFamilyController::class, 'getProductFamilyById']);
-                $r->addRoute('PUT', '/productFamily/{id:\d+}', [ProductFamilyController::class, 'updateProductFamily']);
-                $r->addRoute('DELETE', '/productFamily/{id:\d+}', [ProductFamilyController::class, 'deleteProductFamily']);
+            // ProductFamily routes
+            $r->addRoute('POST', '/productFamily', [ProductFamilyController::class, 'addProductFamily']);
+            $r->addRoute('GET', '/productFamily/all', [ProductFamilyController::class, 'getProductFamilies']);
+            $r->addRoute('GET', '/productFamily/{id:\d+}', [ProductFamilyController::class, 'getProductFamilyById']);
+            $r->addRoute('PUT', '/productFamily/{id:\d+}', [ProductFamilyController::class, 'updateProductFamily']);
+            $r->addRoute('DELETE', '/productFamily/{id:\d+}', [ProductFamilyController::class, 'deleteProductFamily']);
 
-                // Supplier routes
-                $r->addRoute('POST', '/supplier', [SupplierController::class, 'addSupplier']);
-                $r->addRoute('GET', '/supplier', [SupplierController::class, 'getSuppliers']);
-                $r->addRoute('GET', '/supplier/{id:\d+}', [SupplierController::class, 'getSupplierById']);
-                $r->addRoute('PUT', '/supplier/{id:\d+}', [SupplierController::class, 'updateSupplier']);
-                $r->addRoute('DELETE', '/supplier/{id:\d+}', [SupplierController::class, 'deleteSupplier']);
+            // Supplier routes
+            $r->addRoute('POST', '/supplier', [SupplierController::class, 'addSupplier']);
+            $r->addRoute('GET', '/supplier/all', [SupplierController::class, 'getSuppliers']);
+            $r->addRoute('GET', '/supplier/{id:\d+}', [SupplierController::class, 'getSupplierById']);
+            $r->addRoute('PUT', '/supplier/{id:\d+}', [SupplierController::class, 'updateSupplier']);
+            $r->addRoute('DELETE', '/supplier/{id:\d+}', [SupplierController::class, 'deleteSupplier']);
 
-                // Supplier routes
-                $r->addRoute('POST', '/product', [ProductController::class, 'addProduct']);
-                $r->addRoute('GET', '/product', [ProductController::class, 'getProducts']);
-                $r->addRoute('GET', '/product/company/{id:\d+}', [ProductController::class, 'getProductsByCompanyId']);
-                $r->addRoute('GET', '/product/{id:\d+}', [ProductController::class, 'getProductById']);
-                $r->addRoute('PUT', '/product/{id:\d+}', [ProductController::class, 'updateProduct']);
-                $r->addRoute('DELETE', '/product/{id:\d+}', [ProductController::class, 'deleteProduct']);
+            // Supplier routes
+            $r->addRoute('POST', '/product', [ProductController::class, 'addProduct']);
+            $r->addRoute('GET', '/product/all', [ProductController::class, 'getProducts']);
+            $r->addRoute('GET', '/product/company/{id:\d+}', [ProductController::class, 'getProductsByCompanyId']);
+            $r->addRoute('GET', '/product/{id:\d+}', [ProductController::class, 'getProductById']);
+            $r->addRoute('PUT', '/product/{id:\d+}', [ProductController::class, 'updateProduct']);
+            $r->addRoute('DELETE', '/product/{id:\d+}', [ProductController::class, 'deleteProduct']);
 
-                // Project routes
-                $r->addRoute('POST', '/project', [ProjectController::class, 'addProject']);
-                $r->addRoute('GET', '/project', [ProjectController::class, 'getProjects']);
-                $r->addRoute('GET', '/project/{id:\d+}', [ProjectController::class, 'getProjectById']);
-                $r->addRoute('GET', '/project/company/{id:\d+}', [ProjectController::class, 'getProjectsByCompany']);
-                $r->addRoute('PUT', '/project/{id:\d+}', [ProjectController::class, 'updateProject']);
-                $r->addRoute('DELETE', '/project/{id:\d+}', [ProjectController::class, 'deleteProject']);
+            // Project routes
+            $r->addRoute('POST', '/project', [ProjectController::class, 'addProject']);
+            $r->addRoute('GET', '/project/all', [ProjectController::class, 'getProjects']);
+            $r->addRoute('GET', '/project/{id:\d+}', [ProjectController::class, 'getProjectById']);
+            $r->addRoute('GET', '/project/company/{id:\d+}', [ProjectController::class, 'getProjectsByCompany']);
+            $r->addRoute('PUT', '/project/{id:\d+}', [ProjectController::class, 'updateProject']);
+            $r->addRoute('DELETE', '/project/{id:\d+}', [ProjectController::class, 'deleteProject']);
 
-                // ProjectStatus routes
-                $r->addRoute('POST', '/projectStatus', [ProjectStatusController::class, 'addProjectStatus']);
-                $r->addRoute('GET', '/projectStatus', [ProjectStatusController::class, 'getProjectStatuses']);
-                $r->addRoute('GET', '/projectStatus/{id:\d+}', [ProjectStatusController::class, 'getProjectStatusById']);
-                $r->addRoute('PUT', '/projectStatus/{id:\d+}', [ProjectStatusController::class, 'updateProjectStatus']);
-                $r->addRoute('DELETE', '/projectStatus/{id:\d+}', [ProjectStatusController::class, 'deleteProjectStatus']);
+            // ProjectStatus routes
+            $r->addRoute('POST', '/projectStatus', [ProjectStatusController::class, 'addProjectStatus']);
+            $r->addRoute('GET', '/projectStatus/all', [ProjectStatusController::class, 'getProjectStatuses']);
+            $r->addRoute('GET', '/projectStatus/{id:\d+}', [ProjectStatusController::class, 'getProjectStatusById']);
+            $r->addRoute('PUT', '/projectStatus/{id:\d+}', [ProjectStatusController::class, 'updateProjectStatus']);
+            $r->addRoute('DELETE', '/projectStatus/{id:\d+}', [ProjectStatusController::class, 'deleteProjectStatus']);
 
-                // Customer routes
-                $r->addRoute('POST', '/customer', [CustomerController::class, 'addCustomer']);
-                $r->addRoute('GET', '/customer', [CustomerController::class, 'getCustomers']);
-                $r->addRoute('GET', '/customer/{id:\d+}', [CustomerController::class, 'getCustomerById']);
-                $r->addRoute('GET', '/customer/company/{id:\d+}', [CustomerController::class, 'getCustomerByCompany']);
-                $r->addRoute('PUT', '/customer/{id:\d+}', [CustomerController::class, 'updateCustomer']);
-                $r->addRoute('DELETE', '/customer/{id:\d+}', [CustomerController::class, 'deleteCustomer']);
+            // Customer routes
+            $r->addRoute('POST', '/customer', [CustomerController::class, 'addCustomer']);
+            $r->addRoute('GET', '/customer/all', [CustomerController::class, 'getCustomers']);
+            $r->addRoute('GET', '/customer/{id:\d+}', [CustomerController::class, 'getCustomerById']);
+            $r->addRoute('GET', '/customer/company/{id:\d+}', [CustomerController::class, 'getCustomerByCompany']);
+            $r->addRoute('PUT', '/customer/{id:\d+}', [CustomerController::class, 'updateCustomer']);
+            $r->addRoute('DELETE', '/customer/{id:\d+}', [CustomerController::class, 'deleteCustomer']);
 
-                //CustomerStatus routes
-                $r->addRoute('POST', '/customerStatus', [CustomerStatusController::class, 'addCustomerStatus']);
-                $r->addRoute('GET', '/customerStatus', [CustomerStatusController::class, 'getCustomerStatuses']);
-                $r->addRoute('GET', '/customerStatus/{id:\d+}', [CustomerStatusController::class, 'getCustomerStatusById']);
-                $r->addRoute('PUT', '/customerStatus/{id:\d+}', [CustomerStatusController::class, 'updateCustomerStatus']);
-                $r->addRoute('DELETE', '/customerStatus/{id:\d+}', [CustomerStatusController::class, 'deleteCustomerStatus']);
+            //CustomerStatus routes
+            $r->addRoute('POST', '/customerStatus', [CustomerStatusController::class, 'addCustomerStatus']);
+            $r->addRoute('GET', '/customerStatus/all', [CustomerStatusController::class, 'getCustomerStatuses']);
+            $r->addRoute('GET', '/customerStatus/{id:\d+}', [CustomerStatusController::class, 'getCustomerStatusById']);
+            $r->addRoute('PUT', '/customerStatus/{id:\d+}', [CustomerStatusController::class, 'updateCustomerStatus']);
+            $r->addRoute('DELETE', '/customerStatus/{id:\d+}', [CustomerStatusController::class, 'deleteCustomerStatus']);
 
-                //Task routes
-                $r->addRoute('POST', '/task', [TaskController::class, 'addTask']);
-                $r->addRoute('GET', '/task', [TaskController::class, 'getTasks']);
-                $r->addRoute('GET', '/task/{id:\d+}', [TaskController::class, 'getTaskById']);
-                $r->addRoute('GET', '/task/project/{id:\d+}', [TaskController::class, 'getTasksByProject']);
-                $r->addRoute('GET', '/task/user/{id:\d+}', [TaskController::class, 'getTasksByUser']);
-                $r->addRoute('PUT', '/task/{id:\d+}', [TaskController::class, 'updateTask']);
-                $r->addRoute('DELETE', '/task/{id:\d+}', [TaskController::class, 'deleteTask']);
+            //Task routes
+            $r->addRoute('POST', '/task', [TaskController::class, 'addTask']);
+            $r->addRoute('GET', '/task/all', [TaskController::class, 'getTasks']);
+            $r->addRoute('GET', '/task/{id:\d+}', [TaskController::class, 'getTaskById']);
+            $r->addRoute('GET', '/task/project/{id:\d+}', [TaskController::class, 'getTasksByProject']);
+            $r->addRoute('GET', '/task/user/{id:\d+}', [TaskController::class, 'getTasksByUser']);
+            $r->addRoute('PUT', '/task/{id:\d+}', [TaskController::class, 'updateTask']);
+            $r->addRoute('DELETE', '/task/{id:\d+}', [TaskController::class, 'deleteTask']);
 
-                //TaskStatus routes
-                $r->addRoute('POST', '/taskStatus', [TaskStatusController::class, 'addTaskStatus']);
-                $r->addRoute('GET', '/taskStatus', [TaskStatusController::class, 'getTaskStatuses']);
-                $r->addRoute('GET', '/taskStatus/{id:\d+}', [TaskStatusController::class, 'getTaskStatusById']);
-                $r->addRoute('PUT', '/taskStatus/{id:\d+}', [TaskStatusController::class, 'updateTaskStatus']);
-                $r->addRoute('DELETE', '/taskStatus/{id:\d+}', [TaskStatusController::class, 'deleteTaskStatus']);
+            //TaskStatus routes
+            $r->addRoute('POST', '/taskStatus', [TaskStatusController::class, 'addTaskStatus']);
+            $r->addRoute('GET', '/taskStatus/all', [TaskStatusController::class, 'getTaskStatuses']);
+            $r->addRoute('GET', '/taskStatus/{id:\d+}', [TaskStatusController::class, 'getTaskStatusById']);
+            $r->addRoute('PUT', '/taskStatus/{id:\d+}', [TaskStatusController::class, 'updateTaskStatus']);
+            $r->addRoute('DELETE', '/taskStatus/{id:\d+}', [TaskStatusController::class, 'deleteTaskStatus']);
 
                 //Estimate routes
                 $r->addRoute('POST', '/estimate', [EstimateController::class, 'addEstimate']);

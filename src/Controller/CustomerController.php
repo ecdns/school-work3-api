@@ -30,6 +30,38 @@ class CustomerController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/customer",
+     *     tags={"Customer"},
+     *     summary="Add a new customer",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Customer data",
+     *         @OA\JsonContent(ref="#/components/schemas/Customer")
+     *     ),
+     *     @OA\Response(
+     *         response="201",
+     *         description="Customer created"
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Company, User or CustomerStatus not found"
+     *     ),
+     *     @OA\Response(
+     *         response="409",
+     *         description="Customer already exists"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function addCustomer(): void
     {
         // get the request body
@@ -104,6 +136,25 @@ class CustomerController extends AbstractController
 
     }
 
+    /**
+     * @OA\Get(
+     *     path="/customer/all",
+     *     tags={"Customer"},
+     *     summary="Get all customers",
+     *     @OA\Response(
+     *         response="200",
+     *         description="Customers found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Customer")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getCustomers(): void
     {
         // get the customers from the database
@@ -124,6 +175,35 @@ class CustomerController extends AbstractController
 
     }
 
+    /**
+     * @OA\Get(
+     *     path="/customer/{id}",
+     *     tags={"Customer"},
+     *     summary="Get customer by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the customer to retrieve",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Customer found"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Customer not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getCustomerById(int $id): void
     {
         // get the customer from the database by its id
@@ -146,6 +226,39 @@ class CustomerController extends AbstractController
 
     }
 
+    /**
+     * @OA\Get(
+     *     path="/customer/company/{id}",
+     *     tags={"Customer"},
+     *     summary="Get customers by company id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the company to retrieve customers from",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Customers found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Customer")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Customers not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     //get by company id
     public function getCustomerByCompany(int $id): void
     {
@@ -172,6 +285,49 @@ class CustomerController extends AbstractController
 
     }
 
+
+    /**
+     * @OA\Put(
+     *     path="/customer/{id}",
+     *     tags={"Customer"},
+     *     summary="Update a customer",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the customer to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Customer data to update",
+     *         @OA\JsonContent(ref="#/components/schemas/Customer")
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Customer updated successfully"
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Customer not found"
+     *     ),
+     *     @OA\Response(
+     *         response="409",
+     *         description="Customer already exists"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function updateCustomer(int $id): void
     {
         // get the request body
@@ -264,6 +420,35 @@ class CustomerController extends AbstractController
 
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/customer/{id}",
+     *     tags={"Customer"},
+     *     summary="Delete a customer",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the customer to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Customer deleted successfully"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Customer not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function deleteCustomer(int $id): void
     {
         // get the customer from the database by its id

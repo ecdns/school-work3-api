@@ -27,6 +27,39 @@ class ProjectController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/project",
+     *     tags={"Projects"},
+     *     summary="Add a new project",
+     *     description="Add a new project to the database",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Project object that needs to be added to the database",
+     *         @OA\JsonContent(ref="#/components/schemas/Project")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Project created"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Company, User, Customer or ProjectStatus not found"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Project already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function addProject(): void
     {
         // get the request body
@@ -94,6 +127,26 @@ class ProjectController extends AbstractController
         $this->request->handleSuccessAndQuit(201, 'Project created');
     }
 
+
+    /**
+     * @OA\Get(
+     *     path="/project/all",
+     *     summary="Get all projects",
+     *     description="Returns an array of all projects",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *              type="array",
+     *              @OA\Items(ref="#/components/schemas/Project")
+     *        )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getProjects(): void
     {
         // get all roles
@@ -114,6 +167,35 @@ class ProjectController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Projects found', $response);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/project/company/{id}",
+     *     summary="Get all projects by company",
+     *     description="Returns an array of all projects by company",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the company",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *              type="array",
+     *              @OA\Items(ref="#/components/schemas/Project")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getProjectsByCompany(int $id): void
     {
         // get all roles
@@ -134,6 +216,38 @@ class ProjectController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Projects found', $response);
     }
 
+
+
+    /**
+     * @OA\Get(
+     *     path="/project/{id}",
+     *     summary="Get project by ID",
+     *     description="Returns a project by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the project",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Project")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Project not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getProjectById(int $id): void
     {
         // get the project by id
@@ -155,6 +269,50 @@ class ProjectController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Project found', $response);
     }
 
+
+    /**
+     * @OA\Put(
+     *     path="/project/{id}",
+     *     summary="Update project by ID",
+     *     description="Updates a project by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the project",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Project object that needs to be updated",
+     *         @OA\JsonContent(ref="#/components/schemas/Project")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Project")
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Project not found"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Project already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function updateProject(int $id): void
     {
         // get the request body
@@ -238,6 +396,36 @@ class ProjectController extends AbstractController
 
     }
 
+
+    /**
+     * @OA\Delete(
+     *     path="/project/{id}",
+     *     summary="Delete project by ID",
+     *     description="Deletes a project by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the project",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Project not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function deleteProject(int $id): void
     {
         // get the Project by id

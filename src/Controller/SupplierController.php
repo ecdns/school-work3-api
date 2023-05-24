@@ -26,6 +26,35 @@ class SupplierController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/supplier",
+     *     tags={"Supplier"},
+     *     summary="Add a new supplier",
+     *     description="Add a new supplier to the database",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Supplier object that needs to be added to the database",
+     *         @OA\JsonContent(ref="#/components/schemas/Supplier")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Supplier created"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Supplier already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function addSupplier(): void
     {
         // get the request body
@@ -91,7 +120,26 @@ class SupplierController extends AbstractController
 
     }
 
-    //function for getting all Suppliers
+    /**
+     * @OA\Get(
+     *     path="/supplier/all",
+     *     tags={"Suppliers"},
+     *     summary="Get all suppliers",
+     *     description="Returns all suppliers from the database",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Suppliers found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Supplier")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getSuppliers(): void
     {
         // get all the Supplier from the database
@@ -111,6 +159,39 @@ class SupplierController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Supplier found', $response);
     }
 
+
+
+    /**
+     * @OA\Get(
+     *     path="/supplier/{id}",
+     *     tags={"Suppliers"},
+     *     summary="Get a supplier by ID",
+     *     description="Returns a supplier from the database by its ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the supplier to retrieve",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Supplier found",
+     *         @OA\JsonContent(ref="#/components/schemas/Supplier")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Supplier not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getSupplierById(int $id): void
     {
         // get the supplier from the database by its id
@@ -132,7 +213,49 @@ class SupplierController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Supplier found', $response);
     }
 
-    //function for updating a supplier
+    /**
+     * @OA\Put(
+     *     path="/supplier/{id}",
+     *     tags={"Suppliers"},
+     *     summary="Update a supplier by ID",
+     *     description="Updates a supplier from the database by its ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the supplier to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Supplier object that needs to be updated",
+     *         @OA\JsonContent(ref="#/components/schemas/Supplier")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Supplier updated",
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Supplier not found"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Supplier already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function updateSupplier(int $id): void
     {
         // get the request body
@@ -222,7 +345,37 @@ class SupplierController extends AbstractController
 
     }
 
-    //function for deleting a Supplier
+
+    /**
+     * @OA\Delete(
+     *     path="/supplier/{id}",
+     *     tags={"Suppliers"},
+     *     summary="Delete a supplier by ID",
+     *     description="Deletes a supplier from the database by its ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the supplier to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Supplier deleted"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Supplier not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function deleteSupplier(int $id): void
     {
         // get the Supplier from the database by its id
@@ -247,6 +400,7 @@ class SupplierController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'Supplier deleted');
     }
+
 
 
 }

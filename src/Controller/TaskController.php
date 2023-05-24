@@ -29,6 +29,39 @@ class TaskController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/task",
+     *     tags={"Task"},
+     *     summary="Add a new task",
+     *     description="Add a new task to the database",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Task object that needs to be added to the database",
+     *         @OA\JsonContent(ref="#/components/schemas/Task")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Task created"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data",
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User, Project or TaskStatus not found"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Task already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function addTask(): void
     {
         // get the request body
@@ -97,6 +130,30 @@ class TaskController extends AbstractController
         $this->request->handleSuccessAndQuit(201, 'Task created');
     }
 
+
+
+    /**
+     * Get all tasks
+     *
+     * @OA\Get(
+     *     path="/task/all",
+     *     tags={"Tasks"},
+     *     summary="Get all tasks",
+     *     description="Returns all tasks",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Tasks found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Task")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getTasks(): void
     {
         // get all tasks
@@ -117,6 +174,45 @@ class TaskController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Tasks found', $response);
     }
 
+
+
+
+    /**
+     * Get all tasks by user
+     *
+     * @OA\Get(
+     *     path="/task/user/{id}",
+     *     tags={"Tasks"},
+     *     summary="Get all tasks by user",
+     *     description="Returns all tasks assigned to a user",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="User ID",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Tasks found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Task")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getTasksByUser(int $id): void
     {
         // get all roles
@@ -137,6 +233,40 @@ class TaskController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Tasks found', $response);
     }
 
+
+
+    /**
+     * Get all tasks by project
+     *
+     * @OA\Get(
+     *     path="/task/project/{id}",
+     *     tags={"Tasks"},
+     *     summary="Get all tasks by project",
+     *     description="Returns all tasks assigned to a project",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Project ID",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Tasks found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Task")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getTasksByProject(int $id): void
     {
         // get all tasks
@@ -157,6 +287,41 @@ class TaskController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Tasks found', $response);
     }
 
+
+
+    /**
+     * Get task by id
+     *
+     * @OA\Get(
+     *     path="/task/{id}",
+     *     tags={"Tasks"},
+     *     summary="Get task by id",
+     *     description="Returns a task by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Task ID",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Task found",
+     *         @OA\JsonContent(ref="#/components/schemas/Task")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Task not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getTaskById(int $id): void
     {
         // get the task by id
@@ -178,6 +343,53 @@ class TaskController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Task found', $response);
     }
 
+
+    /**
+     * Update a task by ID
+     *
+     * @OA\Put(
+     *     path="/task/{id}",
+     *     summary="Update a task by ID",
+     *     description="Update a task by ID",
+     *     tags={"Tasks"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the task to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Task object that needs to be updated",
+     *         @OA\JsonContent(ref="#/components/schemas/Task")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Task updated",
+     *         @OA\JsonContent(ref="#/components/schemas/Task")
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Task not found"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Task already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function updateTask(int $id): void
     {
         // get the request body
@@ -262,6 +474,38 @@ class TaskController extends AbstractController
 
     }
 
+    /**
+     * Deletes a task by ID
+     *
+     * @OA\Delete(
+     *     path="/task/{id}",
+     *     tags={"Tasks"},
+     *     summary="Deletes a task by ID",
+     *     description="Deletes a task by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the task to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Task deleted"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Task not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function deleteTask(int $id): void
     {
         // get the Task by id

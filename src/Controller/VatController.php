@@ -22,6 +22,35 @@ class VatController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/vat",
+     *     tags={"Vats"},
+     *     summary="Add a new vat",
+     *     description="Add a new vat",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Vat object that needs to be added",
+     *         @OA\JsonContent(ref="#/components/schemas/Vat")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Vat created"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Vat already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function addVat(): void
     {
         // get the request body
@@ -66,7 +95,26 @@ class VatController extends AbstractController
 
     }
 
-    //function for getting all vats
+    /**
+     * @OA\Get(
+     *     path="/vat/all",
+     *     tags={"Vats"},
+     *     summary="Get all vats",
+     *     description="Get all vats",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Vats found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Vat")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getVats(): void
     {
         // get all the licenses from the database
@@ -86,6 +134,39 @@ class VatController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Vats found', $response);
     }
 
+
+
+    /**
+     * @OA\Get(
+     *     path="/vat/{id}",
+     *     tags={"Vats"},
+     *     summary="Get a vat by id",
+     *     description="Get a vat by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the vat to get",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Vat found",
+     *         @OA\JsonContent(ref="#/components/schemas/Vat")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Vat not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getVatById(int $id): void
     {
         // get the license from the database by its id
@@ -107,7 +188,49 @@ class VatController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Vat found', $response);
     }
 
-    //function for updating a vat
+    /**
+     * @OA\Put(
+     *     path="/vat/{id}",
+     *     tags={"Vats"},
+     *     summary="Update a vat by id",
+     *     description="Update a vat by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the vat to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Vat object that needs to be updated",
+     *         @OA\JsonContent(ref="#/components/schemas/Vat")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Vat updated"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Vat not found"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Vat already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function updateVat(int $id): void
     {
         // get the request body
@@ -166,7 +289,36 @@ class VatController extends AbstractController
 
     }
 
-    //function for deleting a vat
+    /**
+     * @OA\Delete(
+     *     path="/vat/{id}",
+     *     tags={"Vats"},
+     *     summary="Delete a vat by id",
+     *     description="Delete a vat by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the vat to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Vat deleted"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Vat not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function deleteVat(int $id): void
     {
         // get the vat from the database by its id
@@ -191,4 +343,5 @@ class VatController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'Vat deleted');
     }
+
 }

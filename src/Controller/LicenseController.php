@@ -22,6 +22,35 @@ class LicenseController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/license",
+     *     tags={"License"},
+     *     summary="Add a new license",
+     *     description="Add a new license to the database",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="License data",
+     *         @OA\JsonContent(ref="#/components/schemas/License")
+     *     ),
+     *     @OA\Response(
+     *         response="201",
+     *         description="License created"
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response="409",
+     *         description="License already exists"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function addLicense(): void
     {
         // get the request body
@@ -68,6 +97,28 @@ class LicenseController extends AbstractController
         $this->request->handleSuccessAndQuit(201, 'License created');
     }
 
+
+
+    /**
+     * @OA\Get(
+     *     path="/license/all",
+     *     tags={"License"},
+     *     summary="Get all licenses",
+     *     description="Get all licenses from the database",
+     *     @OA\Response(
+     *         response="200",
+     *         description="Licenses found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/License")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getLicenses(): void
     {
         // get all the licenses from the database
@@ -87,6 +138,38 @@ class LicenseController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Licenses found', $response);
     }
 
+
+    /**
+     * @OA\Get(
+     *     path="/license/{id}",
+     *     tags={"License"},
+     *     summary="Get a license by ID",
+     *     description="Get a license from the database by its ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the license to get",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="License found",
+     *         @OA\JsonContent(ref="#/components/schemas/License")
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="License not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getLicenseById(int $id): void
     {
         // get the license from the database by its id
@@ -108,6 +191,49 @@ class LicenseController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'License found', $response);
     }
 
+    /**
+     * @OA\Put(
+     *     path="/license/{id}",
+     *     tags={"License"},
+     *     summary="Update a license by ID",
+     *     description="Update a license from the database by its ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the license to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="License object that needs to be updated",
+     *         @OA\JsonContent(ref="#/components/schemas/License")
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="License updated"
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="License not found"
+     *     ),
+     *     @OA\Response(
+     *         response="409",
+     *         description="License already exists"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function updateLicense(int $id): void
     {
         // get the request body
@@ -171,6 +297,37 @@ class LicenseController extends AbstractController
 
     }
 
+
+    /**
+     * @OA\Delete(
+     *     path="/license/{id}",
+     *     tags={"License"},
+     *     summary="Delete a license by ID",
+     *     description="Delete a license from the database by its ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the license to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="License deleted"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="License not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function deleteLicense(int $id): void
     {
         // get the license from the database by its id

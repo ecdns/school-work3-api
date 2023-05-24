@@ -23,6 +23,37 @@ class CompanySettingsController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/company-settings",
+     *     tags={"Company Settings"},
+     *     summary="Add company settings",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/CompanySettings")
+     *     ),
+     *     @OA\Response(
+     *         response="201",
+     *         description="Company settings created"
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Company not found"
+     *     ),
+     *     @OA\Response(
+     *         response="409",
+     *         description="Company settings already exist"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Company settings could not be created"
+     *     )
+     * )
+     */
     public function addCompanySettings(): void
     {
 
@@ -84,6 +115,36 @@ class CompanySettingsController extends AbstractController
 
     }
 
+    /**
+     * @OA\Get(
+     *     path="/company-settings/{id}",
+     *     tags={"Company Settings"},
+     *     summary="Get company settings by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the company settings",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Company settings found",
+     *         @OA\JsonContent(ref="#/components/schemas/CompanySettings")
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Company settings not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getCompanySettingsById(int $id): void
     {
         // get the company settings from the database by its id
@@ -105,6 +166,48 @@ class CompanySettingsController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Company settings found', $response);
     }
 
+
+    /**
+     * @OA\Put(
+     *     path="/company-settings/{id}",
+     *     tags={"Company Settings"},
+     *     summary="Update company settings by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the company settings",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Company settings object that needs to be updated"
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Company settings updated"
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Company settings not found"
+     *     ),
+     *     @OA\Response(
+     *         response="409",
+     *         description="Company settings already exist"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Company settings could not be created"
+     *     )
+     * )
+     */
     public function updateCompanySettings(int $id): void
     {
         // get the request body
@@ -162,6 +265,35 @@ class CompanySettingsController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Company settings updated');
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/company-settings/{id}",
+     *     tags={"Company Settings"},
+     *     summary="Delete company settings by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the company settings",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Company settings deleted"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Company settings not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function deleteCompanySettings(int $id): void
     {
         // get the company settings from the database by its id

@@ -20,6 +20,35 @@ class QuantityUnitController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/quantity-unit",
+     *     tags={"QuantityUnit"},
+     *     summary="Add a new QuantityUnit",
+     *     description="Add a new QuantityUnit",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="QuantityUnit data",
+     *         @OA\JsonContent(ref="#/components/schemas/QuantityUnit")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="QuantityUnit created"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="QuantityUnit already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function addQuantityUnit(): void
     {
         // get the request body
@@ -64,7 +93,26 @@ class QuantityUnitController extends AbstractController
         $this->request->handleSuccessAndQuit(201, 'QuantityUnit created');
     }
 
-    //function for getting all quantityUnit
+    /**
+     * @OA\Get(
+     *     path="/quantity-unit/all",
+     *     tags={"QuantityUnit"},
+     *     summary="Get all QuantityUnits",
+     *     description="Get all QuantityUnits",
+     *     @OA\Response(
+     *         response=200,
+     *         description="QuantityUnits found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/QuantityUnit")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getQuantityUnits(): void
     {
         // get all the quantityUnit from the database
@@ -84,6 +132,37 @@ class QuantityUnitController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'QuantityUnit found', $response);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/quantity-unit/{id}",
+     *     tags={"QuantityUnit"},
+     *     summary="Get a QuantityUnit by ID",
+     *     description="Get a QuantityUnit by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the QuantityUnit to get",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="QuantityUnit found",
+     *         @OA\JsonContent(ref="#/components/schemas/QuantityUnit")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="QuantityUnit not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getQuantityUnitById(int $id): void
     {
         // get the quantityUnit from the database by its id
@@ -105,7 +184,50 @@ class QuantityUnitController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'QuantityUnit found', $response);
     }
 
-    //function for updating a quantityUnit
+
+    /**
+     * @OA\Put(
+     *     path="/quantity-unit/{id}",
+     *     tags={"QuantityUnit"},
+     *     summary="Update a QuantityUnit by ID",
+     *     description="Update a QuantityUnit by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the QuantityUnit to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         description="QuantityUnit object that needs to be updated",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/QuantityUnit")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="QuantityUnit updated"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="QuantityUnit not found"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="QuantityUnit already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function updateQuantityUnit(int $id): void
     {
         // get the request body
@@ -164,22 +286,52 @@ class QuantityUnitController extends AbstractController
 
     }
 
-    //function for deleting a vat
-    public function deleteVat(int $id): void
+
+    /**
+     * @OA\Delete(
+     *     path="/quantity-unit/{id}",
+     *     tags={"QuantityUnit"},
+     *     summary="Delete a QuantityUnit by ID",
+     *     description="Delete a QuantityUnit by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the QuantityUnit to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="QuantityUnit deleted"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="QuantityUnit not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+    public function deleteQuantityUnit(int $id): void
     {
-        // get the vat from the database by its id
+        // get the quantityUnit from the database by its id
         try {
             $quantityUnit = $this->dao->getOneEntityBy(QuantityUnit::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
 
-        // if the vat is not found
+        // if the quantityUnit is not found
         if (!$quantityUnit) {
             $this->request->handleErrorAndQuit(404, new Exception('QuantityUnit not found'));
         }
 
-        // remove the vat
+        // remove the quantityUnit
         try {
             $this->dao->deleteEntity($quantityUnit);
         } catch (Exception $e) {
@@ -189,4 +341,5 @@ class QuantityUnitController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'QuantityUnit deleted');
     }
+
 }
