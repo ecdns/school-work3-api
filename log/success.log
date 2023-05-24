@@ -197,3 +197,4 @@
 2023-05-24 00:34:21 - /task/2 - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Task found
 2023-05-24 00:35:40 - /task/2 - PUT - PostmanRuntime/7.32.2 - 172.18.0.1 - Task updated
 2023-05-24 00:35:45 - /task/2 - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Task found
+2023-05-24 20:19:55 - /api/v1/user - GET - Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 - 172.18.0.1 - Users found

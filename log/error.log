@@ -69,3 +69,7 @@
 2023-05-24 00:02:30 - /taskStatus - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - An exception occurred in the driver: SQLSTATE[HY000] [2002] Connection refused
 2023-05-24 00:14:25 - /task - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - An exception occurred in the driver: SQLSTATE[HY000] [2002] Connection refused
 2023-05-24 00:25:45 - /task/ - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Not found
+2023-05-24 20:19:24 - / - GET - Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 - 172.18.0.1 - Not found
+2023-05-24 20:19:24 - /favicon.ico - GET - http://localhost:8080/ - Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 - 172.18.0.1 - Not found
+2023-05-24 20:19:29 - /user - GET - Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 - 172.18.0.1 - Not found
+2023-05-24 20:19:34 - /api/v1/user - GET - Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 - 172.18.0.1 - An exception occurred in the driver: SQLSTATE[HY000] [2002] Connection refused
