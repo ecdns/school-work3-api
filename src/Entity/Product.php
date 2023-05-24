@@ -64,9 +64,18 @@ class Product implements EntityInterface
     #[ORM\JoinColumn(name: 'supplier_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Supplier $supplier;
 
-    // a product can be in many order lines (one-to-many)
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: OrderLine::class)]
-    private Collection $orderLines;
+    //Many to Many for estimate product
+    #[ORM\ManyToMany(targetEntity: Estimate::class, mappedBy: 'estimateProducts')]
+    private Collection $estimates;
+
+    //Many to Many for invoice product
+    #[ORM\ManyToMany(targetEntity: Invoice::class, mappedBy: 'invoiceProducts')]
+    private Collection $invoices;
+
+    //Many to Many for order product
+    #[ORM\ManyToMany(targetEntity: OrderForm::class, mappedBy: 'orderFormProducts')]
+    private Collection $orderForms;
+
 
     public function __construct(
         string $name,

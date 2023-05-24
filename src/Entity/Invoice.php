@@ -23,23 +23,6 @@ class Invoice implements EntityInterface
     #[ORM\Column(type: 'string')]
     private string $description;
 
-    #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'invoices')]
-    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private Company $company;
-
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'invoices')]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private User $user;
-
-    #[ORM\ManyToOne(targetEntity: Customer::class, inversedBy: 'invoices')]
-    #[ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private Customer $customer;
-
-    #[ORM\Column(type: 'float')]
-    private float $totalExcludingTax;
-
-    #[ORM\Column(type: 'float')]
-    private float $totalIncludingTax;
 
     #[ORM\Column(type: 'datetime', nullable: false)]
     private DateTime $createdAt;
@@ -51,27 +34,18 @@ class Invoice implements EntityInterface
     #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Project $project;
 
-    #[ORM\ManyToOne(targetEntity: SellProcess::class, inversedBy: 'invoices')]
-    #[ORM\JoinColumn(name: 'sell_process_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private SellProcess $sellProcess;
 
-    // Products
-    #[ORM\OneToMany(mappedBy: 'invoice', targetEntity: Product::class)]
-    private ReadableCollection $invoiceProducts;
+    // many to many product
+    #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'invoices')]
+    #[ORM\JoinTable(name: 'invoice_product')]
+    private Collection $invoiceProducts;
 
-    public function __construct(string $name, string $description, DateTime $createdAt, SellProcess $order)
+    public function __construct(string $name, string $description, Project $project)
     {
         $this->name = $name;
         $this->description = $description;
-        $this->sellProcess = $order;
-        $this->project = $this->sellProcess->getProject();
-        $this->customer = $this->sellProcess->getCustomer();
-        $this->company = $this->sellProcess->getCompany();
-        $this->user = $this->sellProcess->getUser();
-        $this->totalExcludingTax = $this->sellProcess->getTotalExcludingTax();
-        $this->totalIncludingTax = $this->sellProcess->getTotalIncludingTax();
-        $this->createdAt = $createdAt;
-        $this->invoiceProducts = $this->sellProcess->getOrderLines()->map(fn($orderLine) => $orderLine->getProduct());
+        $this->project = $project;
+
     }
 
     public function getId(): int
@@ -97,26 +71,6 @@ class Invoice implements EntityInterface
     public function setDescription(string $description): void
     {
         $this->description = $description;
-    }
-
-    public function getTotalExcludingTax(): float
-    {
-        return $this->totalExcludingTax;
-    }
-
-    public function setTotalExcludingTax(float $totalExcludingTax): void
-    {
-        $this->totalExcludingTax = $totalExcludingTax;
-    }
-
-    public function getTotalIncludingTax(): float
-    {
-        return $this->totalIncludingTax;
-    }
-
-    public function setTotalIncludingTax(float $totalIncludingTax): void
-    {
-        $this->totalIncludingTax = $totalIncludingTax;
     }
 
     public function getCreatedAt(): DateTime
@@ -151,55 +105,21 @@ class Invoice implements EntityInterface
         $this->project = $project;
     }
 
-    public function getSellProcess(): SellProcess
-    {
-        return $this->sellProcess;
-    }
-
-    public function setSellProcess(SellProcess $sellProcess): void
-    {
-        $this->sellProcess = $sellProcess;
-    }
-
-    public function getInvoiceProducts(): ReadableCollection
+    public function getInvoiceProducts(): Collection
     {
         return $this->invoiceProducts;
     }
 
-    public function setInvoiceProducts(ReadableCollection $invoiceProducts): void
+    public function addInvoiceProduct(Product $product): void
     {
-        $this->invoiceProducts = $invoiceProducts;
+        $this->invoiceProducts->add($product);
     }
 
-    public function getCompany(): Company
+    public function removeInvoiceProduct(Product $product): void
     {
-        return $this->company;
+        $this->invoiceProducts->removeElement($product);
     }
 
-    public function setCompany(Company $company): void
-    {
-        $this->company = $company;
-    }
-
-    public function getUser(): User
-    {
-        return $this->user;
-    }
-
-    public function setUser(User $user): void
-    {
-        $this->user = $user;
-    }
-
-    public function getCustomer(): Customer
-    {
-        return $this->customer;
-    }
-
-    public function setCustomer(Customer $customer): void
-    {
-        $this->customer = $customer;
-    }
 
     public function toArray(): array
     {
@@ -207,32 +127,10 @@ class Invoice implements EntityInterface
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'totalExcludingTax' => $this->totalExcludingTax,
-            'totalIncludingTax' => $this->totalIncludingTax,
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
             'project' => $this->project->toArray(),
-            'sellProcess' => $this->sellProcess->toArray(),
             'invoiceProducts' => $this->invoiceProducts->map(fn($invoiceProduct) => $invoiceProduct->toArray())->toArray(),
-        ];
-    }
-
-    public function toFullArray(): array
-    {
-        return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'description' => $this->description,
-            'totalExcludingTax' => $this->totalExcludingTax,
-            'totalIncludingTax' => $this->totalIncludingTax,
-            'company' => $this->company->toArray(),
-            'user' => $this->user->toArray(),
-            'customer' => $this->customer->toArray(),
-            'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
-            'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
-            'project' => $this->project->toFullArray(),
-            'sellProcess' => $this->sellProcess->toFullArray(),
-            'invoiceProducts' => $this->invoiceProducts->map(fn($invoiceProduct) => $invoiceProduct->toFullArray())->toArray(),
         ];
     }
 

@@ -33,7 +33,7 @@ class Project implements EntityInterface
     #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Company $company;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'projects')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'projectsOwned')]
     #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private User $creator;
 
@@ -47,12 +47,25 @@ class Project implements EntityInterface
     #[ORM\OneToMany(mappedBy: 'project', targetEntity: Task::class)]
     private Collection $tasks;
 
-    #[ORM\OneToMany(mappedBy: 'project', targetEntity: SellProcess::class)]
-    private Collection $sellProcesses;
-
     #[ORM\ManyToOne(targetEntity: ProjectStatus::class, inversedBy: 'projects')]
     #[ORM\JoinColumn(name: 'project_status', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private ProjectStatus $projectStatus;
+
+    //oneToMany for estimate
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: Estimate::class)]
+    private Collection $estimates;
+
+    //OneToMany for invoice
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: Invoice::class)]
+    private Collection $invoices;
+
+    //OneToMany for orderForm
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: OrderForm::class)]
+    private Collection $orderForms;
+
+    //OneToMany for Message
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: Message::class)]
+    private Collection $messages;
 
     public function __construct(string $name, string $description, Company $company, User $creator , Customer $customer, ProjectStatus $projectStatus)
     {
@@ -162,15 +175,6 @@ class Project implements EntityInterface
         $this->tasks = $tasks;
     }
 
-    public function getSellProcesses(): Collection
-    {
-        return $this->sellProcesses;
-    }
-
-    public function setSellProcesses(Collection $sellProcesses): void
-    {
-        $this->sellProcesses = $sellProcesses;
-    }
 
     public function getProjectStatus(): ProjectStatus
     {
@@ -192,15 +196,17 @@ class Project implements EntityInterface
         $this->tasks->removeElement($task);
     }
 
-    public function addSell(SellProcess $sell): void
+    public function addEstimate(Estimate $estimate): void
     {
-        $this->sells->add($sell);
+        $this->estimates->add($estimate);
     }
 
-    public function removeSell(SellProcess $sell): void
+    public function removeEstimate(Estimate $estimate): void
     {
-        $this->sells->removeElement($sell);
+        $this->estimates->removeElement($estimate);
     }
+
+
 
     public function addUser(User $user): void
     {
@@ -226,19 +232,6 @@ class Project implements EntityInterface
         }
     }
 
-    public function addSells(Collection $sells): void
-    {
-        foreach ($sells as $sell) {
-            $this->addSell($sell);
-        }
-    }
-
-    public function removeSells(Collection $sells): void
-    {
-        foreach ($sells as $sell) {
-            $this->removeSell($sell);
-        }
-    }
 
     public function addTasks(Collection $tasks): void
     {
@@ -279,7 +272,6 @@ class Project implements EntityInterface
             'users' => $this->users->map(fn (User $user) => $user->toArray())->toArray(),
             'customer' => $this->customer->toArray(),
             'tasks' => $this->tasks->map(fn (Task $task) => $task->toArray())->toArray(),
-            'sellProcesses' => $this->sellProcesses->map(fn (SellProcess $sell) => $sell->toArray())->toArray(),
             'projectStatus' => $this->projectStatus->toArray(),
         ];
     }
