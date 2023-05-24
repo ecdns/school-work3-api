@@ -89,9 +89,9 @@ class Estimate implements EntityInterface
     }
 
     #[ORM\PrePersist]
-    public function setCreatedAt(DateTime $createdAt): void
+    public function setCreatedAt(): void
     {
-        $this->createdAt = $createdAt;
+        $this->createdAt = new DateTime();
     }
 
     public function getUpdatedAt(): DateTime|null
@@ -100,9 +100,9 @@ class Estimate implements EntityInterface
     }
 
     #[ORM\PreUpdate]
-    public function setUpdatedAt(DateTime|null $updatedAt): void
+    public function setUpdatedAt(): void
     {
-        $this->updatedAt = $updatedAt;
+        $this->updatedAt = new DateTime();
     }
 
     public function getExpiredAt(): DateTime|null

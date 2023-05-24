@@ -198,3 +198,13 @@
 2023-05-24 00:35:40 - /task/2 - PUT - PostmanRuntime/7.32.2 - 172.18.0.1 - Task updated
 2023-05-24 00:35:45 - /task/2 - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Task found
 2023-05-24 20:19:55 - /api/v1/user - GET - Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 - 172.18.0.1 - Users found
+2023-05-24 21:28:26 - /api/v1/estimateStatus - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - EstimateStatus created
+2023-05-24 21:28:29 - /api/v1/estimateStatus - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - EstimateStatus found
+2023-05-24 21:28:42 - /api/v1/estimateStatus/1 - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - EstimateStatus found
+2023-05-24 21:28:51 - /api/v1/estimateStatus/1 - PUT - PostmanRuntime/7.32.2 - 172.18.0.1 - EstimateStatus updated
+2023-05-24 21:28:55 - /api/v1/estimateStatus/1 - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - EstimateStatus found
+2023-05-24 21:44:26 - /api/v1/estimate - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Estimate created
+2023-05-24 21:44:29 - /api/v1/estimate - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Estimates found
+2023-05-24 21:44:59 - /api/v1/estimate/1 - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Estimate found
+2023-05-24 21:45:20 - /api/v1/estimate/1 - PUT - PostmanRuntime/7.32.2 - 172.18.0.1 - Estimate updated
+2023-05-24 21:45:23 - /api/v1/estimate/1 - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Estimate found

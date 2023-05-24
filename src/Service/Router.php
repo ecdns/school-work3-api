@@ -9,6 +9,8 @@ use Controller\CompanySettingsController;
 use Controller\ContractTypeController;
 use Controller\CustomerController;
 use Controller\CustomerStatusController;
+use Controller\EstimateController;
+use Controller\EstimateStatusController;
 use Controller\LicenseController;
 use Controller\ProductController;
 use Controller\ProductFamilyController;
@@ -171,6 +173,21 @@ class Router
                 $r->addRoute('GET', '/taskStatus/{id:\d+}', [TaskStatusController::class, 'getTaskStatusById']);
                 $r->addRoute('PUT', '/taskStatus/{id:\d+}', [TaskStatusController::class, 'updateTaskStatus']);
                 $r->addRoute('DELETE', '/taskStatus/{id:\d+}', [TaskStatusController::class, 'deleteTaskStatus']);
+
+                //Estimate routes
+                $r->addRoute('POST', '/estimate', [EstimateController::class, 'addEstimate']);
+                $r->addRoute('GET', '/estimate/all', [EstimateController::class, 'getEstimates']);
+                $r->addRoute('GET', '/estimate/{id:\d+}', [EstimateController::class, 'getEstimateById']);
+                $r->addRoute('GET', '/estimate/project/{id:\d+}', [EstimateController::class, 'getEstimatesByProject']);
+                $r->addRoute('PUT', '/estimate/{id:\d+}', [EstimateController::class, 'updateEstimate']);
+                $r->addRoute('DELETE', '/estimate/{id:\d+}', [EstimateController::class, 'deleteEstimate']);
+
+                //EstimateStatus routes
+                $r->addRoute('POST', '/estimateStatus', [EstimateStatusController::class, 'addEstimateStatus']);
+                $r->addRoute('GET', '/estimateStatus/all', [EstimateStatusController::class, 'getEstimateStatuses']);
+                $r->addRoute('GET', '/estimateStatus/{id:\d+}', [EstimateStatusController::class, 'getEstimateStatusById']);
+                $r->addRoute('PUT', '/estimateStatus/{id:\d+}', [EstimateStatusController::class, 'updateEstimateStatus']);
+                $r->addRoute('DELETE', '/estimateStatus/{id:\d+}', [EstimateStatusController::class, 'deleteEstimateStatus']);
 
             });
 
