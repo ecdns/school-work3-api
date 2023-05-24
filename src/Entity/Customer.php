@@ -58,20 +58,6 @@ class Customer implements EntityInterface
     #[ORM\JoinColumn(name: 'status_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private CustomerStatus $status;
 
-    #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Message::class)]
-    private Collection $messages;
-
-    #[ORM\OneToMany(mappedBy: 'customer', targetEntity: SellProcess::class)]
-    private Collection $sellProcesses;
-
-    #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Estimate::class)]
-    private Collection $estimates;
-
-    #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Invoice::class)]
-    private Collection $invoices;
-
-    #[ORM\OneToMany(mappedBy: 'customer', targetEntity: OrderForm::class)]
-    private Collection $orderForms;
 
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Project::class)]
     private Collection $projects;
@@ -280,15 +266,7 @@ class Customer implements EntityInterface
         $this->projects = $projects;
     }
 
-    public function getSellProcesses(): Collection
-    {
-        return $this->sellProcesses;
-    }
 
-    public function setSellProcesses(Collection $sellProcesses): void
-    {
-        $this->sellProcesses = $sellProcesses;
-    }
 
     public function __toString(): string
     {
@@ -313,7 +291,6 @@ class Customer implements EntityInterface
             'user' => $this->getUser(),
             'status' => $this->getStatus(),
             'messages' => $this->getMessages(),
-            'sellProcesses' => $this->getSellProcesses(),
             'estimates' => $this->getEstimates(),
             'invoices' => $this->getInvoices(),
             'orderForms' => $this->getOrderForms(),

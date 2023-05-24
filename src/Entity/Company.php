@@ -72,18 +72,6 @@ class Company implements EntityInterface
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Product::class)]
     private Collection $products;
 
-    #[ORM\OneToMany(mappedBy: 'company', targetEntity: SellProcess::class)]
-    private Collection $sellProcesses;
-
-    #[ORM\OneToMany(mappedBy: 'company', targetEntity: OrderForm::class)]
-    private Collection $orderForms;
-
-    #[ORM\OneToMany(mappedBy: 'company', targetEntity: Invoice::class)]
-    private Collection $invoices;
-
-    #[ORM\OneToMany(mappedBy: 'company', targetEntity: Estimate::class)]
-    private Collection $estimates;
-
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Project::class)]
     private Collection $projects;
 
@@ -389,19 +377,6 @@ class Company implements EntityInterface
         $this->projects = $projects;
     }
 
-    public function getSellProcesses(): array
-    {
-        $sellProcesses = [];
-        foreach ($this->sellProcesses as $sellProcess) {
-            $sellProcesses[] = $sellProcess->getName();
-        }
-        return $sellProcesses;
-    }
-
-    public function setSellProcesses(Collection $sellProcesses): void
-    {
-        $this->sellProcesses = $sellProcesses;
-    }
 
 
     public function toArray(): array
@@ -447,7 +422,6 @@ class Company implements EntityInterface
             'customers' => $this->getCustomers(),
             'suppliers' => $this->getSuppliers(),
             'products' => $this->getProducts(),
-            'sellProcesses' => $this->getSellProcesses(),
             'orderForms' => $this->getOrderForms(),
             'invoices' => $this->getInvoices(),
             'estimates' => $this->getEstimates(),

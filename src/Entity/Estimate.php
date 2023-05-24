@@ -24,23 +24,6 @@ class Estimate implements EntityInterface
     #[ORM\Column(type: 'string')]
     private string $description;
 
-    #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'estimates')]
-    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private Company $company;
-
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'estimates')]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private User $user;
-
-    #[ORM\ManyToOne(targetEntity: Customer::class, inversedBy: 'estimates')]
-    #[ORM\JoinColumn(name: 'customer_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private Customer $customer;
-
-    #[ORM\Column(type: 'float')]
-    private float $totalExcludingTax;
-
-    #[ORM\Column(type: 'float')]
-    private float $totalIncludingTax;
 
     #[ORM\Column(type: 'datetime', nullable: false)]
     private DateTime $createdAt;
@@ -59,27 +42,18 @@ class Estimate implements EntityInterface
     #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Project $project;
 
-    #[ORM\ManyToOne(targetEntity: SellProcess::class, inversedBy: 'estimates')]
-    #[ORM\JoinColumn(name: 'sell_process_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private SellProcess $sellProcess;
+    //Many to Many for estimate product
+    #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'estimates')]
+    #[ORM\JoinTable(name: 'estimate_product')]
+    private Collection $estimateProducts;
 
-    #[ORM\OneToMany(mappedBy: 'estimate', targetEntity: Product::class)]
-    private ReadableCollection $estimateProducts;
-
-    public function __construct(string $name, string $description, DateTime $createdAt, EstimateStatus $estimateStatus, SellProcess $sellProcess)
+    public function __construct(string $name, string $description, Project $project, DateTime $expiredAt, EstimateStatus $estimateStatus)
     {
         $this->name = $name;
         $this->description = $description;
-        $this->sellProcess = $sellProcess;
-        $this->project = $this->sellProcess->getProject();
-        $this->company = $this->sellProcess->getCompany();
-        $this->user = $this->sellProcess->getUser();
-        $this->customer = $this->sellProcess->getCustomer();
-        $this->totalExcludingTax = $this->sellProcess->getTotalExcludingTax();
-        $this->totalIncludingTax = $this->sellProcess->getTotalIncludingTax();
-        $this->createdAt = $createdAt;
+        $this->project = $project;
+        $this->expiredAt = $expiredAt;
         $this->estimateStatus = $estimateStatus;
-        $this->estimateProducts = $this->sellProcess->getOrderLines()->map(fn($orderLine) => $orderLine->getProduct());
     }
 
     public function getId(): int
@@ -107,55 +81,7 @@ class Estimate implements EntityInterface
         $this->description = $description;
     }
 
-    public function getCompany(): Company
-    {
-        return $this->company;
-    }
 
-    public function setCompany(Company $company): void
-    {
-        $this->company = $company;
-    }
-
-    public function getUser(): User
-    {
-        return $this->user;
-    }
-
-    public function setUser(User $user): void
-    {
-        $this->user = $user;
-    }
-
-    public function getCustomer(): Customer
-    {
-        return $this->customer;
-    }
-
-    public function setCustomer(Customer $customer): void
-    {
-        $this->customer = $customer;
-    }
-
-    public function getTotalExcludingTax(): float
-    {
-        return $this->totalExcludingTax;
-    }
-
-    public function setTotalExcludingTax(float $totalExcludingTax): void
-    {
-        $this->totalExcludingTax = $totalExcludingTax;
-    }
-
-    public function getTotalIncludingTax(): float
-    {
-        return $this->totalIncludingTax;
-    }
-
-    public function setTotalIncludingTax(float $totalIncludingTax): void
-    {
-        $this->totalIncludingTax = $totalIncludingTax;
-    }
 
     public function getCreatedAt(): DateTime
     {
@@ -209,25 +135,24 @@ class Estimate implements EntityInterface
         $this->project = $project;
     }
 
-    public function getSellProcess(): SellProcess
-    {
-        return $this->sellProcess;
-    }
 
-    public function setSellProcess(SellProcess $sellProcess): void
-    {
-        $this->sellProcess = $sellProcess;
-    }
-
-    public function getEstimateProducts(): ReadableCollection
+    public function getEstimateProducts(): Collection
     {
         return $this->estimateProducts;
     }
 
-    public function setEstimateProducts(ReadableCollection $estimateProducts): void
+    //add product to estimate
+    public function addEstimateProduct(Product $product): void
     {
-        $this->estimateProducts = $estimateProducts;
+        $this->estimateProducts->add($product);
     }
+
+    //remove product from estimate
+    public function removeEstimateProduct(Product $product): void
+    {
+        $this->estimateProducts->removeElement($product);
+    }
+
 
     public function __toString(): string
     {
@@ -240,17 +165,11 @@ class Estimate implements EntityInterface
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'company' => $this->company->toArray(),
-            'user' => $this->user->toArray(),
-            'customer' => $this->customer->toArray(),
-            'totalExcludingTax' => $this->totalExcludingTax,
-            'totalIncludingTax' => $this->totalIncludingTax,
+            'project' => $this->project->toArray(),
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
             'expiredAt' => $this->expiredAt?->format('Y-m-d H:i:s'),
             'estimateStatus' => $this->estimateStatus->toArray(),
-            'project' => $this->project->toArray(),
-            'sellProcess' => $this->sellProcess->toArray(),
             'estimateProducts' => $this->estimateProducts->map(fn($estimateProduct) => $estimateProduct->toArray())->toArray(),
         ];
     }

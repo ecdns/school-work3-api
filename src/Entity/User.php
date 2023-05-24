@@ -40,8 +40,7 @@ class User implements EntityInterface
     private string $phone;
 
     #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'users')]
-    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id')]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Company $company;
 
     #[ORM\Column(type: 'datetime', nullable: false)]
@@ -56,29 +55,19 @@ class User implements EntityInterface
     #[ORM\OneToOne(mappedBy: 'user', targetEntity: UserSettings::class, cascade: ['persist', 'remove'])]
     private UserSettings|null $userSettings;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: SellProcess::class)]
-    private Collection $sellProcesses;
-
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Customer::class)]
     private Collection $customers;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Task::class)]
+    #[ORM\OneToMany(mappedBy: 'users', targetEntity: Task::class)]
     private Collection $tasks;
 
     #[ORM\ManyToMany(targetEntity: Project::class, mappedBy: 'users')]
     private Collection $projects;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Invoice::class)]
-    private Collection $invoices;
-
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Estimate::class)]
-    private Collection $estimates;
-
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: OrderForm::class)]
-    private Collection $orderForms;
-
+    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Project::class)]
+    private Collection $projectsOwned;
     #[ORM\OneToMany(mappedBy: 'sender', targetEntity: Message::class)]
-    private Collection $Messages;
+    private Collection $messages;
 
     #[ORM\Column(type: 'boolean')]
     private bool $isEnabled;
@@ -228,15 +217,6 @@ class User implements EntityInterface
         $this->userSettings = $userSettings;
     }
 
-    public function getSellProcesses(): Collection
-    {
-        return $this->sellProcesses;
-    }
-
-    public function setSellProcesses(Collection $sellProcesses): void
-    {
-        $this->sellProcesses = $sellProcesses;
-    }
 
     public function getCustomers(): Collection
     {
@@ -310,12 +290,12 @@ class User implements EntityInterface
 
     public function getMessages(): Collection
     {
-        return $this->Messages;
+        return $this->messages;
     }
 
-    public function setMessages(Collection $Messages): void
+    public function setMessages(Collection $messages): void
     {
-        $this->Messages = $Messages;
+        $this->messages = $messages;
     }
 
     public function toArray(): array
@@ -353,7 +333,6 @@ class User implements EntityInterface
             'passwordConfirmedAt' => $this->getPasswordConfirmedAt()?->format('Y-m-d H:i:s'),
             'isEnabled' => $this->getIsEnabled(),
             'userSettings' => $this->getUserSettings()->toArray(),
-            'sellProcesses' => $this->getSellProcesses()->map(fn(SellProcess $sellProcess) => $sellProcess->toArray())->toArray(),
             'customers' => $this->getCustomers()->map(fn(Customer $customer) => $customer->toArray())->toArray(),
             'tasks' => $this->getTasks()->toArray(),
             'projects' => $this->getProjects()->map(fn(Project $project) => $project->toArray())->toArray(),
