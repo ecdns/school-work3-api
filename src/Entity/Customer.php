@@ -215,47 +215,6 @@ class Customer implements EntityInterface
         $this->status = $status;
     }
 
-    public function getMessages(): Collection
-    {
-        return $this->messages;
-    }
-
-    public function setMessages(Collection $messages): void
-    {
-        $this->messages = $messages;
-    }
-
-    public function getEstimates(): Collection
-    {
-        return $this->estimates;
-    }
-
-    public function setEstimates(Collection $estimates): void
-    {
-        $this->estimates = $estimates;
-    }
-
-    public function getInvoices(): Collection
-    {
-        return $this->invoices;
-    }
-
-    public function setInvoices(Collection $invoices): void
-    {
-        $this->invoices = $invoices;
-    }
-
-    public function getOrderForms(): Collection
-    {
-        return $this->orderForms;
-    }
-
-    public function setOrderForms(Collection $orderForms): void
-    {
-        $this->orderForms = $orderForms;
-    }
-
-
     public function getProjects(): Collection
     {
         return $this->projects;
@@ -290,10 +249,6 @@ class Customer implements EntityInterface
             'company' => $this->getCompany(),
             'user' => $this->getUser(),
             'status' => $this->getStatus(),
-            'messages' => $this->getMessages(),
-            'estimates' => $this->getEstimates(),
-            'invoices' => $this->getInvoices(),
-            'orderForms' => $this->getOrderForms(),
             'projects' => $this->getProjects(),
         ];
     }

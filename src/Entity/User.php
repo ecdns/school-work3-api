@@ -248,36 +248,6 @@ class User implements EntityInterface
         $this->projects = $projects;
     }
 
-    public function getInvoices(): Collection
-    {
-        return $this->invoices;
-    }
-
-    public function setInvoices(Collection $invoices): void
-    {
-        $this->invoices = $invoices;
-    }
-
-    public function getEstimates(): Collection
-    {
-        return $this->estimates;
-    }
-
-    public function setEstimates(Collection $estimates): void
-    {
-        $this->estimates = $estimates;
-    }
-
-    public function getOrderForms(): Collection
-    {
-        return $this->orderForms;
-    }
-
-    public function setOrderForms(Collection $orderForms): void
-    {
-        $this->orderForms = $orderForms;
-    }
-
     public function getIsEnabled(): bool
     {
         return $this->isEnabled;
@@ -336,9 +306,6 @@ class User implements EntityInterface
             'customers' => $this->getCustomers()->map(fn(Customer $customer) => $customer->toArray())->toArray(),
             'tasks' => $this->getTasks()->toArray(),
             'projects' => $this->getProjects()->map(fn(Project $project) => $project->toArray())->toArray(),
-            'invoices' => $this->getInvoices()->map(fn(Invoice $invoice) => $invoice->toArray())->toArray(),
-            'estimates' => $this->getEstimates()->map(fn(Estimate $estimate) => $estimate->toArray())->toArray(),
-            'orderForms' => $this->getOrderForms()->map(fn(OrderForm $orderForm) => $orderForm->toArray())->toArray(),
             'messages' => $this->getMessages()->map(fn(Message $message) => $message->toArray())->toArray(),
         ];
     }

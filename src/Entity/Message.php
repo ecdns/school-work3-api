@@ -120,7 +120,6 @@ class Message implements EntityInterface
             'project' => $this->project->toArray(),
             'message' => $this->message,
             'isRead' => $this->isRead,
-            'isLiked' => $this->isLiked,
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
         ];

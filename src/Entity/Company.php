@@ -310,49 +310,6 @@ class Company implements EntityInterface
         $this->products = $products;
     }
 
-    public function getOrderForms(): array
-    {
-        $orderForms = [];
-        foreach ($this->orderForms as $orderForm) {
-            $orderForms[] = $orderForm->getName();
-        }
-        return $orderForms;
-    }
-
-    public function setOrderForms(Collection $orderForms): void
-    {
-        $this->orderForms = $orderForms;
-    }
-
-    public function getInvoices(): array
-    {
-        $invoices = [];
-        foreach ($this->invoices as $invoice) {
-            $invoices[] = $invoice->getNumber();
-        }
-        return $invoices;
-    }
-
-    public function setInvoices(Collection $invoices): void
-    {
-        $this->invoices = $invoices;
-    }
-
-    public function getEstimates(): array
-    {
-        $estimates = [];
-        foreach ($this->estimates as $estimate) {
-            $estimates[] = $estimate->getNumber();
-        }
-        return $estimates;
-    }
-
-    public function setEstimates(Collection $estimates): void
-    {
-        $this->estimates = $estimates;
-    }
-
-
     public function getCompanySettings(): array
     {
         return isset($this->companySettings) ? $this->companySettings->toArray() : array();
@@ -422,9 +379,6 @@ class Company implements EntityInterface
             'customers' => $this->getCustomers(),
             'suppliers' => $this->getSuppliers(),
             'products' => $this->getProducts(),
-            'orderForms' => $this->getOrderForms(),
-            'invoices' => $this->getInvoices(),
-            'estimates' => $this->getEstimates(),
             'companySettings' => $this->getCompanySettings() ? $this->getCompanySettings() : null,
             'projects' => $this->getProjects(),
         ];

@@ -240,16 +240,6 @@ class Product implements EntityInterface
         $this->supplier = $supplier;
     }
 
-    public function getOrderLines(): Collection
-    {
-        return $this->orderLines;
-    }
-
-    public function setOrderLines(Collection $orderLines): void
-    {
-        $this->orderLines = $orderLines;
-    }
-
     public function __toString(): string
     {
         return $this->name;
@@ -326,7 +316,6 @@ class Product implements EntityInterface
             'company' => $this->company->toArray(),
             'quantityUnit' => $this->quantityUnit->toArray(),
             'supplier' => $this->supplier->toArray(),
-            'orderLines' => $this->orderLines->map(fn (OrderLine $orderLine) => $orderLine->toArray())->toArray(),
         ];
     }
 
@@ -348,7 +337,6 @@ class Product implements EntityInterface
             'company' => $this->company->toArray(),
             'quantityUnit' => $this->quantityUnit->toArray(),
             'supplier' => $this->supplier->toArray(),
-            'orderLines' => $this->orderLines->map(fn (OrderLine $orderLine) => $orderLine->toArray())->toArray(),
             'sellPriceWithVat' => $this->getSellPriceWithVat(),
             'buyPriceWithVat' => $this->getBuyPriceWithVat(),
             'sellPriceWithDiscount' => $this->getSellPriceWithDiscount(),
