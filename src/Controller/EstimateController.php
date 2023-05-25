@@ -5,15 +5,11 @@ declare(strict_types=1);
 namespace Controller;
 
 use DateTime;
-use Doctrine\ORM\EntityManager;
-use Entity\Company;
 use Entity\Estimate;
+use Entity\EstimateProduct;
 use Entity\EstimateStatus;
+use Entity\Product;
 use Entity\Project;
-use Entity\QuantityUnit;
-use Entity\Role;
-use Entity\Supplier;
-use Entity\Vat;
 use Exception;
 use Service\DAO;
 use Service\Request;
@@ -30,6 +26,7 @@ class EstimateController extends AbstractController
         $this->dao = $dao;
         $this->request = $request;
     }
+
 
     public function addEstimate(): void
     {
@@ -96,6 +93,7 @@ class EstimateController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(201, 'Estimate created');
     }
+
 
     public function getEstimates(): void
     {
@@ -184,13 +182,13 @@ class EstimateController extends AbstractController
         }
 
         // it will look like this:
-        // {
-        //     "name": "Estimate 1",
-        //     "description": "This is the first estimate",
-        //     "project": 1,
-        //     "expiredAt": "2021-09-30",
-        //     "estimateStatus": 1
-        // }
+//         {
+//             "name": "Estimate 1",
+//             "description": "This is the first estimate",
+//             "project": 1,
+//             "expiredAt": "2021-09-30",
+//             "estimateStatus": 1
+//         }
 
 
         // get the estimate data from the request body
@@ -202,9 +200,14 @@ class EstimateController extends AbstractController
 
         try {
 
-            $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project]);
-            $estimateStatusObject = $this->dao->getOneBy(EstimateStatus::class, ['id' => $estimateStatus]);
-            $expiredAt = DateTime::createFromFormat('Y-m-d', $expiredAt);
+            $projectObject = $this->dao->getOneEntityBy(Project::class, ['id' => $project]);
+
+            $estimateStatusObject = $this->dao->getOneEntityBy(EstimateStatus::class, ['id' => $estimateStatus]);
+
+            if (gettype($expiredAt) == 'string') {
+                $expiredAt = DateTime::createFromFormat('Y-m-d', $expiredAt);
+            }
+
 
             if (!$estimateStatusObject || !$projectObject) {
                 $this->request->handleErrorAndQuit(404, new Exception('EstimateStatus, Project or ExpiredDate not found'));
@@ -237,6 +240,54 @@ class EstimateController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Estimate updated');
 
     }
+
+    //add Prducts To Estimate
+    public function addProductsToEstimate(int $estimateId, int $productId): void
+    {
+        // get the request body
+        $requestBody = file_get_contents('php://input');
+
+        // decode the json
+        $requestBody = json_decode($requestBody, true);
+
+
+
+
+        // get the estimate by id
+        try {
+            $estimate = $this->dao->getOneEntityBy(Estimate::class, ['id' => $estimateId]);
+
+            $product = $this->dao->getOneEntityBy(Product::class, ['id' => $productId]);
+
+            //if the estimate is not found
+            if (!$estimate || !$product) {
+                $this->request->handleErrorAndQuit(404, new Exception('Estimate or Product not found'));
+            }
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        //get EstimateProduct by estimate and product
+        try {
+            $estimateProduct = $this->dao->getOneEntityBy(EstimateProduct::class, ['estimate' => $estimate, 'product' => $product]);
+            if ($estimateProduct==null) {
+                $estimateProduct = new EstimateProduct($estimate, $product, 1);
+                $this->dao->addEntity($estimateProduct);
+                $estimate->addEstimateProduct($estimateProduct);
+                $this->dao->updateEntity($estimate);
+            }else{
+                $estimateProduct->setQuantity($estimateProduct->getQuantity()+1);
+                $this->dao->updateEntity($estimateProduct);
+            }
+
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+
+        $this->request->handleSuccessAndQuit(200, 'Product added to Estimate');
+    }
+
 
     public function deleteEstimate(int $id): void
     {

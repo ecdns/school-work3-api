@@ -73,10 +73,10 @@ class CustomerStatusController extends AbstractController
         $requestBody = file_get_contents('php://input');
 
         // it will look like this:
-        // {
-        //     "name": "CustomerStatus 1",
-        //     "description": "This is the first customerStatus"
-        // }
+//         {
+//             "name": "CustomerStatus 1",
+//             "description": "This is the first customerStatus"
+//         }
 
         // decode the json
         $requestBody = json_decode($requestBody, true);

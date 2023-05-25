@@ -42,10 +42,9 @@ class Estimate implements EntityInterface
     #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Project $project;
 
-    //Many to Many for estimate product
-    #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'estimates')]
-    #[ORM\JoinTable(name: 'estimate_product')]
-    private Collection $estimateProducts;
+
+    #[ORM\OneToMany(mappedBy: 'estimate', targetEntity: EstimateProduct::class)]
+    private Collection $estimateProduct;
 
     public function __construct(string $name, string $description, Project $project, DateTime $expiredAt, EstimateStatus $estimateStatus)
     {
@@ -138,19 +137,19 @@ class Estimate implements EntityInterface
 
     public function getEstimateProducts(): Collection
     {
-        return $this->estimateProducts;
+        return $this->estimateProduct;
     }
 
     //add product to estimate
-    public function addEstimateProduct(Product $product): void
+    public function addEstimateProduct(EstimateProduct $product): void
     {
-        $this->estimateProducts->add($product);
+        $this->estimateProduct->add($product);
     }
 
     //remove product from estimate
-    public function removeEstimateProduct(Product $product): void
+    public function removeEstimateProduct(EstimateProduct $product): void
     {
-        $this->estimateProducts->removeElement($product);
+        $this->estimateProduct->removeElement($product);
     }
 
 
@@ -170,7 +169,7 @@ class Estimate implements EntityInterface
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
             'expiredAt' => $this->expiredAt?->format('Y-m-d H:i:s'),
             'estimateStatus' => $this->estimateStatus->toArray(),
-            'estimateProducts' => $this->estimateProducts->map(fn($estimateProduct) => $estimateProduct->toArray())->toArray(),
+            'estimateProducts' => $this->estimateProduct->map(fn($estimateProduct) => $estimateProduct->toArray())->toArray(),
         ];
     }
 
