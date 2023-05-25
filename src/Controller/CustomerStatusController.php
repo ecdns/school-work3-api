@@ -9,6 +9,22 @@ use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="CustomerStatusRequest",
+ *     required={"name", "description"},
+ *     @OA\Property(property="name", type="string", example="CustomerStatus 1"),
+ *     @OA\Property(property="description", type="string", example="This is the first customerStatus")
+ * )
+ * @OA\Schema (
+ *     schema="CustomerStatusResponse",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="CustomerStatus 1"),
+ *     @OA\Property(property="description", type="string", example="This is the first customerStatus"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00")
+ * )
+ */
 class CustomerStatusController extends AbstractController
 {
 
@@ -31,12 +47,11 @@ class CustomerStatusController extends AbstractController
      *     @OA\RequestBody(
      *         required=true,
      *         description="CustomerStatus object that needs to be added",
-     *         @OA\JsonContent(ref="#/components/schemas/CustomerStatus")
+     *         @OA\JsonContent(ref="#/components/schemas/CustomerStatusRequest")
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="CustomerStatus created",
-     *         @OA\JsonContent(ref="#/components/schemas/CustomerStatus")
+     *         description="CustomerStatus created"
      *     ),
      *     @OA\Response(
      *         response=400,
@@ -106,7 +121,7 @@ class CustomerStatusController extends AbstractController
      *         description="CustomerStatuses found",
      *         @OA\JsonContent(
      *             type="array",
-     *             @OA\Items(ref="#/components/schemas/CustomerStatus")
+     *             @OA\Items(ref="#/components/schemas/CustomerStatusResponse")
      *         )
      *     ),
      *     @OA\Response(
@@ -155,7 +170,7 @@ class CustomerStatusController extends AbstractController
      *     @OA\Response(
      *         response=200,
      *         description="CustomerStatus found",
-     *         @OA\JsonContent(ref="#/components/schemas/CustomerStatus")
+     *         @OA\JsonContent(ref="#/components/schemas/CustomerStatusResponse")
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -208,7 +223,7 @@ class CustomerStatusController extends AbstractController
      *     @OA\RequestBody(
      *         description="CustomerStatus object that needs to be updated",
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/CustomerStatus")
+     *         @OA\JsonContent(ref="#/components/schemas/CustomerStatusRequest")
      *     ),
      *     @OA\Response(
      *         response=200,

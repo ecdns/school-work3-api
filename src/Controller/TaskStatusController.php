@@ -9,6 +9,24 @@ use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="TaskStatusRequest",
+ *     required={"name", "description"},
+ *     @OA\Property(property="name", type="string", example="TaskStatus 1"),
+ *     @OA\Property(property="description", type="string", example="This is the first taskStatus")
+ * )
+ *
+ * @OA\Schema (
+ *     schema="TaskStatusResponse",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="TaskStatus 1"),
+ *     @OA\Property(property="description", type="string", example="This is the first taskStatus"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00")
+ * )
+ *
+ */
 class TaskStatusController extends AbstractController
 {
 
@@ -31,7 +49,7 @@ class TaskStatusController extends AbstractController
      *     @OA\RequestBody(
      *         required=true,
      *         description="TaskStatus object that needs to be added",
-     *         @OA\JsonContent(ref="#/components/schemas/TaskStatus")
+     *         @OA\JsonContent(ref="#/components/schemas/TaskStatusRequest")
      *     ),
      *     @OA\Response(
      *         response=201,
@@ -104,7 +122,7 @@ class TaskStatusController extends AbstractController
      *         description="TaskStatuses found",
      *         @OA\JsonContent(
      *             type="array",
-     *             @OA\Items(ref="#/components/schemas/TaskStatus")
+     *             @OA\Items(ref="#/components/schemas/TaskStatusResponse")
      *         )
      *     ),
      *     @OA\Response(
@@ -152,7 +170,7 @@ class TaskStatusController extends AbstractController
      *         response=200,
      *         description="TaskStatus found",
      *         @OA\JsonContent(
-     *             ref="#/components/schemas/TaskStatus"
+     *             ref="#/components/schemas/TaskStatusResponse"
      *         )
      *     ),
      *     @OA\Response(
@@ -205,7 +223,7 @@ class TaskStatusController extends AbstractController
      *     @OA\RequestBody(
      *         required=true,
      *         description="TaskStatus object that needs to be updated",
-     *         @OA\JsonContent(ref="#/components/schemas/TaskStatus")
+     *         @OA\JsonContent(ref="#/components/schemas/TaskStatusRequest")
      *     ),
      *     @OA\Response(
      *         response=200,

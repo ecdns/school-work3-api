@@ -9,6 +9,23 @@ use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="ProductFamilyRequest",
+ *     required={"name", "description"},
+ *     @OA\Property(property="name", type="string", example="Salle de Bain"),
+ *     @OA\Property(property="description", type="string", example="Catégorie regroupant tous les produits pour la salle de bain")
+ * )
+ *
+ * @OA\Schema (
+ *     schema="ProductFamilyResponse",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="Salle de Bain"),
+ *     @OA\Property(property="description", type="string", example="Catégorie regroupant tous les produits pour la salle de bain"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-03-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-03-01 00:00:00")
+ * )
+ */
 class ProductFamilyController extends AbstractController
 {
 
@@ -31,7 +48,7 @@ class ProductFamilyController extends AbstractController
      *     @OA\RequestBody(
      *         required=true,
      *         description="ProductFamily object that needs to be added",
-     *         @OA\JsonContent(ref="#/components/schemas/ProductFamily")
+     *         @OA\JsonContent(ref="#/components/schemas/ProductFamilyRequest")
      *     ),
      *     @OA\Response(
      *         response=201,
@@ -56,11 +73,11 @@ class ProductFamilyController extends AbstractController
         // get the request body
         $requestBody = file_get_contents('php://input');
 
-        // it will look like this:
-        //         {
-        //             "name": "Salle de Bain",
-        //             "description": "Catégorie regroupant tous les produits pour la salle de bain"
-        //         }
+        // it will look like this :
+        // {
+        //     "name": "Salle de Bain",
+        //     "description": "Catégorie regroupant tous les produits pour la salle de bain"
+        //  }
 
         // decode the json
         $requestBody = json_decode($requestBody, true);
@@ -104,7 +121,7 @@ class ProductFamilyController extends AbstractController
      *         description="ProductFamilies found",
      *         @OA\JsonContent(
      *             type="array",
-     *             @OA\Items(ref="#/components/schemas/ProductFamily")
+     *             @OA\Items(ref="#/components/schemas/ProductFamilyResponse")
      *         )
      *     ),
      *     @OA\Response(
@@ -152,7 +169,7 @@ class ProductFamilyController extends AbstractController
      *     @OA\Response(
      *         response=200,
      *         description="ProductFamily found",
-     *         @OA\JsonContent(ref="#/components/schemas/ProductFamily")
+     *         @OA\JsonContent(ref="#/components/schemas/ProductFamilyResponse")
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -204,7 +221,7 @@ class ProductFamilyController extends AbstractController
      *     @OA\RequestBody(
      *         required=true,
      *         description="ProductFamily object that needs to be updated",
-     *         @OA\JsonContent(ref="#/components/schemas/ProductFamily")
+     *         @OA\JsonContent(ref="#/components/schemas/ProductFamilyRequest")
      *     ),
      *     @OA\Response(
      *         response=200,

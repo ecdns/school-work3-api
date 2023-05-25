@@ -2,13 +2,31 @@
 
 namespace Controller;
 
-// controller for entity Vat
-use Doctrine\ORM\EntityManager;
 use Entity\Vat;
 use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="VatRequest",
+ *     required={"name", "rate", "description"},
+ *     @OA\Property(property="name", type="string", example="20%"),
+ *     @OA\Property(property="rate", type="integer", example=20),
+ *     @OA\Property(property="description", type="string", example="20% VAT")
+ * )
+ *
+ * @OA\Schema (
+ *     schema="VatResponse",
+ *     required={"id", "name", "rate", "description"},
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="20%"),
+ *     @OA\Property(property="rate", type="integer", example=20),
+ *     @OA\Property(property="description", type="string", example="20% VAT"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00")
+ * )
+ */
 class VatController extends AbstractController
 {
 
@@ -25,13 +43,13 @@ class VatController extends AbstractController
     /**
      * @OA\Post(
      *     path="/vat",
-     *     tags={"Vats"},
+     *     tags={"Vat"},
      *     summary="Add a new vat",
      *     description="Add a new vat",
      *     @OA\RequestBody(
      *         required=true,
      *         description="Vat object that needs to be added",
-     *         @OA\JsonContent(ref="#/components/schemas/Vat")
+     *         @OA\JsonContent(ref="#/components/schemas/VatRequest")
      *     ),
      *     @OA\Response(
      *         response=201,
@@ -98,7 +116,7 @@ class VatController extends AbstractController
     /**
      * @OA\Get(
      *     path="/vat/all",
-     *     tags={"Vats"},
+     *     tags={"Vat"},
      *     summary="Get all vats",
      *     description="Get all vats",
      *     @OA\Response(
@@ -106,7 +124,7 @@ class VatController extends AbstractController
      *         description="Vats found",
      *         @OA\JsonContent(
      *             type="array",
-     *             @OA\Items(ref="#/components/schemas/Vat")
+     *             @OA\Items(ref="#/components/schemas/VatResponse")
      *         )
      *     ),
      *     @OA\Response(
@@ -139,7 +157,7 @@ class VatController extends AbstractController
     /**
      * @OA\Get(
      *     path="/vat/{id}",
-     *     tags={"Vats"},
+     *     tags={"Vat"},
      *     summary="Get a vat by id",
      *     description="Get a vat by id",
      *     @OA\Parameter(
@@ -155,7 +173,7 @@ class VatController extends AbstractController
      *     @OA\Response(
      *         response=200,
      *         description="Vat found",
-     *         @OA\JsonContent(ref="#/components/schemas/Vat")
+     *         @OA\JsonContent(ref="#/components/schemas/VatResponse")
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -191,7 +209,7 @@ class VatController extends AbstractController
     /**
      * @OA\Put(
      *     path="/vat/{id}",
-     *     tags={"Vats"},
+     *     tags={"Vat"},
      *     summary="Update a vat by id",
      *     description="Update a vat by id",
      *     @OA\Parameter(
@@ -207,7 +225,7 @@ class VatController extends AbstractController
      *     @OA\RequestBody(
      *         required=true,
      *         description="Vat object that needs to be updated",
-     *         @OA\JsonContent(ref="#/components/schemas/Vat")
+     *         @OA\JsonContent(ref="#/components/schemas/VatRequest")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -292,7 +310,7 @@ class VatController extends AbstractController
     /**
      * @OA\Delete(
      *     path="/vat/{id}",
-     *     tags={"Vats"},
+     *     tags={"Vat"},
      *     summary="Delete a vat by id",
      *     description="Delete a vat by id",
      *     @OA\Parameter(

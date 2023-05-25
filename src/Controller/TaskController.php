@@ -15,6 +15,34 @@ use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="TaskRequest",
+ *     required={"title", "description", "location", "dueDate", "project", "user", "taskStatus"},
+ *     @OA\Property(property="title", type="string", example="Task 1"),
+ *     @OA\Property(property="description", type="string", example="This is the first task"),
+ *     @OA\Property(property="location", type="string", example="Location 1"),
+ *     @OA\Property(property="dueDate", type="string", example="2021-01-01"),
+ *     @OA\Property(property="project", type="integer", example=1),
+ *     @OA\Property(property="user", type="integer", example=1),
+ *     @OA\Property(property="taskStatus", type="integer", example=1)
+ * )
+ *
+ * @OA\Schema (
+ *     schema="TaskResponse",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="title", type="string", example="Task 1"),
+ *     @OA\Property(property="description", type="string", example="This is the first task"),
+ *     @OA\Property(property="location", type="string", example="Location 1"),
+ *     @OA\Property(property="dueDate", type="string", example="2021-01-01"),
+ *     @OA\Property(property="project", type="object", ref="#/components/schemas/ProjectResponse"),
+ *     @OA\Property(property="user", type="object", ref="#/components/schemas/UserResponse"),
+ *     @OA\Property(property="taskStatus", type="object", ref="#/components/schemas/TaskStatusResponse"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00")
+ * )
+ *
+ */
 class TaskController extends AbstractController
 {
     
@@ -38,7 +66,7 @@ class TaskController extends AbstractController
      *     @OA\RequestBody(
      *         required=true,
      *         description="Task object that needs to be added to the database",
-     *         @OA\JsonContent(ref="#/components/schemas/Task")
+     *         @OA\JsonContent(ref="#/components/schemas/TaskRequest")
      *     ),
      *     @OA\Response(
      *         response=201,
@@ -137,7 +165,7 @@ class TaskController extends AbstractController
      *
      * @OA\Get(
      *     path="/task/all",
-     *     tags={"Tasks"},
+     *     tags={"Task"},
      *     summary="Get all tasks",
      *     description="Returns all tasks",
      *     @OA\Response(
@@ -145,7 +173,7 @@ class TaskController extends AbstractController
      *         description="Tasks found",
      *         @OA\JsonContent(
      *             type="array",
-     *             @OA\Items(ref="#/components/schemas/Task")
+     *             @OA\Items(ref="#/components/schemas/TaskResponse")
      *         )
      *     ),
      *     @OA\Response(
@@ -182,7 +210,7 @@ class TaskController extends AbstractController
      *
      * @OA\Get(
      *     path="/task/user/{id}",
-     *     tags={"Tasks"},
+     *     tags={"Task"},
      *     summary="Get all tasks by user",
      *     description="Returns all tasks assigned to a user",
      *     @OA\Parameter(
@@ -200,7 +228,7 @@ class TaskController extends AbstractController
      *         description="Tasks found",
      *         @OA\JsonContent(
      *             type="array",
-     *             @OA\Items(ref="#/components/schemas/Task")
+     *             @OA\Items(ref="#/components/schemas/TaskResponse")
      *         )
      *     ),
      *     @OA\Response(
@@ -240,7 +268,7 @@ class TaskController extends AbstractController
      *
      * @OA\Get(
      *     path="/task/project/{id}",
-     *     tags={"Tasks"},
+     *     tags={"Task"},
      *     summary="Get all tasks by project",
      *     description="Returns all tasks assigned to a project",
      *     @OA\Parameter(
@@ -258,7 +286,7 @@ class TaskController extends AbstractController
      *         description="Tasks found",
      *         @OA\JsonContent(
      *             type="array",
-     *             @OA\Items(ref="#/components/schemas/Task")
+     *             @OA\Items(ref="#/components/schemas/TaskResponse")
      *         )
      *     ),
      *     @OA\Response(
@@ -294,7 +322,7 @@ class TaskController extends AbstractController
      *
      * @OA\Get(
      *     path="/task/{id}",
-     *     tags={"Tasks"},
+     *     tags={"Task"},
      *     summary="Get task by id",
      *     description="Returns a task by id",
      *     @OA\Parameter(
@@ -310,7 +338,7 @@ class TaskController extends AbstractController
      *     @OA\Response(
      *         response=200,
      *         description="Task found",
-     *         @OA\JsonContent(ref="#/components/schemas/Task")
+     *         @OA\JsonContent(ref="#/components/schemas/TaskResponse")
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -351,7 +379,7 @@ class TaskController extends AbstractController
      *     path="/task/{id}",
      *     summary="Update a task by ID",
      *     description="Update a task by ID",
-     *     tags={"Tasks"},
+     *     tags={"Task"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -365,12 +393,11 @@ class TaskController extends AbstractController
      *     @OA\RequestBody(
      *         required=true,
      *         description="Task object that needs to be updated",
-     *         @OA\JsonContent(ref="#/components/schemas/Task")
+     *         @OA\JsonContent(ref="#/components/schemas/TaskRequest")
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Task updated",
-     *         @OA\JsonContent(ref="#/components/schemas/Task")
+     *         description="Task updated"
      *     ),
      *     @OA\Response(
      *         response=400,
@@ -479,7 +506,7 @@ class TaskController extends AbstractController
      *
      * @OA\Delete(
      *     path="/task/{id}",
-     *     tags={"Tasks"},
+     *     tags={"Task"},
      *     summary="Deletes a task by ID",
      *     description="Deletes a task by ID",
      *     @OA\Parameter(

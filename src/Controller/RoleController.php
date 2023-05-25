@@ -10,6 +10,24 @@ use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="RoleRequest",
+ *     required={"name", "description"},
+ *     @OA\Property(property="name", type="string", example="Admin"),
+ *     @OA\Property(property="description", type="string", example="Administrator")
+ * )
+ *
+ * @OA\Schema (
+ *     schema="RoleResponse",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="Admin"),
+ *     @OA\Property(property="description", type="string", example="Administrator"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00")
+ * )
+ *
+ */
 class RoleController extends AbstractController
 {
 
@@ -26,13 +44,13 @@ class RoleController extends AbstractController
     /**
      * @OA\Post(
      *     path="/role",
-     *     tags={"Roles"},
+     *     tags={"Role"},
      *     summary="Add a new role",
      *     description="Add a new role to the database",
      *     @OA\RequestBody(
      *         required=true,
      *         description="Role object that needs to be added to the database",
-     *         @OA\JsonContent(ref="#/components/schemas/Role")
+     *         @OA\JsonContent(ref="#/components/schemas/RoleRequest")
      *     ),
      *     @OA\Response(
      *         response=201,
@@ -101,7 +119,7 @@ class RoleController extends AbstractController
     /**
      * @OA\Get(
      *     path="/role/all",
-     *     tags={"Roles"},
+     *     tags={"Role"},
      *     summary="Get all roles",
      *     description="Get all roles from the database",
      *     @OA\Response(
@@ -109,7 +127,7 @@ class RoleController extends AbstractController
      *         description="Roles found",
      *         @OA\JsonContent(
      *             type="array",
-     *             @OA\Items(ref="#/components/schemas/Role")
+     *             @OA\Items(ref="#/components/schemas/RoleResponse")
      *         )
      *     ),
      *     @OA\Response(
@@ -142,7 +160,7 @@ class RoleController extends AbstractController
     /**
      * @OA\Get(
      *     path="/role/{id}",
-     *     tags={"Roles"},
+     *     tags={"Role"},
      *     summary="Get a role by id",
      *     description="Get a role from the database by its id",
      *     @OA\Parameter(
@@ -155,7 +173,7 @@ class RoleController extends AbstractController
      *     @OA\Response(
      *         response=200,
      *         description="Role found",
-     *         @OA\JsonContent(ref="#/components/schemas/Role")
+     *         @OA\JsonContent(ref="#/components/schemas/RoleResponse")
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -192,7 +210,7 @@ class RoleController extends AbstractController
     /**
      * @OA\Put(
      *     path="/role/{id}",
-     *     tags={"Roles"},
+     *     tags={"Role"},
      *     summary="Update a role by id",
      *     description="Update a role from the database by its id",
      *     @OA\Parameter(
@@ -205,7 +223,7 @@ class RoleController extends AbstractController
      *     @OA\RequestBody(
      *         required=true,
      *         description="Role object that needs to be updated",
-     *         @OA\JsonContent(ref="#/components/schemas/Role")
+     *         @OA\JsonContent(ref="#/components/schemas/RoleRequest")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -287,7 +305,7 @@ class RoleController extends AbstractController
     /**
      * @OA\Delete(
      *     path="/role/{id}",
-     *     tags={"Roles"},
+     *     tags={"Role"},
      *     summary="Delete a role by id",
      *     description="Delete a role from the database by its id",
      *     @OA\Parameter(

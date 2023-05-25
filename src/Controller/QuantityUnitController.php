@@ -7,6 +7,26 @@ use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="QuantityUnitRequest",
+ *     required={"name", "unit", "description"},
+ *     @OA\Property(property="name", type="string", example="Litre"),
+ *     @OA\Property(property="unit", type="string", example="l"),
+ *     @OA\Property(property="description", type="string", example="Litre")
+ * )
+ *
+ * @OA\Schema (
+ *     schema="QuantityUnitResponse",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="Litre"),
+ *     @OA\Property(property="unit", type="string", example="l"),
+ *     @OA\Property(property="description", type="string", example="Litre"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-03-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-03-01 00:00:00")
+ * )
+ *
+ */
 class QuantityUnitController extends AbstractController
 {
 
@@ -29,7 +49,7 @@ class QuantityUnitController extends AbstractController
      *     @OA\RequestBody(
      *         required=true,
      *         description="QuantityUnit data",
-     *         @OA\JsonContent(ref="#/components/schemas/QuantityUnit")
+     *         @OA\JsonContent(ref="#/components/schemas/QuantityUnitRequest")
      *     ),
      *     @OA\Response(
      *         response=201,
@@ -104,7 +124,7 @@ class QuantityUnitController extends AbstractController
      *         description="QuantityUnits found",
      *         @OA\JsonContent(
      *             type="array",
-     *             @OA\Items(ref="#/components/schemas/QuantityUnit")
+     *             @OA\Items(ref="#/components/schemas/QuantityUnitResponse")
      *         )
      *     ),
      *     @OA\Response(
@@ -151,7 +171,7 @@ class QuantityUnitController extends AbstractController
      *     @OA\Response(
      *         response=200,
      *         description="QuantityUnit found",
-     *         @OA\JsonContent(ref="#/components/schemas/QuantityUnit")
+     *         @OA\JsonContent(ref="#/components/schemas/QuantityUnitResponse")
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -204,7 +224,7 @@ class QuantityUnitController extends AbstractController
      *     @OA\RequestBody(
      *         description="QuantityUnit object that needs to be updated",
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/QuantityUnit")
+     *         @OA\JsonContent(ref="#/components/schemas/QuantityUnitRequest")
      *     ),
      *     @OA\Response(
      *         response=200,

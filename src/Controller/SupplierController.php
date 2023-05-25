@@ -12,6 +12,40 @@ use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="SupplierRequest",
+ *     required={"name", "firstName", "lastName", "email", "address", "city", "country", "zipCode", "phone", "company"},
+ *     @OA\Property(property="name", type="string", example="Aubade"),
+ *     @OA\Property(property="firstName", type="string", example="Jean"),
+ *     @OA\Property(property="lastName", type="string", example="Dupont"),
+ *     @OA\Property(property="email", type="string", format="email", example="jean.dupont@aubade"),
+ *     @OA\Property(property="address", type="string", example="1 rue de la lingerie"),
+ *     @OA\Property(property="city", type="string", example="Paris"),
+ *     @OA\Property(property="country", type="string", example="France"),
+ *     @OA\Property(property="zipCode", type="string", example="75000"),
+ *     @OA\Property(property="phone", type="string", example="0123456789"),
+ *     @OA\Property(property="company", type="integer", example=1)
+ * )
+ *
+ * @OA\Schema (
+ *     schema="SupplierResponse",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="Aubade"),
+ *     @OA\Property(property="firstName", type="string", example="Jean"),
+ *     @OA\Property(property="lastName", type="string", example="Dupont"),
+ *     @OA\Property(property="email", type="string", format="email", example="jean.dupont@aubade"),
+ *     @OA\Property(property="address", type="string", example="1 rue de la lingerie"),
+ *     @OA\Property(property="city", type="string", example="Paris"),
+ *     @OA\Property(property="country", type="string", example="France"),
+ *     @OA\Property(property="zipCode", type="string", example="75000"),
+ *     @OA\Property(property="phone", type="string", example="0123456789"),
+ *     @OA\Property(property="company", type="object", ref="#/components/schemas/CompanyResponse"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-03-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-03-01 00:00:00")
+ * )
+ *
+ */
 class SupplierController extends AbstractController
 {
 
@@ -35,7 +69,7 @@ class SupplierController extends AbstractController
      *     @OA\RequestBody(
      *         required=true,
      *         description="Supplier object that needs to be added to the database",
-     *         @OA\JsonContent(ref="#/components/schemas/Supplier")
+     *         @OA\JsonContent(ref="#/components/schemas/SupplierRequest")
      *     ),
      *     @OA\Response(
      *         response=201,
@@ -123,7 +157,7 @@ class SupplierController extends AbstractController
     /**
      * @OA\Get(
      *     path="/supplier/all",
-     *     tags={"Suppliers"},
+     *     tags={"Supplier"},
      *     summary="Get all suppliers",
      *     description="Returns all suppliers from the database",
      *     @OA\Response(
@@ -131,7 +165,7 @@ class SupplierController extends AbstractController
      *         description="Suppliers found",
      *         @OA\JsonContent(
      *             type="array",
-     *             @OA\Items(ref="#/components/schemas/Supplier")
+     *             @OA\Items(ref="#/components/schemas/SupplierResponse")
      *         )
      *     ),
      *     @OA\Response(
@@ -164,7 +198,7 @@ class SupplierController extends AbstractController
     /**
      * @OA\Get(
      *     path="/supplier/{id}",
-     *     tags={"Suppliers"},
+     *     tags={"Supplier"},
      *     summary="Get a supplier by ID",
      *     description="Returns a supplier from the database by its ID",
      *     @OA\Parameter(
@@ -180,7 +214,7 @@ class SupplierController extends AbstractController
      *     @OA\Response(
      *         response=200,
      *         description="Supplier found",
-     *         @OA\JsonContent(ref="#/components/schemas/Supplier")
+     *         @OA\JsonContent(ref="#/components/schemas/SupplierResponse")
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -216,7 +250,7 @@ class SupplierController extends AbstractController
     /**
      * @OA\Put(
      *     path="/supplier/{id}",
-     *     tags={"Suppliers"},
+     *     tags={"Supplier"},
      *     summary="Update a supplier by ID",
      *     description="Updates a supplier from the database by its ID",
      *     @OA\Parameter(
@@ -232,7 +266,7 @@ class SupplierController extends AbstractController
      *     @OA\RequestBody(
      *         required=true,
      *         description="Supplier object that needs to be updated",
-     *         @OA\JsonContent(ref="#/components/schemas/Supplier")
+     *         @OA\JsonContent(ref="#/components/schemas/SupplierRequest")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -349,7 +383,7 @@ class SupplierController extends AbstractController
     /**
      * @OA\Delete(
      *     path="/supplier/{id}",
-     *     tags={"Suppliers"},
+     *     tags={"Supplier"},
      *     summary="Delete a supplier by ID",
      *     description="Deletes a supplier from the database by its ID",
      *     @OA\Parameter(

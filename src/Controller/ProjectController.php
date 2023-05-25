@@ -14,6 +14,32 @@ use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="ProjectRequest",
+ *     required={"name", "description", "company", "creator", "customer", "projectStatus"},
+ *     @OA\Property(property="name", type="string", example="Project 1"),
+ *     @OA\Property(property="description", type="string", example="This is the first project"),
+ *     @OA\Property(property="company", type="integer", example="1"),
+ *     @OA\Property(property="creator", type="integer", example="1"),
+ *     @OA\Property(property="customer", type="integer", example="1"),
+ *     @OA\Property(property="projectStatus", type="integer", example="1")
+ * )
+ *
+ * @OA\Schema (
+ *     schema="ProjectResponse",
+ *     @OA\Property(property="id", type="integer", example="1"),
+ *     @OA\Property(property="name", type="string", example="Project 1"),
+ *     @OA\Property(property="description", type="string", example="This is the first project"),
+ *     @OA\Property(property="company", type="object", ref="#/components/schemas/CompanyResponse"),
+ *     @OA\Property(property="creator", type="object", ref="#/components/schemas/UserResponse"),
+ *     @OA\Property(property="customer", type="object", ref="#/components/schemas/CustomerResponse"),
+ *     @OA\Property(property="projectStatus", type="integer", example="1"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00")
+ * )
+ *
+ */
 class ProjectController extends AbstractController
 {
     
@@ -30,13 +56,13 @@ class ProjectController extends AbstractController
     /**
      * @OA\Post(
      *     path="/project",
-     *     tags={"Projects"},
+     *     tags={"Project"},
      *     summary="Add a new project",
      *     description="Add a new project to the database",
      *     @OA\RequestBody(
      *         required=true,
      *         description="Project object that needs to be added to the database",
-     *         @OA\JsonContent(ref="#/components/schemas/Project")
+     *         @OA\JsonContent(ref="#/components/schemas/ProjectRequest")
      *     ),
      *     @OA\Response(
      *         response=201,
@@ -131,6 +157,7 @@ class ProjectController extends AbstractController
     /**
      * @OA\Get(
      *     path="/project/all",
+     *     tags={"Project"},
      *     summary="Get all projects",
      *     description="Returns an array of all projects",
      *     @OA\Response(
@@ -138,7 +165,7 @@ class ProjectController extends AbstractController
      *         description="Successful operation",
      *         @OA\JsonContent(
      *              type="array",
-     *              @OA\Items(ref="#/components/schemas/Project")
+     *              @OA\Items(ref="#/components/schemas/ProjectResponse")
      *        )
      *     ),
      *     @OA\Response(
@@ -170,6 +197,7 @@ class ProjectController extends AbstractController
     /**
      * @OA\Get(
      *     path="/project/company/{id}",
+     *     tags={"Project"},
      *     summary="Get all projects by company",
      *     description="Returns an array of all projects by company",
      *     @OA\Parameter(
@@ -187,7 +215,7 @@ class ProjectController extends AbstractController
      *         description="Successful operation",
      *         @OA\JsonContent(
      *              type="array",
-     *              @OA\Items(ref="#/components/schemas/Project")
+     *              @OA\Items(ref="#/components/schemas/ProjectResponse")
      *         )
      *     ),
      *     @OA\Response(
@@ -221,6 +249,7 @@ class ProjectController extends AbstractController
     /**
      * @OA\Get(
      *     path="/project/{id}",
+     *     tags={"Project"},
      *     summary="Get project by ID",
      *     description="Returns a project by ID",
      *     @OA\Parameter(
@@ -236,7 +265,7 @@ class ProjectController extends AbstractController
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
-     *         @OA\JsonContent(ref="#/components/schemas/Project")
+     *         @OA\JsonContent(ref="#/components/schemas/ProjectResponse")
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -273,6 +302,7 @@ class ProjectController extends AbstractController
     /**
      * @OA\Put(
      *     path="/project/{id}",
+     *     tags={"Project"},
      *     summary="Update project by ID",
      *     description="Updates a project by ID",
      *     @OA\Parameter(
@@ -288,12 +318,11 @@ class ProjectController extends AbstractController
      *     @OA\RequestBody(
      *         required=true,
      *         description="Project object that needs to be updated",
-     *         @OA\JsonContent(ref="#/components/schemas/Project")
+     *         @OA\JsonContent(ref="#/components/schemas/ProjectRequest")
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Successful operation",
-     *         @OA\JsonContent(ref="#/components/schemas/Project")
+     *         description="Successful operation"
      *     ),
      *     @OA\Response(
      *         response=400,
@@ -400,6 +429,7 @@ class ProjectController extends AbstractController
     /**
      * @OA\Delete(
      *     path="/project/{id}",
+     *     tags={"Project"},
      *     summary="Delete project by ID",
      *     description="Deletes a project by ID",
      *     @OA\Parameter(

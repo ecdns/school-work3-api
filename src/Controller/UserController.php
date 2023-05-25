@@ -13,6 +13,34 @@ use Service\Auth;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="UserRequest",
+ *     required={"firstName", "lastName", "email", "password", "job", "phone", "role", "company"},
+ *     @OA\Property(property="firstName", type="string", example="John"),
+ *     @OA\Property(property="lastName", type="string", example="Doe"),
+ *     @OA\Property(property="email", type="string", example="john.doe@gmail.com"),
+ *     @OA\Property(property="password", type="string", format="password", example="password"),
+ *     @OA\Property(property="job", type="string", example="Developer"),
+ *     @OA\Property(property="phone", type="string", example="0123456789"),
+ *     @OA\Property(property="role", type="integer", example="1"),
+ *     @OA\Property(property="company", type="integer", example="1")
+ * )
+ *
+ * @OA\Schema (
+ *     schema="UserResponse",
+ *     @OA\Property(property="id", type="integer", example="1"),
+ *     @OA\Property(property="firstName", type="string", example="John"),
+ *     @OA\Property(property="lastName", type="string", example="Doe"),
+ *     @OA\Property(property="email", type="string", example="john.doe@gmail.com"),
+ *     @OA\Property(property="job", type="string", example="Developer"),
+ *     @OA\Property(property="phone", type="string", example="0123456789"),
+ *     @OA\Property(property="role", type="object", ref="#/components/schemas/RoleResponse"),
+ *     @OA\Property(property="company", type="object", ref="#/components/schemas/CompanyResponse"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-03-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-03-01 00:00:00")
+ * )
+ */
 class UserController extends AbstractController
 {
     private DAO $dao;
@@ -34,7 +62,7 @@ class UserController extends AbstractController
      *     summary="Add a new user",
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/User")
+     *         @OA\JsonContent(ref="#/components/schemas/UserRequest")
      *     ),
      *     @OA\Response(
      *         response="201",
@@ -138,7 +166,7 @@ class UserController extends AbstractController
      *
      * @OA\Get(
      *     path="/user/all",
-     *     tags={"Users"},
+     *     tags={"User"},
      *     summary="Get all users",
      *     description="Returns all users",
      *     @OA\Response(
@@ -146,7 +174,7 @@ class UserController extends AbstractController
      *         description="Users found",
      *         @OA\JsonContent(
      *             type="array",
-     *             @OA\Items(ref="#/components/schemas/User")
+     *             @OA\Items(ref="#/components/schemas/UserResponse")
      *         )
      *     ),
      *     @OA\Response(
@@ -189,7 +217,7 @@ class UserController extends AbstractController
      *
      * @OA\Get(
      *     path="/user/{id}",
-     *     tags={"Users"},
+     *     tags={"User"},
      *     summary="Get user by ID",
      *     description="Returns a user by ID",
      *     @OA\Parameter(
@@ -205,7 +233,7 @@ class UserController extends AbstractController
      *     @OA\Response(
      *         response="200",
      *         description="User found",
-     *         @OA\JsonContent(ref="#/components/schemas/User")
+     *         @OA\JsonContent(ref="#/components/schemas/UserResponse")
      *     ),
      *     @OA\Response(
      *         response="404",
@@ -245,7 +273,7 @@ class UserController extends AbstractController
      *
      * @OA\Put(
      *     path="/user/{id}",
-     *     tags={"Users"},
+     *     tags={"User"},
      *     summary="Update user by ID",
      *     description="Updates a user by ID",
      *     @OA\Parameter(
@@ -261,7 +289,7 @@ class UserController extends AbstractController
      *     @OA\RequestBody(
      *         required=true,
      *         description="User data to update",
-     *         @OA\JsonContent(ref="#/components/schemas/User")
+     *         @OA\JsonContent(ref="#/components/schemas/UserRequest")
      *     ),
      *     @OA\Response(
      *         response="200",
@@ -375,7 +403,7 @@ class UserController extends AbstractController
      *
      * @OA\Delete(
      *     path="/user/{id}",
-     *     tags={"Users"},
+     *     tags={"User"},
      *     summary="Delete user by ID",
      *     description="Deletes a user by ID",
      *     @OA\Parameter(
@@ -433,7 +461,7 @@ class UserController extends AbstractController
      *
      * @OA\Post(
      *     path="/user/login",
-     *     tags={"Users"},
+     *     tags={"User"},
      *     summary="Login user",
      *     description="Logs in a user",
      *     @OA\RequestBody(

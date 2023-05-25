@@ -17,6 +17,40 @@ use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="CustomerRequest",
+ *     required={"firstName", "lastName", "email", "address", "city", "country", "zipCode", "phone", "company", "user", "status"},
+ *     @OA\Property(property="firstName", type="string", example="John"),
+ *     @OA\Property(property="lastName", type="string", example="Doe"),
+ *     @OA\Property(property="email", type="string", format="email", example="john-doe@gmail.com"),
+ *     @OA\Property(property="address", type="string", example="1, rue de la Paix"),
+ *     @OA\Property(property="city", type="string", example="Paris"),
+ *     @OA\Property(property="country", type="string", example="France"),
+ *     @OA\Property(property="zipCode", type="string", example="75000"),
+ *     @OA\Property(property="phone", type="string", example="0123456789"),
+ *     @OA\Property(property="company", type="integer", example="1"),
+ *     @OA\Property(property="user", type="integer", example="1"),
+ *     @OA\Property(property="status", type="integer", example="1")
+ * )
+ * @OA\Schema (
+ *     schema="CustomerResponse",
+ *     @OA\Property(property="id", type="integer", example="1"),
+ *     @OA\Property(property="firstName", type="string", example="John"),
+ *     @OA\Property(property="lastName", type="string", example="Doe"),
+ *     @OA\Property(property="email", type="string", format="email", example="john-doe@gmail.com"),
+ *     @OA\Property(property="address", type="string", example="1, rue de la Paix"),
+ *     @OA\Property(property="city", type="string", example="Paris"),
+ *     @OA\Property(property="country", type="string", example="France"),
+ *     @OA\Property(property="zipCode", type="string", example="75000"),
+ *     @OA\Property(property="phone", type="string", example="0123456789"),
+ *     @OA\Property(property="company", type="object", ref="#/components/schemas/CompanyResponse"),
+ *     @OA\Property(property="user", type="object", ref="#/components/schemas/UserResponse"),
+ *     @OA\Property(property="status", type="object", ref="#/components/schemas/CustomerStatusResponse"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00")
+ * )
+ */
 class CustomerController extends AbstractController
 {
 
@@ -38,7 +72,7 @@ class CustomerController extends AbstractController
      *     @OA\RequestBody(
      *         required=true,
      *         description="Customer data",
-     *         @OA\JsonContent(ref="#/components/schemas/Customer")
+     *         @OA\JsonContent(ref="#/components/schemas/CustomerRequest")
      *     ),
      *     @OA\Response(
      *         response="201",
@@ -146,7 +180,7 @@ class CustomerController extends AbstractController
      *         description="Customers found",
      *         @OA\JsonContent(
      *             type="array",
-     *             @OA\Items(ref="#/components/schemas/Customer")
+     *             @OA\Items(ref="#/components/schemas/CustomerResponse")
      *         )
      *     ),
      *     @OA\Response(
@@ -246,7 +280,7 @@ class CustomerController extends AbstractController
      *         description="Customers found",
      *         @OA\JsonContent(
      *             type="array",
-     *             @OA\Items(ref="#/components/schemas/Customer")
+     *             @OA\Items(ref="#/components/schemas/CustomerResponse")
      *         )
      *     ),
      *     @OA\Response(
@@ -304,7 +338,7 @@ class CustomerController extends AbstractController
      *     @OA\RequestBody(
      *         required=true,
      *         description="Customer data to update",
-     *         @OA\JsonContent(ref="#/components/schemas/Customer")
+     *         @OA\JsonContent(ref="#/components/schemas/CustomerRequest")
      *     ),
      *     @OA\Response(
      *         response="200",

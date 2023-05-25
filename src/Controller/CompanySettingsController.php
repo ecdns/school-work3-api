@@ -4,13 +4,32 @@ declare(strict_types=1);
 
 namespace Controller;
 
-use Doctrine\ORM\EntityManager;
 use Entity\Company;
 use Entity\CompanySettings;
 use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema(
+*    schema="CompanySettingsRequest",
+ *   required={"primaryColor", "secondaryColor", "tertiaryColor", "company"},
+ *   @OA\Property(property="primaryColor", type="string", example="#000000"),
+ *   @OA\Property(property="secondaryColor", type="string", example="#000000"),
+ *   @OA\Property(property="tertiaryColor", type="string", example="#000000"),
+ *   @OA\Property(property="company", type="id", example=1)
+ * )
+ * @OA\Schema(
+ *   schema="CompanySettingsResponse",
+ *   @OA\Property(property="id", type="integer"),
+ *   @OA\Property(property="primaryColor", type="string", example="#000000"),
+ *   @OA\Property(property="secondaryColor", type="string", example="#000000"),
+ *   @OA\Property(property="tertiaryColor", type="string", example="#000000"),
+ *   @OA\Property(property="company", type="object", ref="#/components/schemas/CompanyResponse"),
+ *   @OA\Property(property="created_at", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *   @OA\Property(property="updated_at", type="string", format="date-time", example="2021-01-01 00:00:00")
+ * )
+ */
 class CompanySettingsController extends AbstractController
 {
     private DAO $dao;
@@ -30,7 +49,7 @@ class CompanySettingsController extends AbstractController
      *     summary="Add company settings",
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/CompanySettings")
+     *         @OA\JsonContent(ref="#/components/schemas/CompanySettingsRequest")
      *     ),
      *     @OA\Response(
      *         response="201",
@@ -80,25 +99,25 @@ class CompanySettingsController extends AbstractController
         $primaryColor = $requestBody['primaryColor'];
         $secondaryColor = $requestBody['secondaryColor'];
         $tertiaryColor = $requestBody['tertiaryColor'];
-        $company = $requestBody['company'];
+        $companyId = $requestBody['company'];
 
         // get the company from the database by its name
         try {
-            $company = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
+            $companyId = $this->dao->getOneEntityBy(Company::class, ['id' => $companyId]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the company is not found`
-        if (!$company) {
+        if (!$companyId) {
             $this->request->handleErrorAndQuit(404, new Exception('Company not found'));
         }
 
         // create a new companySettings object
-        $companySettings = new CompanySettings($primaryColor, $secondaryColor, $tertiaryColor, $company);
+        $companySettings = new CompanySettings($primaryColor, $secondaryColor, $tertiaryColor, $companyId);
 
         // update the company settings field in the company object
-        $company->setCompanySettings($companySettings);
+        $companyId->setCompanySettings($companySettings);
 
         // persist (save) the company settings in the database (this will also save the company settings in the company table)
         try {
@@ -133,7 +152,7 @@ class CompanySettingsController extends AbstractController
      *     @OA\Response(
      *         response="200",
      *         description="Company settings found",
-     *         @OA\JsonContent(ref="#/components/schemas/CompanySettings")
+     *         @OA\JsonContent(ref="#/components/schemas/CompanySettingsResponse")
      *     ),
      *     @OA\Response(
      *         response="404",
@@ -184,7 +203,8 @@ class CompanySettingsController extends AbstractController
      *     ),
      *     @OA\RequestBody(
      *         required=true,
-     *         description="Company settings object that needs to be updated"
+     *         description="Company settings object that needs to be updated",
+     *         @OA\JsonContent(ref="#/components/schemas/CompanySettingsRequest")
      *     ),
      *     @OA\Response(
      *         response="200",

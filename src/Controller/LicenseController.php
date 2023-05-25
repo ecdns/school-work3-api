@@ -10,6 +10,29 @@ use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="LicenseRequest",
+ *     required={"name", "description", "price", "maxUsers", "validityPeriod"},
+ *     @OA\Property(property="name", type="string", example="basic"),
+ *     @OA\Property(property="description", type="string", example="basic license for 1 user"),
+ *     @OA\Property(property="price", type="integer", example=100),
+ *     @OA\Property(property="maxUsers", type="integer", example=1),
+ *     @OA\Property(property="validityPeriod", type="integer", example=1)
+ * )
+ *
+ * @OA\Schema (
+ *     schema="LicenseResponse",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="basic"),
+ *     @OA\Property(property="description", type="string", example="basic license for 1 user"),
+ *     @OA\Property(property="price", type="integer", example=100),
+ *     @OA\Property(property="maxUsers", type="integer", example=1),
+ *     @OA\Property(property="validityPeriod", type="integer", example=1),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-09-30 12:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-09-30 12:00:00")
+ * )
+ */
 class LicenseController extends AbstractController
 {
     private DAO $dao;
@@ -31,7 +54,7 @@ class LicenseController extends AbstractController
      *     @OA\RequestBody(
      *         required=true,
      *         description="License data",
-     *         @OA\JsonContent(ref="#/components/schemas/License")
+     *         @OA\JsonContent(ref="#/components/schemas/LicenseRequest")
      *     ),
      *     @OA\Response(
      *         response="201",
@@ -110,7 +133,7 @@ class LicenseController extends AbstractController
      *         description="Licenses found",
      *         @OA\JsonContent(
      *             type="array",
-     *             @OA\Items(ref="#/components/schemas/License")
+     *             @OA\Items(ref="#/components/schemas/LicenseResponse")
      *         )
      *     ),
      *     @OA\Response(
@@ -158,7 +181,7 @@ class LicenseController extends AbstractController
      *     @OA\Response(
      *         response="200",
      *         description="License found",
-     *         @OA\JsonContent(ref="#/components/schemas/License")
+     *         @OA\JsonContent(ref="#/components/schemas/LicenseResponse")
      *     ),
      *     @OA\Response(
      *         response="404",
@@ -210,7 +233,7 @@ class LicenseController extends AbstractController
      *     @OA\RequestBody(
      *         required=true,
      *         description="License object that needs to be updated",
-     *         @OA\JsonContent(ref="#/components/schemas/License")
+     *         @OA\JsonContent(ref="#/components/schemas/LicenseRequest")
      *     ),
      *     @OA\Response(
      *         response="200",

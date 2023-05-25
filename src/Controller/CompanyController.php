@@ -6,13 +6,45 @@ namespace Controller;
 
 use DateInterval;
 use DateTime;
-use Doctrine\ORM\EntityManager;
 use Entity\Company;
 use Entity\License;
 use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="CompanyRequest",
+ *     required={"name", "address", "city", "country", "zipCode", "phone", "slogan", "logoPath", "license", "language"},
+ *     @OA\Property(property="name", type="string", example="Cube 3"),
+ *     @OA\Property(property="address", type="string", example="1, rue de la paix"),
+ *     @OA\Property(property="city", type="string", example="Paris"),
+ *     @OA\Property(property="country", type="string", example="France"),
+ *     @OA\Property(property="zipCode", type="string", example="75000"),
+ *     @OA\Property(property="phone", type="string", example="0123456789"),
+ *     @OA\Property(property="slogan", type="string", example="The best company ever"),
+ *     @OA\Property(property="logoPath", type="string", example="cube3.png"),
+ *     @OA\Property(property="license", type="integer", example="1"),
+ *     @OA\Property(property="language", type="string", example="fr")
+ * )
+ * @OA\Schema (
+ *     schema="CompanyResponse",
+ *     @OA\Property(property="id", type="integer", example="1"),
+ *     @OA\Property(property="name", type="string", example="Cube 3"),
+ *     @OA\Property(property="address", type="string", example="1, rue de la paix"),
+ *     @OA\Property(property="city", type="string", example="Paris"),
+ *     @OA\Property(property="country", type="string", example="France"),
+ *     @OA\Property(property="zipCode", type="string", example="75000"),
+ *     @OA\Property(property="phone", type="string", example="0123456789"),
+ *     @OA\Property(property="slogan", type="string", example="The best company ever"),
+ *     @OA\Property(property="logoPath", type="string", example="cube3.png"),
+ *     @OA\Property(property="license", type="object", ref="#/components/schemas/LicenseResponse"),
+ *     @OA\Property(property="language", type="string", example="fr"),
+ *     @OA\Property(property="licenseExpirationDate", type="datetime", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00")
+ * )
+ */
 class CompanyController extends AbstractController
 {
     private DAO $dao;
@@ -92,12 +124,12 @@ class CompanyController extends AbstractController
         $phone = $requestBody['phone'];
         $slogan = $requestBody['slogan'];
         $logoPath = $requestBody['logoPath'];
-        $licenseName = $requestBody['license'];
+        $licenseId = $requestBody['license'];
         $language = $requestBody['language'];
 
         // get the license from the database by its name
         try {
-            $license = $this->dao->getOneEntityBy(License::class, ['name' => $licenseName]);
+            $license = $this->dao->getOneEntityBy(License::class, ['id' => $licenseId]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -157,7 +189,7 @@ class CompanyController extends AbstractController
      *         description="Successful operation",
      *         @OA\JsonContent(
      *             type="array",
-     *             @OA\Items(ref="#/components/schemas/Company")
+     *             @OA\Items(ref="#/components/schemas/CompanyResponse")
      *         )
      *     ),
      *     @OA\Response(
@@ -207,7 +239,7 @@ class CompanyController extends AbstractController
      *     @OA\Response(
      *         response="200",
      *         description="Successful operation",
-     *         @OA\JsonContent(ref="#/components/schemas/Company")
+     *         @OA\JsonContent(ref="#/components/schemas/CompanyResponse")
      *     ),
      *     @OA\Response(
      *         response="404",
@@ -261,7 +293,7 @@ class CompanyController extends AbstractController
      *     @OA\Response(
      *         response="200",
      *         description="Successful operation",
-     *         @OA\JsonContent(ref="#/components/schemas/Company")
+     *         @OA\JsonContent(ref="#/components/schemas/CompanyResponse")
      *     ),
      *     @OA\Response(
      *         response="404",
@@ -314,7 +346,7 @@ class CompanyController extends AbstractController
      *     @OA\RequestBody(
      *         required=true,
      *         description="Company data to update",
-     *         @OA\JsonContent(ref="#/components/schemas/Company")
+     *         @OA\JsonContent(ref="#/components/schemas/CompanyRequest")
      *     ),
      *     @OA\Response(
      *         response="200",
@@ -383,13 +415,13 @@ class CompanyController extends AbstractController
         $slogan = $requestBody['slogan'] ?? $company->getSlogan();
         $logoPath = $requestBody['logoPath'] ?? $company->getLogoPath();
         $language = $requestBody['language'] ?? $company->getLanguage();
-        $license = $requestBody['license'] ?? $company->getLicense()->getName();
+        $licenseId = $requestBody['license'] ?? $company->getLicense()->getName();
 
         // get the license from the database by its name
         try {
-            $license = $this->dao->getOneEntityBy(License::class, ['name' => $license]);
+            $licenseId = $this->dao->getOneEntityBy(License::class, ['id' => $licenseId]);
             // if the license is not found, return an error
-            if (!$license) {
+            if (!$licenseId) {
                 $this->request->handleErrorAndQuit(404, new Exception('License not found'));
             }
         } catch (Exception $e) {
@@ -401,7 +433,7 @@ class CompanyController extends AbstractController
 
         // add the validity period to the current date
         try {
-            $licenseExpirationDate->add(new DateInterval('P' . $license->getValidityPeriod() . 'Y'));
+            $licenseExpirationDate->add(new DateInterval('P' . $licenseId->getValidityPeriod() . 'Y'));
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -422,7 +454,7 @@ class CompanyController extends AbstractController
         $company->setPhone($phone);
         $company->setSlogan($slogan);
         $company->setLogoPath($logoPath);
-        $company->setLicense($license);
+        $company->setLicense($licenseId);
         $company->setLanguage($language);
         $company->setIsEnabled($isEnabled);
 

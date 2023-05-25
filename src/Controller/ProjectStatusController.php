@@ -9,6 +9,24 @@ use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="ProjectStatusRequest",
+ *     required={"name", "description"},
+ *     @OA\Property(property="name", type="string", example="ProjectStatus 1"),
+ *     @OA\Property(property="description", type="string", example="This is the first projectStatus")
+ * )
+ *
+ * @OA\Schema (
+ *     schema="ProjectStatusResponse",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="ProjectStatus 1"),
+ *     @OA\Property(property="description", type="string", example="This is the first projectStatus"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00")
+ * )
+ *
+ */
 class ProjectStatusController extends AbstractController
 {
 
@@ -31,7 +49,7 @@ class ProjectStatusController extends AbstractController
      *     @OA\RequestBody(
      *         required=true,
      *         description="ProjectStatus object that needs to be added",
-     *         @OA\JsonContent(ref="#/components/schemas/ProjectStatus")
+     *         @OA\JsonContent(ref="#/components/schemas/ProjectStatusRequest")
      *     ),
      *     @OA\Response(
      *         response=201,
@@ -104,7 +122,7 @@ class ProjectStatusController extends AbstractController
      *         description="ProjectStatuses found",
      *         @OA\JsonContent(
      *             type="array",
-     *             @OA\Items(ref="#/components/schemas/ProjectStatus")
+     *             @OA\Items(ref="#/components/schemas/ProjectStatusResponse")
      *         )
      *     ),
      *     @OA\Response(
@@ -153,7 +171,7 @@ class ProjectStatusController extends AbstractController
      *     @OA\Response(
      *         response=200,
      *         description="ProjectStatus found",
-     *         @OA\JsonContent(ref="#/components/schemas/ProjectStatus")
+     *         @OA\JsonContent(ref="#/components/schemas/ProjectStatusResponse")
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -207,12 +225,11 @@ class ProjectStatusController extends AbstractController
      *     @OA\RequestBody(
      *         required=true,
      *         description="ProjectStatus object that needs to be updated",
-     *         @OA\JsonContent(ref="#/components/schemas/ProjectStatus")
+     *         @OA\JsonContent(ref="#/components/schemas/ProjectStatusRequest")
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="ProjectStatus updated",
-     *         @OA\JsonContent(ref="#/components/schemas/ProjectStatus")
      *     ),
      *     @OA\Response(
      *         response=400,

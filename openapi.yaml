@@ -1,4 +1,13 @@
 openapi: 3.0.0
+info:
+  title: 'Cube-3 API'
+  contact:
+    email: leo.paillard@gmail.com
+  version: 1.0.0
+servers:
+  -
+    url: 'http://cyber-dodo.fr/api/v1'
+    description: 'Cube-3 API'
 paths:
   /company:
     post:
@@ -38,7 +47,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Company'
+                  $ref: '#/components/schemas/CompanyResponse'
         '500':
           description: 'Internal server error'
   '/company/{id}':
@@ -63,7 +72,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Company'
+                $ref: '#/components/schemas/CompanyResponse'
         '404':
           description: 'Company not found'
         '500':
@@ -88,7 +97,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Company'
+              $ref: '#/components/schemas/CompanyRequest'
       responses:
         '200':
           description: 'Successful operation'
@@ -140,7 +149,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Company'
+                $ref: '#/components/schemas/CompanyResponse'
         '404':
           description: 'Company not found'
         '500':
@@ -156,7 +165,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CompanySettings'
+              $ref: '#/components/schemas/CompanySettingsRequest'
       responses:
         '201':
           description: 'Company settings created'
@@ -189,7 +198,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CompanySettings'
+                $ref: '#/components/schemas/CompanySettingsResponse'
         '404':
           description: 'Company settings not found'
         '500':
@@ -211,6 +220,10 @@ paths:
       requestBody:
         description: 'Company settings object that needs to be updated'
         required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanySettingsRequest'
       responses:
         '200':
           description: 'Company settings updated'
@@ -255,7 +268,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Customer'
+              $ref: '#/components/schemas/CustomerRequest'
       responses:
         '201':
           description: 'Customer created'
@@ -281,7 +294,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Customer'
+                  $ref: '#/components/schemas/CustomerResponse'
         '500':
           description: 'Internal server error'
   '/customer/{id}':
@@ -326,7 +339,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Customer'
+              $ref: '#/components/schemas/CustomerRequest'
       responses:
         '200':
           description: 'Customer updated successfully'
@@ -382,7 +395,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Customer'
+                  $ref: '#/components/schemas/CustomerResponse'
         '404':
           description: 'Customers not found'
         '500':
@@ -400,14 +413,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CustomerStatus'
+              $ref: '#/components/schemas/CustomerStatusRequest'
       responses:
         '201':
           description: 'CustomerStatus created'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CustomerStatus'
         '400':
           description: 'Invalid request data'
         '409':
@@ -429,7 +438,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/CustomerStatus'
+                  $ref: '#/components/schemas/CustomerStatusResponse'
         '500':
           description: 'Internal Server Error'
   '/customer-status/{id}':
@@ -454,7 +463,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomerStatus'
+                $ref: '#/components/schemas/CustomerStatusResponse'
         '404':
           description: 'CustomerStatus not found'
         '500':
@@ -480,7 +489,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CustomerStatus'
+              $ref: '#/components/schemas/CustomerStatusRequest'
       responses:
         '200':
           description: 'CustomerStatus updated'
@@ -527,7 +536,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/License'
+              $ref: '#/components/schemas/LicenseRequest'
       responses:
         '201':
           description: 'License created'
@@ -552,7 +561,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/License'
+                  $ref: '#/components/schemas/LicenseResponse'
         '500':
           description: 'Internal server error'
   '/license/{id}':
@@ -577,7 +586,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/License'
+                $ref: '#/components/schemas/LicenseResponse'
         '404':
           description: 'License not found'
         '500':
@@ -603,7 +612,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/License'
+              $ref: '#/components/schemas/LicenseRequest'
       responses:
         '200':
           description: 'License updated'
@@ -648,7 +657,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Product'
+              $ref: '#/components/schemas/ProductRequest'
       responses:
         '201':
           description: 'Product created'
@@ -661,7 +670,7 @@ paths:
   /product/all:
     get:
       tags:
-        - Products
+        - Product
       summary: 'Get all products'
       description: 'Returns all products'
       operationId: e36b2f7452d4fb7c26217fcf420a8bba
@@ -673,13 +682,13 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Product'
+                  $ref: '#/components/schemas/ProductResponse'
         '500':
           description: 'Internal server error'
   '/product/{id}':
     get:
       tags:
-        - Products
+        - Product
       summary: 'Get a product by id'
       description: 'Returns a product by id'
       operationId: 8203a808a8376a231f2333ccde393c1b
@@ -698,14 +707,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Product'
+                $ref: '#/components/schemas/ProductResponse'
         '404':
           description: 'Product not found'
         '500':
           description: 'Internal server error'
     put:
       tags:
-        - Products
+        - Product
       summary: 'Update a product by id'
       description: 'Updates a product by id'
       operationId: e4da03dc46062b7267a98527d7c51276
@@ -724,7 +733,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Product'
+              $ref: '#/components/schemas/ProductRequest'
       responses:
         '200':
           description: 'Successful operation'
@@ -736,7 +745,7 @@ paths:
           description: 'Internal server error'
     delete:
       tags:
-        - Products
+        - Product
       summary: 'Delete a product by id'
       description: 'Deletes a product by id'
       operationId: 0c8da0dc55202af0005d5528792f6463
@@ -752,10 +761,6 @@ paths:
       responses:
         '200':
           description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Product'
         '404':
           description: 'Product not found'
         '500':
@@ -773,7 +778,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProductFamily'
+              $ref: '#/components/schemas/ProductFamilyRequest'
       responses:
         '201':
           description: 'ProductFamily created'
@@ -798,7 +803,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ProductFamily'
+                  $ref: '#/components/schemas/ProductFamilyResponse'
         '500':
           description: 'Internal Server Error'
   '/product-family/{id}':
@@ -823,7 +828,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductFamily'
+                $ref: '#/components/schemas/ProductFamilyResponse'
         '404':
           description: 'ProductFamily not found'
         '500':
@@ -849,7 +854,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProductFamily'
+              $ref: '#/components/schemas/ProductFamilyRequest'
       responses:
         '200':
           description: 'ProductFamily updated'
@@ -886,7 +891,7 @@ paths:
   /project:
     post:
       tags:
-        - Projects
+        - Project
       summary: 'Add a new project'
       description: 'Add a new project to the database'
       operationId: 9081b9e2192169a55ec59d2599e718b4
@@ -896,7 +901,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Project'
+              $ref: '#/components/schemas/ProjectRequest'
       responses:
         '201':
           description: 'Project created'
@@ -910,6 +915,8 @@ paths:
           description: 'Internal server error'
   /project/all:
     get:
+      tags:
+        - Project
       summary: 'Get all projects'
       description: 'Returns an array of all projects'
       operationId: cf90794d753204172d1d1f69894c5bad
@@ -921,11 +928,13 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Project'
+                  $ref: '#/components/schemas/ProjectResponse'
         '500':
           description: 'Internal server error'
   '/project/company/{id}':
     get:
+      tags:
+        - Project
       summary: 'Get all projects by company'
       description: 'Returns an array of all projects by company'
       operationId: 12c56853b256d9a79c5e1f23313f87d9
@@ -946,11 +955,13 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Project'
+                  $ref: '#/components/schemas/ProjectResponse'
         '500':
           description: 'Internal server error'
   '/project/{id}':
     get:
+      tags:
+        - Project
       summary: 'Get project by ID'
       description: 'Returns a project by ID'
       operationId: b6a995d168f58dc32b01368b17579574
@@ -969,12 +980,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Project'
+                $ref: '#/components/schemas/ProjectResponse'
         '404':
           description: 'Project not found'
         '500':
           description: 'Internal server error'
     put:
+      tags:
+        - Project
       summary: 'Update project by ID'
       description: 'Updates a project by ID'
       operationId: ae3d476fe3741ad8b46dc2539855d54a
@@ -993,14 +1006,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Project'
+              $ref: '#/components/schemas/ProjectRequest'
       responses:
         '200':
           description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Project'
         '400':
           description: 'Invalid request data'
         '404':
@@ -1010,6 +1019,8 @@ paths:
         '500':
           description: 'Internal server error'
     delete:
+      tags:
+        - Project
       summary: 'Delete project by ID'
       description: 'Deletes a project by ID'
       operationId: 30527729ad8b7a7eb62c5685943cdc30
@@ -1042,7 +1053,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProjectStatus'
+              $ref: '#/components/schemas/ProjectStatusRequest'
       responses:
         '201':
           description: 'ProjectStatus created'
@@ -1067,7 +1078,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ProjectStatus'
+                  $ref: '#/components/schemas/ProjectStatusResponse'
         '500':
           description: 'Internal Server Error'
   '/project-status/{id}':
@@ -1092,7 +1103,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectStatus'
+                $ref: '#/components/schemas/ProjectStatusResponse'
         '404':
           description: 'ProjectStatus not found'
         '500':
@@ -1118,14 +1129,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProjectStatus'
+              $ref: '#/components/schemas/ProjectStatusRequest'
       responses:
         '200':
           description: 'ProjectStatus updated'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProjectStatus'
         '400':
           description: 'Invalid request data'
         '404':
@@ -1165,7 +1172,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/QuantityUnit'
+              $ref: '#/components/schemas/QuantityUnitRequest'
       responses:
         '201':
           description: 'QuantityUnit created'
@@ -1190,7 +1197,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/QuantityUnit'
+                  $ref: '#/components/schemas/QuantityUnitResponse'
         '500':
           description: 'Internal server error'
   '/quantity-unit/{id}':
@@ -1215,7 +1222,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/QuantityUnit'
+                $ref: '#/components/schemas/QuantityUnitResponse'
         '404':
           description: 'QuantityUnit not found'
         '500':
@@ -1241,7 +1248,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/QuantityUnit'
+              $ref: '#/components/schemas/QuantityUnitRequest'
       responses:
         '200':
           description: 'QuantityUnit updated'
@@ -1278,7 +1285,7 @@ paths:
   /role:
     post:
       tags:
-        - Roles
+        - Role
       summary: 'Add a new role'
       description: 'Add a new role to the database'
       operationId: a12632e54face2d571f9ee5c2509d838
@@ -1288,7 +1295,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Role'
+              $ref: '#/components/schemas/RoleRequest'
       responses:
         '201':
           description: 'Role created'
@@ -1307,7 +1314,7 @@ paths:
   /role/all:
     get:
       tags:
-        - Roles
+        - Role
       summary: 'Get all roles'
       description: 'Get all roles from the database'
       operationId: b0a28a9dffe41859400833803e3b0e9e
@@ -1319,13 +1326,13 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Role'
+                  $ref: '#/components/schemas/RoleResponse'
         '500':
           description: 'Internal server error'
   '/role/{id}':
     get:
       tags:
-        - Roles
+        - Role
       summary: 'Get a role by id'
       description: 'Get a role from the database by its id'
       operationId: e028f93d0e66781d8b722dfd20be1f50
@@ -1343,14 +1350,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Role'
+                $ref: '#/components/schemas/RoleResponse'
         '404':
           description: 'Role not found'
         '500':
           description: 'Internal server error'
     put:
       tags:
-        - Roles
+        - Role
       summary: 'Update a role by id'
       description: 'Update a role from the database by its id'
       operationId: 0d44461ab465956903e68c666f7abd5f
@@ -1368,7 +1375,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Role'
+              $ref: '#/components/schemas/RoleRequest'
       responses:
         '200':
           description: 'Role updated'
@@ -1382,7 +1389,7 @@ paths:
           description: 'Internal server error'
     delete:
       tags:
-        - Roles
+        - Role
       summary: 'Delete a role by id'
       description: 'Delete a role from the database by its id'
       operationId: 775bb6bd3f605535dc46cb1bb7437d29
@@ -1414,7 +1421,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Supplier'
+              $ref: '#/components/schemas/SupplierRequest'
       responses:
         '201':
           description: 'Supplier created'
@@ -1427,7 +1434,7 @@ paths:
   /supplier/all:
     get:
       tags:
-        - Suppliers
+        - Supplier
       summary: 'Get all suppliers'
       description: 'Returns all suppliers from the database'
       operationId: 927efbc204f08cfe5a118dc98b5a4ce9
@@ -1439,13 +1446,13 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Supplier'
+                  $ref: '#/components/schemas/SupplierResponse'
         '500':
           description: 'Internal server error'
   '/supplier/{id}':
     get:
       tags:
-        - Suppliers
+        - Supplier
       summary: 'Get a supplier by ID'
       description: 'Returns a supplier from the database by its ID'
       operationId: 8e4159f22f3a5b1122c3001e09aa890b
@@ -1464,14 +1471,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Supplier'
+                $ref: '#/components/schemas/SupplierResponse'
         '404':
           description: 'Supplier not found'
         '500':
           description: 'Internal server error'
     put:
       tags:
-        - Suppliers
+        - Supplier
       summary: 'Update a supplier by ID'
       description: 'Updates a supplier from the database by its ID'
       operationId: 4804eae219e28b7252147706a9e7ebff
@@ -1490,7 +1497,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Supplier'
+              $ref: '#/components/schemas/SupplierRequest'
       responses:
         '200':
           description: 'Supplier updated'
@@ -1504,7 +1511,7 @@ paths:
           description: 'Internal server error'
     delete:
       tags:
-        - Suppliers
+        - Supplier
       summary: 'Delete a supplier by ID'
       description: 'Deletes a supplier from the database by its ID'
       operationId: 723d190f925fd16fcb075e69e34ae66a
@@ -1537,7 +1544,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Task'
+              $ref: '#/components/schemas/TaskRequest'
       responses:
         '201':
           description: 'Task created'
@@ -1552,7 +1559,7 @@ paths:
   /task/all:
     get:
       tags:
-        - Tasks
+        - Task
       summary: 'Get all tasks'
       description: 'Returns all tasks'
       operationId: d85a7cb58dd5f645ce501b6963fb9a32
@@ -1564,13 +1571,13 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Task'
+                  $ref: '#/components/schemas/TaskResponse'
         '500':
           description: 'Internal server error'
   '/task/user/{id}':
     get:
       tags:
-        - Tasks
+        - Task
       summary: 'Get all tasks by user'
       description: 'Returns all tasks assigned to a user'
       operationId: 26b84f9fd60a949c9d2e60cb3a178f24
@@ -1591,7 +1598,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Task'
+                  $ref: '#/components/schemas/TaskResponse'
         '404':
           description: 'User not found'
         '500':
@@ -1599,7 +1606,7 @@ paths:
   '/task/project/{id}':
     get:
       tags:
-        - Tasks
+        - Task
       summary: 'Get all tasks by project'
       description: 'Returns all tasks assigned to a project'
       operationId: 41dbadc7c0530c7542fd1f8a641466fe
@@ -1620,13 +1627,13 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Task'
+                  $ref: '#/components/schemas/TaskResponse'
         '500':
           description: 'Internal server error'
   '/task/{id}':
     get:
       tags:
-        - Tasks
+        - Task
       summary: 'Get task by id'
       description: 'Returns a task by id'
       operationId: 82adb562defb983aa7f09a7b1ea8224a
@@ -1645,14 +1652,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Task'
+                $ref: '#/components/schemas/TaskResponse'
         '404':
           description: 'Task not found'
         '500':
           description: 'Internal server error'
     put:
       tags:
-        - Tasks
+        - Task
       summary: 'Update a task by ID'
       description: 'Update a task by ID'
       operationId: bd75423333b743d05991e8a34133a7d5
@@ -1671,14 +1678,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Task'
+              $ref: '#/components/schemas/TaskRequest'
       responses:
         '200':
           description: 'Task updated'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Task'
         '400':
           description: 'Invalid request data'
         '404':
@@ -1689,7 +1692,7 @@ paths:
           description: 'Internal server error'
     delete:
       tags:
-        - Tasks
+        - Task
       summary: 'Deletes a task by ID'
       description: 'Deletes a task by ID'
       operationId: ca22588758e816deca16255f28fd4bef
@@ -1722,7 +1725,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TaskStatus'
+              $ref: '#/components/schemas/TaskStatusRequest'
       responses:
         '201':
           description: 'TaskStatus created'
@@ -1747,7 +1750,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/TaskStatus'
+                  $ref: '#/components/schemas/TaskStatusResponse'
         '500':
           description: 'Internal server error'
   '/task-status/{id}':
@@ -1772,7 +1775,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TaskStatus'
+                $ref: '#/components/schemas/TaskStatusResponse'
         '404':
           description: 'TaskStatus not found'
         '500':
@@ -1798,7 +1801,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TaskStatus'
+              $ref: '#/components/schemas/TaskStatusRequest'
       responses:
         '200':
           description: 'TaskStatus updated'
@@ -1843,7 +1846,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserRequest'
       responses:
         '201':
           description: 'User created'
@@ -1858,7 +1861,7 @@ paths:
   /user/all:
     get:
       tags:
-        - Users
+        - User
       summary: 'Get all users'
       description: 'Returns all users'
       operationId: 6350a03c15157e21a3d9120bb7345f36
@@ -1870,7 +1873,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/User'
+                  $ref: '#/components/schemas/UserResponse'
         '404':
           description: 'No users found'
         '500':
@@ -1878,7 +1881,7 @@ paths:
   '/user/{id}':
     get:
       tags:
-        - Users
+        - User
       summary: 'Get user by ID'
       description: 'Returns a user by ID'
       operationId: 4dee8058c89ba3e2cb8927db556a98fb
@@ -1897,14 +1900,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/UserResponse'
         '404':
           description: 'User not found'
         '500':
           description: 'Internal server error'
     put:
       tags:
-        - Users
+        - User
       summary: 'Update user by ID'
       description: 'Updates a user by ID'
       operationId: cad045afb5cdb72d1f5a003c27839028
@@ -1923,7 +1926,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserRequest'
       responses:
         '200':
           description: 'User updated'
@@ -1937,7 +1940,7 @@ paths:
           description: 'Internal server error'
     delete:
       tags:
-        - Users
+        - User
       summary: 'Delete user by ID'
       description: 'Deletes a user by ID'
       operationId: fb793005d8987f75bbfc40819b91e9f3
@@ -1960,7 +1963,7 @@ paths:
   /user/login:
     post:
       tags:
-        - Users
+        - User
       summary: 'Login user'
       description: 'Logs in a user'
       operationId: f9ef097253f479dabe7bc8ff8d33f0fe
@@ -2005,7 +2008,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserSettings'
+              $ref: '#/components/schemas/UserSettingsRequest'
       responses:
         '201':
           description: 'User settings created successfully'
@@ -2037,7 +2040,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserSettings'
+                $ref: '#/components/schemas/UserSettingsResponse'
         '404':
           description: 'User settings not found'
         '500':
@@ -2063,7 +2066,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserSettings'
+              $ref: '#/components/schemas/UserSettingsRequest'
       responses:
         '200':
           description: 'User settings updated successfully'
@@ -2098,7 +2101,7 @@ paths:
   /vat:
     post:
       tags:
-        - Vats
+        - Vat
       summary: 'Add a new vat'
       description: 'Add a new vat'
       operationId: 8e90b5533de030fe1a31e1324e5ebad6
@@ -2108,7 +2111,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Vat'
+              $ref: '#/components/schemas/VatRequest'
       responses:
         '201':
           description: 'Vat created'
@@ -2121,7 +2124,7 @@ paths:
   /vat/all:
     get:
       tags:
-        - Vats
+        - Vat
       summary: 'Get all vats'
       description: 'Get all vats'
       operationId: 57c3582ed1e4dcc7ce0bf2edd61f89bd
@@ -2133,13 +2136,13 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Vat'
+                  $ref: '#/components/schemas/VatResponse'
         '500':
           description: 'Internal server error'
   '/vat/{id}':
     get:
       tags:
-        - Vats
+        - Vat
       summary: 'Get a vat by id'
       description: 'Get a vat by id'
       operationId: 8ab6971d070d53afeb71452fd517ceb7
@@ -2158,14 +2161,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Vat'
+                $ref: '#/components/schemas/VatResponse'
         '404':
           description: 'Vat not found'
         '500':
           description: 'Internal server error'
     put:
       tags:
-        - Vats
+        - Vat
       summary: 'Update a vat by id'
       description: 'Update a vat by id'
       operationId: b30176989f6190163adce04fc9fc180c
@@ -2184,7 +2187,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Vat'
+              $ref: '#/components/schemas/VatRequest'
       responses:
         '200':
           description: 'Vat updated'
@@ -2198,7 +2201,7 @@ paths:
           description: 'Internal server error'
     delete:
       tags:
-        - Vats
+        - Vat
       summary: 'Delete a vat by id'
       description: 'Delete a vat by id'
       operationId: 8b7d14cfb0ba93d9dd8f52bc32e08d6c
@@ -2219,6 +2222,953 @@ paths:
         '500':
           description: 'Internal server error'
 components:
+  schemas:
+    CompanyRequest:
+      required:
+        - name
+        - address
+        - city
+        - country
+        - zipCode
+        - phone
+        - slogan
+        - logoPath
+        - license
+        - language
+      properties:
+        name:
+          type: string
+          example: 'Cube 3'
+        address:
+          type: string
+          example: '1, rue de la paix'
+        city:
+          type: string
+          example: Paris
+        country:
+          type: string
+          example: France
+        zipCode:
+          type: string
+          example: '75000'
+        phone:
+          type: string
+          example: '0123456789'
+        slogan:
+          type: string
+          example: 'The best company ever'
+        logoPath:
+          type: string
+          example: cube3.png
+        license:
+          type: integer
+          example: '1'
+        language:
+          type: string
+          example: fr
+      type: object
+    CompanyResponse:
+      properties:
+        id:
+          type: integer
+          example: '1'
+        name:
+          type: string
+          example: 'Cube 3'
+        address:
+          type: string
+          example: '1, rue de la paix'
+        city:
+          type: string
+          example: Paris
+        country:
+          type: string
+          example: France
+        zipCode:
+          type: string
+          example: '75000'
+        phone:
+          type: string
+          example: '0123456789'
+        slogan:
+          type: string
+          example: 'The best company ever'
+        logoPath:
+          type: string
+          example: cube3.png
+        license:
+          $ref: '#/components/schemas/LicenseResponse'
+        language:
+          type: string
+          example: fr
+        licenseExpirationDate:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+      type: object
+    CompanySettingsRequest:
+      required:
+        - primaryColor
+        - secondaryColor
+        - tertiaryColor
+        - company
+      properties:
+        primaryColor:
+          type: string
+          example: '#000000'
+        secondaryColor:
+          type: string
+          example: '#000000'
+        tertiaryColor:
+          type: string
+          example: '#000000'
+        company:
+          type: integer
+          example: 1
+      type: object
+    CompanySettingsResponse:
+      properties:
+        id:
+          type: integer
+        primaryColor:
+          type: string
+          example: '#000000'
+        secondaryColor:
+          type: string
+          example: '#000000'
+        tertiaryColor:
+          type: string
+          example: '#000000'
+        company:
+          $ref: '#/components/schemas/CompanyResponse'
+        created_at:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+      type: object
+    CustomerRequest:
+      required:
+        - firstName
+        - lastName
+        - email
+        - address
+        - city
+        - country
+        - zipCode
+        - phone
+        - company
+        - user
+        - status
+      properties:
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+        email:
+          type: string
+          format: email
+          example: john-doe@gmail.com
+        address:
+          type: string
+          example: '1, rue de la Paix'
+        city:
+          type: string
+          example: Paris
+        country:
+          type: string
+          example: France
+        zipCode:
+          type: string
+          example: '75000'
+        phone:
+          type: string
+          example: '0123456789'
+        company:
+          type: integer
+          example: '1'
+        user:
+          type: integer
+          example: '1'
+        status:
+          type: integer
+          example: '1'
+      type: object
+    CustomerResponse:
+      properties:
+        id:
+          type: integer
+          example: '1'
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+        email:
+          type: string
+          format: email
+          example: john-doe@gmail.com
+        address:
+          type: string
+          example: '1, rue de la Paix'
+        city:
+          type: string
+          example: Paris
+        country:
+          type: string
+          example: France
+        zipCode:
+          type: string
+          example: '75000'
+        phone:
+          type: string
+          example: '0123456789'
+        company:
+          $ref: '#/components/schemas/CompanyResponse'
+        user:
+          $ref: '#/components/schemas/UserResponse'
+        status:
+          $ref: '#/components/schemas/CustomerStatusResponse'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+      type: object
+    CustomerStatusRequest:
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+          example: 'CustomerStatus 1'
+        description:
+          type: string
+          example: 'This is the first customerStatus'
+      type: object
+    CustomerStatusResponse:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'CustomerStatus 1'
+        description:
+          type: string
+          example: 'This is the first customerStatus'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+      type: object
+    LicenseRequest:
+      required:
+        - name
+        - description
+        - price
+        - maxUsers
+        - validityPeriod
+      properties:
+        name:
+          type: string
+          example: basic
+        description:
+          type: string
+          example: 'basic license for 1 user'
+        price:
+          type: integer
+          example: 100
+        maxUsers:
+          type: integer
+          example: 1
+        validityPeriod:
+          type: integer
+          example: 1
+      type: object
+    LicenseResponse:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: basic
+        description:
+          type: string
+          example: 'basic license for 1 user'
+        price:
+          type: integer
+          example: 100
+        maxUsers:
+          type: integer
+          example: 1
+        validityPeriod:
+          type: integer
+          example: 1
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-09-30 12:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-09-30 12:00:00'
+      type: object
+    ProductRequest:
+      required:
+        - name
+        - description
+        - buyPrice
+        - sellPrice
+        - quantity
+        - discount
+        - isDiscount
+        - productFamily
+        - vat
+        - company
+        - quantityUnit
+        - supplier
+      properties:
+        name:
+          type: string
+          example: Jambon
+        description:
+          type: string
+          example: 'Jambon de Paris'
+        buyPrice:
+          type: integer
+          example: 10
+        sellPrice:
+          type: integer
+          example: 15
+        quantity:
+          type: integer
+          example: 10
+        discount:
+          type: integer
+          example: 0
+        isDiscount:
+          type: boolean
+          example: false
+        productFamily:
+          type: integer
+          example: 1
+        vat:
+          type: integer
+          example: 1
+        company:
+          type: integer
+          example: 1
+        quantityUnit:
+          type: integer
+          example: 1
+        supplier:
+          type: integer
+          example: 1
+      type: object
+    ProductResponse:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Jambon
+        description:
+          type: string
+          example: 'Jambon de Paris'
+        buyPrice:
+          type: integer
+          example: 10
+        sellPrice:
+          type: integer
+          example: 15
+        quantity:
+          type: integer
+          example: 10
+        discount:
+          type: integer
+          example: 0
+        isDiscount:
+          type: boolean
+          example: false
+        productFamily:
+          $ref: '#/components/schemas/ProductFamilyResponse'
+        vat:
+          $ref: '#/components/schemas/VatResponse'
+        company:
+          $ref: '#/components/schemas/CompanyResponse'
+        quantityUnit:
+          $ref: '#/components/schemas/QuantityUnitResponse'
+        supplier:
+          type: integer
+          example: 1
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-03-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-03-01 00:00:00'
+      type: object
+    ProductFamilyRequest:
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+          example: 'Salle de Bain'
+        description:
+          type: string
+          example: 'Catégorie regroupant tous les produits pour la salle de bain'
+      type: object
+    ProductFamilyResponse:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'Salle de Bain'
+        description:
+          type: string
+          example: 'Catégorie regroupant tous les produits pour la salle de bain'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-03-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-03-01 00:00:00'
+      type: object
+    ProjectRequest:
+      required:
+        - name
+        - description
+        - company
+        - creator
+        - customer
+        - projectStatus
+      properties:
+        name:
+          type: string
+          example: 'Project 1'
+        description:
+          type: string
+          example: 'This is the first project'
+        company:
+          type: integer
+          example: '1'
+        creator:
+          type: integer
+          example: '1'
+        customer:
+          type: integer
+          example: '1'
+        projectStatus:
+          type: integer
+          example: '1'
+      type: object
+    ProjectResponse:
+      properties:
+        id:
+          type: integer
+          example: '1'
+        name:
+          type: string
+          example: 'Project 1'
+        description:
+          type: string
+          example: 'This is the first project'
+        company:
+          $ref: '#/components/schemas/CompanyResponse'
+        creator:
+          $ref: '#/components/schemas/UserResponse'
+        customer:
+          $ref: '#/components/schemas/CustomerResponse'
+        projectStatus:
+          type: integer
+          example: '1'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+      type: object
+    ProjectStatusRequest:
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+          example: 'ProjectStatus 1'
+        description:
+          type: string
+          example: 'This is the first projectStatus'
+      type: object
+    ProjectStatusResponse:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'ProjectStatus 1'
+        description:
+          type: string
+          example: 'This is the first projectStatus'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+      type: object
+    QuantityUnitRequest:
+      required:
+        - name
+        - unit
+        - description
+      properties:
+        name:
+          type: string
+          example: Litre
+        unit:
+          type: string
+          example: l
+        description:
+          type: string
+          example: Litre
+      type: object
+    QuantityUnitResponse:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Litre
+        unit:
+          type: string
+          example: l
+        description:
+          type: string
+          example: Litre
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-03-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-03-01 00:00:00'
+      type: object
+    RoleRequest:
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+          example: Admin
+        description:
+          type: string
+          example: Administrator
+      type: object
+    RoleResponse:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Admin
+        description:
+          type: string
+          example: Administrator
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+      type: object
+    SupplierRequest:
+      required:
+        - name
+        - firstName
+        - lastName
+        - email
+        - address
+        - city
+        - country
+        - zipCode
+        - phone
+        - company
+      properties:
+        name:
+          type: string
+          example: Aubade
+        firstName:
+          type: string
+          example: Jean
+        lastName:
+          type: string
+          example: Dupont
+        email:
+          type: string
+          format: email
+          example: jean.dupont@aubade
+        address:
+          type: string
+          example: '1 rue de la lingerie'
+        city:
+          type: string
+          example: Paris
+        country:
+          type: string
+          example: France
+        zipCode:
+          type: string
+          example: '75000'
+        phone:
+          type: string
+          example: '0123456789'
+        company:
+          type: integer
+          example: 1
+      type: object
+    SupplierResponse:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Aubade
+        firstName:
+          type: string
+          example: Jean
+        lastName:
+          type: string
+          example: Dupont
+        email:
+          type: string
+          format: email
+          example: jean.dupont@aubade
+        address:
+          type: string
+          example: '1 rue de la lingerie'
+        city:
+          type: string
+          example: Paris
+        country:
+          type: string
+          example: France
+        zipCode:
+          type: string
+          example: '75000'
+        phone:
+          type: string
+          example: '0123456789'
+        company:
+          $ref: '#/components/schemas/CompanyResponse'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-03-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-03-01 00:00:00'
+      type: object
+    TaskRequest:
+      required:
+        - title
+        - description
+        - location
+        - dueDate
+        - project
+        - user
+        - taskStatus
+      properties:
+        title:
+          type: string
+          example: 'Task 1'
+        description:
+          type: string
+          example: 'This is the first task'
+        location:
+          type: string
+          example: 'Location 1'
+        dueDate:
+          type: string
+          example: '2021-01-01'
+        project:
+          type: integer
+          example: 1
+        user:
+          type: integer
+          example: 1
+        taskStatus:
+          type: integer
+          example: 1
+      type: object
+    TaskResponse:
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: 'Task 1'
+        description:
+          type: string
+          example: 'This is the first task'
+        location:
+          type: string
+          example: 'Location 1'
+        dueDate:
+          type: string
+          example: '2021-01-01'
+        project:
+          $ref: '#/components/schemas/ProjectResponse'
+        user:
+          $ref: '#/components/schemas/UserResponse'
+        taskStatus:
+          $ref: '#/components/schemas/TaskStatusResponse'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+      type: object
+    TaskStatusRequest:
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+          example: 'TaskStatus 1'
+        description:
+          type: string
+          example: 'This is the first taskStatus'
+      type: object
+    TaskStatusResponse:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'TaskStatus 1'
+        description:
+          type: string
+          example: 'This is the first taskStatus'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+      type: object
+    UserRequest:
+      required:
+        - firstName
+        - lastName
+        - email
+        - password
+        - job
+        - phone
+        - role
+        - company
+      properties:
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+        email:
+          type: string
+          example: john.doe@gmail.com
+        password:
+          type: string
+          format: password
+          example: password
+        job:
+          type: string
+          example: Developer
+        phone:
+          type: string
+          example: '0123456789'
+        role:
+          type: integer
+          example: '1'
+        company:
+          type: integer
+          example: '1'
+      type: object
+    UserResponse:
+      properties:
+        id:
+          type: integer
+          example: '1'
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+        email:
+          type: string
+          example: john.doe@gmail.com
+        job:
+          type: string
+          example: Developer
+        phone:
+          type: string
+          example: '0123456789'
+        role:
+          $ref: '#/components/schemas/RoleResponse'
+        company:
+          $ref: '#/components/schemas/CompanyResponse'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-03-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-03-01 00:00:00'
+      type: object
+    UserSettingsRequest:
+      required:
+        - theme
+        - language
+        - user-id
+      properties:
+        theme:
+          type: string
+          example: dark
+        language:
+          type: string
+          example: en
+        user-id:
+          type: integer
+          example: '1'
+      type: object
+    UserSettingsResponse:
+      required:
+        - id
+        - theme
+        - language
+        - user-id
+      properties:
+        id:
+          type: integer
+          example: '1'
+        theme:
+          type: string
+          example: dark
+        language:
+          type: string
+          example: en
+        user:
+          $ref: '#/components/schemas/UserResponse'
+        created-at:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updated-at:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+      type: object
+    VatRequest:
+      required:
+        - name
+        - rate
+        - description
+      properties:
+        name:
+          type: string
+          example: 20%
+        rate:
+          type: integer
+          example: 20
+        description:
+          type: string
+          example: '20% VAT'
+      type: object
+    VatResponse:
+      required:
+        - id
+        - name
+        - rate
+        - description
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 20%
+        rate:
+          type: integer
+          example: 20
+        description:
+          type: string
+          example: '20% VAT'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+      type: object
   responses:
     '404':
       description: 'ProjectStatus not found'

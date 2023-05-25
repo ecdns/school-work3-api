@@ -10,6 +10,27 @@ use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="UserSettingsRequest",
+ *     required={"theme", "language", "user-id"},
+ *     @OA\Property(property="theme", type="string", example="dark"),
+ *     @OA\Property(property="language", type="string", example="en"),
+ *     @OA\Property(property="user-id", type="integer", example="1")
+ * )
+ *
+ * @OA\Schema (
+ *     schema="UserSettingsResponse",
+ *     required={"id", "theme", "language", "user-id"},
+ *     @OA\Property(property="id", type="integer", example="1"),
+ *     @OA\Property(property="theme", type="string", example="dark"),
+ *     @OA\Property(property="language", type="string", example="en"),
+ *     @OA\Property(property="user", type="object", ref="#/components/schemas/UserResponse"),
+ *     @OA\Property(property="created-at", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="updated-at", type="string", format="date-time", example="2021-01-01 00:00:00")
+ * )
+ *
+ */
 class UserSettingsController extends AbstractController
 {
 
@@ -32,7 +53,7 @@ class UserSettingsController extends AbstractController
      *     @OA\RequestBody(
      *         required=true,
      *         description="User settings object that needs to be added",
-     *         @OA\JsonContent(ref="#/components/schemas/UserSettings")
+     *         @OA\JsonContent(ref="#/components/schemas/UserSettingsRequest")
      *     ),
      *     @OA\Response(
      *         response=201,
@@ -132,7 +153,7 @@ class UserSettingsController extends AbstractController
      *     @OA\Response(
      *         response=200,
      *         description="User settings found",
-     *         @OA\JsonContent(ref="#/components/schemas/UserSettings")
+     *         @OA\JsonContent(ref="#/components/schemas/UserSettingsResponse")
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -185,7 +206,7 @@ class UserSettingsController extends AbstractController
      *     @OA\RequestBody(
      *         required=true,
      *         description="User settings object that needs to be updated",
-     *         @OA\JsonContent(ref="#/components/schemas/UserSettings")
+     *         @OA\JsonContent(ref="#/components/schemas/UserSettingsRequest")
      *     ),
      *     @OA\Response(
      *         response=200,
