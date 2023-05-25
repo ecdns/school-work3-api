@@ -8,6 +8,7 @@ use Controller\CompanyController;
 use Controller\CompanySettingsController;
 use Controller\CustomerController;
 use Controller\CustomerStatusController;
+use Controller\DocumentationController;
 use Controller\EstimateController;
 use Controller\EstimateStatusController;
 use Controller\LicenseController;
@@ -188,7 +189,10 @@ class Router
                 $r->addRoute('DELETE', '/estimateStatus/{id:\d+}', [EstimateStatusController::class, 'deleteEstimateStatus']);
 
             });
-
+            // add a groupe for documentation
+            $r->addGroup('/doc', function (RouteCollector $r) {
+                $r->addRoute('GET', '/v1', [DocumentationController::class, 'getDocumentation']);
+            });
         });
     }
 
