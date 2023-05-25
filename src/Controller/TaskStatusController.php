@@ -9,6 +9,24 @@ use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="TaskStatusRequest",
+ *     required={"name", "description"},
+ *     @OA\Property(property="name", type="string", example="TaskStatus 1"),
+ *     @OA\Property(property="description", type="string", example="This is the first taskStatus")
+ * )
+ *
+ * @OA\Schema (
+ *     schema="TaskStatusResponse",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="TaskStatus 1"),
+ *     @OA\Property(property="description", type="string", example="This is the first taskStatus"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00")
+ * )
+ *
+ */
 class TaskStatusController extends AbstractController
 {
 
@@ -22,6 +40,35 @@ class TaskStatusController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/task-status",
+     *     tags={"TaskStatus"},
+     *     summary="Add a new TaskStatus",
+     *     description="Add a new TaskStatus",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="TaskStatus object that needs to be added",
+     *         @OA\JsonContent(ref="#/components/schemas/TaskStatusRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="TaskStatus created"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="TaskStatus already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function addTaskStatus(): void
     {
         // get the request body
@@ -50,7 +97,7 @@ class TaskStatusController extends AbstractController
 
         // persist the taskStatus
         try {
-            $this->dao->addEntity($taskStatus);
+            $this->dao->add($taskStatus);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -64,12 +111,31 @@ class TaskStatusController extends AbstractController
 
     }
 
-    //function for getting all TaskStatus
+    /**
+     * @OA\Get(
+     *     path="/task-status/all",
+     *     tags={"TaskStatus"},
+     *     summary="Get all TaskStatuses",
+     *     description="Get all TaskStatuses",
+     *     @OA\Response(
+     *         response=200,
+     *         description="TaskStatuses found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/TaskStatusResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getTaskStatuses(): void
     {
         // get all the TaskStatus from the database
         try {
-            $productFamilies = $this->dao->getAllEntities(TaskStatus::class);
+            $productFamilies = $this->dao->getAll(TaskStatus::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -84,11 +150,44 @@ class TaskStatusController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'TaskStatus found', $response);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/task-status/{id}",
+     *     tags={"TaskStatus"},
+     *     summary="Get TaskStatus by ID",
+     *     description="Get TaskStatus by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the TaskStatus to get",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="TaskStatus found",
+     *         @OA\JsonContent(
+     *             ref="#/components/schemas/TaskStatusResponse"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="TaskStatus not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getTaskStatusById(int $id): void
     {
         // get the license from the database by its id
         try {
-            $taskStatus = $this->dao->getOneEntityBy(TaskStatus::class, ['id' => $id]);
+            $taskStatus = $this->dao->getOneBy(TaskStatus::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -105,7 +204,49 @@ class TaskStatusController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'TaskStatus found', $response);
     }
 
-    //function for updating a taskStatus
+    /**
+     * @OA\Put(
+     *     path="/task-status/{id}",
+     *     tags={"TaskStatus"},
+     *     summary="Update TaskStatus by ID",
+     *     description="Update TaskStatus by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the TaskStatus to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="TaskStatus object that needs to be updated",
+     *         @OA\JsonContent(ref="#/components/schemas/TaskStatusRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="TaskStatus updated"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="TaskStatus not found"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="TaskStatus already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function updateTaskStatus(int $id): void
     {
         // get the request body
@@ -127,7 +268,7 @@ class TaskStatusController extends AbstractController
 
         // get the TaskStatus from the database by its id
         try {
-            $taskStatus = $this->dao->getOneEntityBy(TaskStatus::class, ['id' => $id]);
+            $taskStatus = $this->dao->getOneBy(TaskStatus::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -147,7 +288,7 @@ class TaskStatusController extends AbstractController
 
         // persist the taskStatus
         try {
-            $this->dao->updateEntity($taskStatus);
+            $this->dao->update($taskStatus);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -161,12 +302,42 @@ class TaskStatusController extends AbstractController
 
     }
 
-    //function for deleting a TaskStatus
+
+    /**
+     * @OA\Delete(
+     *     path="/task-status/{id}",
+     *     tags={"TaskStatus"},
+     *     summary="Delete TaskStatus by ID",
+     *     description="Delete TaskStatus by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the TaskStatus to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="TaskStatus deleted"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="TaskStatus not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function deleteTaskStatus(int $id): void
     {
         // get the TaskStatus from the database by its id
         try {
-            $taskStatus = $this->dao->getOneEntityBy(TaskStatus::class, ['id' => $id]);
+            $taskStatus = $this->dao->getOneBy(TaskStatus::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -178,7 +349,7 @@ class TaskStatusController extends AbstractController
 
         // remove the TaskStatus
         try {
-            $this->dao->deleteEntity($taskStatus);
+            $this->dao->delete($taskStatus);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -186,5 +357,6 @@ class TaskStatusController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'TaskStatus deleted');
     }
+
 
 }

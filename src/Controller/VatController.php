@@ -2,13 +2,31 @@
 
 namespace Controller;
 
-// controller for entity Vat
-use Doctrine\ORM\EntityManager;
 use Entity\Vat;
 use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="VatRequest",
+ *     required={"name", "rate", "description"},
+ *     @OA\Property(property="name", type="string", example="20%"),
+ *     @OA\Property(property="rate", type="integer", example=20),
+ *     @OA\Property(property="description", type="string", example="20% VAT")
+ * )
+ *
+ * @OA\Schema (
+ *     schema="VatResponse",
+ *     required={"id", "name", "rate", "description"},
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="20%"),
+ *     @OA\Property(property="rate", type="integer", example=20),
+ *     @OA\Property(property="description", type="string", example="20% VAT"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00")
+ * )
+ */
 class VatController extends AbstractController
 {
 
@@ -22,6 +40,35 @@ class VatController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/vat",
+     *     tags={"Vat"},
+     *     summary="Add a new vat",
+     *     description="Add a new vat",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Vat object that needs to be added",
+     *         @OA\JsonContent(ref="#/components/schemas/VatRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Vat created"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Vat already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function addVat(): void
     {
         // get the request body
@@ -52,7 +99,7 @@ class VatController extends AbstractController
 
         // flush the entity manager
         try {
-            $this->dao->addEntity($vat);
+            $this->dao->add($vat);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -66,12 +113,31 @@ class VatController extends AbstractController
 
     }
 
-    //function for getting all vats
+    /**
+     * @OA\Get(
+     *     path="/vat/all",
+     *     tags={"Vat"},
+     *     summary="Get all vats",
+     *     description="Get all vats",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Vats found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/VatResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getVats(): void
     {
         // get all the licenses from the database
         try {
-            $vats = $this->dao->getAllEntities(Vat::class);
+            $vats = $this->dao->getAll(Vat::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -86,11 +152,44 @@ class VatController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Vats found', $response);
     }
 
+
+
+    /**
+     * @OA\Get(
+     *     path="/vat/{id}",
+     *     tags={"Vat"},
+     *     summary="Get a vat by id",
+     *     description="Get a vat by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the vat to get",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Vat found",
+     *         @OA\JsonContent(ref="#/components/schemas/VatResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Vat not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getVatById(int $id): void
     {
         // get the license from the database by its id
         try {
-            $vat = $this->dao->getOneEntityBy(Vat::class, ['id' => $id]);
+            $vat = $this->dao->getOneBy(Vat::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -107,7 +206,49 @@ class VatController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Vat found', $response);
     }
 
-    //function for updating a vat
+    /**
+     * @OA\Put(
+     *     path="/vat/{id}",
+     *     tags={"Vat"},
+     *     summary="Update a vat by id",
+     *     description="Update a vat by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the vat to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Vat object that needs to be updated",
+     *         @OA\JsonContent(ref="#/components/schemas/VatRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Vat updated"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Vat not found"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Vat already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function updateVat(int $id): void
     {
         // get the request body
@@ -130,7 +271,7 @@ class VatController extends AbstractController
 
         // get the vat from the database by its id
         try {
-            $vat = $this->dao->getOneEntityBy(Vat::class, ['id' => $id]);
+            $vat = $this->dao->getOneBy(Vat::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -152,7 +293,7 @@ class VatController extends AbstractController
 
         // flush the entity manager
         try {
-            $this->dao->updateEntity($vat);
+            $this->dao->update($vat);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -166,12 +307,41 @@ class VatController extends AbstractController
 
     }
 
-    //function for deleting a vat
+    /**
+     * @OA\Delete(
+     *     path="/vat/{id}",
+     *     tags={"Vat"},
+     *     summary="Delete a vat by id",
+     *     description="Delete a vat by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the vat to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Vat deleted"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Vat not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function deleteVat(int $id): void
     {
         // get the vat from the database by its id
         try {
-            $vat = $this->dao->getOneEntityBy(Vat::class, ['id' => $id]);
+            $vat = $this->dao->getOneBy(Vat::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -183,7 +353,7 @@ class VatController extends AbstractController
 
         // remove the vat
         try {
-            $this->dao->deleteEntity($vat);
+            $this->dao->delete($vat);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -191,4 +361,5 @@ class VatController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'Vat deleted');
     }
+
 }

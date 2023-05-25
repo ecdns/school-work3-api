@@ -4,13 +4,32 @@ declare(strict_types=1);
 
 namespace Controller;
 
-use Doctrine\ORM\EntityManager;
 use Entity\Company;
 use Entity\CompanySettings;
 use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema(
+*    schema="CompanySettingsRequest",
+ *   required={"primaryColor", "secondaryColor", "tertiaryColor", "company"},
+ *   @OA\Property(property="primaryColor", type="string", example="#000000"),
+ *   @OA\Property(property="secondaryColor", type="string", example="#000000"),
+ *   @OA\Property(property="tertiaryColor", type="string", example="#000000"),
+ *   @OA\Property(property="company", type="id", example=1)
+ * )
+ * @OA\Schema(
+ *   schema="CompanySettingsResponse",
+ *   @OA\Property(property="id", type="integer"),
+ *   @OA\Property(property="primaryColor", type="string", example="#000000"),
+ *   @OA\Property(property="secondaryColor", type="string", example="#000000"),
+ *   @OA\Property(property="tertiaryColor", type="string", example="#000000"),
+ *   @OA\Property(property="company", type="object", ref="#/components/schemas/CompanyResponse"),
+ *   @OA\Property(property="created_at", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *   @OA\Property(property="updated_at", type="string", format="date-time", example="2021-01-01 00:00:00")
+ * )
+ */
 class CompanySettingsController extends AbstractController
 {
     private DAO $dao;
@@ -23,6 +42,37 @@ class CompanySettingsController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/company-settings",
+     *     tags={"Company Settings"},
+     *     summary="Add company settings",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/CompanySettingsRequest")
+     *     ),
+     *     @OA\Response(
+     *         response="201",
+     *         description="Company settings created"
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Company not found"
+     *     ),
+     *     @OA\Response(
+     *         response="409",
+     *         description="Company settings already exist"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Company settings could not be created"
+     *     )
+     * )
+     */
     public function addCompanySettings(): void
     {
 
@@ -49,29 +99,29 @@ class CompanySettingsController extends AbstractController
         $primaryColor = $requestBody['primaryColor'];
         $secondaryColor = $requestBody['secondaryColor'];
         $tertiaryColor = $requestBody['tertiaryColor'];
-        $company = $requestBody['company'];
+        $companyId = $requestBody['company'];
 
         // get the company from the database by its name
         try {
-            $company = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
+            $companyId = $this->dao->getOneBy(Company::class, ['id' => $companyId]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
 
         // if the company is not found`
-        if (!$company) {
+        if (!$companyId) {
             $this->request->handleErrorAndQuit(404, new Exception('Company not found'));
         }
 
         // create a new companySettings object
-        $companySettings = new CompanySettings($primaryColor, $secondaryColor, $tertiaryColor, $company);
+        $companySettings = new CompanySettings($primaryColor, $secondaryColor, $tertiaryColor, $companyId);
 
         // update the company settings field in the company object
-        $company->setCompanySettings($companySettings);
+        $companyId->setCompanySettings($companySettings);
 
         // persist (save) the company settings in the database (this will also save the company settings in the company table)
         try {
-            $this->dao->addEntity($companySettings);
+            $this->dao->add($companySettings);
         } catch (Exception $e) {
             if (str_contains($e->getMessage(), 'constraint violation')) {
                 $this->request->handleErrorAndQuit(409, new Exception('Company settings already exist'));
@@ -84,11 +134,41 @@ class CompanySettingsController extends AbstractController
 
     }
 
+    /**
+     * @OA\Get(
+     *     path="/company-settings/{id}",
+     *     tags={"Company Settings"},
+     *     summary="Get company settings by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the company settings",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Company settings found",
+     *         @OA\JsonContent(ref="#/components/schemas/CompanySettingsResponse")
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Company settings not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getCompanySettingsById(int $id): void
     {
         // get the company settings from the database by its id
         try {
-            $companySettings = $this->dao->getOneEntityBy(CompanySettings::class, ['id' => $id]);
+            $companySettings = $this->dao->getOneBy(CompanySettings::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -105,6 +185,49 @@ class CompanySettingsController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Company settings found', $response);
     }
 
+
+    /**
+     * @OA\Put(
+     *     path="/company-settings/{id}",
+     *     tags={"Company Settings"},
+     *     summary="Update company settings by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the company settings",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Company settings object that needs to be updated",
+     *         @OA\JsonContent(ref="#/components/schemas/CompanySettingsRequest")
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Company settings updated"
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Company settings not found"
+     *     ),
+     *     @OA\Response(
+     *         response="409",
+     *         description="Company settings already exist"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Company settings could not be created"
+     *     )
+     * )
+     */
     public function updateCompanySettings(int $id): void
     {
         // get the request body
@@ -128,7 +251,7 @@ class CompanySettingsController extends AbstractController
 
         // get the company settings from the database by its id
         try {
-            $companySettings = $this->dao->getOneEntityBy(CompanySettings::class, ['id' => $id]);
+            $companySettings = $this->dao->getOneBy(CompanySettings::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -150,7 +273,7 @@ class CompanySettingsController extends AbstractController
 
         // persist
         try {
-            $this->dao->updateEntity($companySettings);
+            $this->dao->update($companySettings);
         } catch (Exception $e) {
             if (str_contains($e->getMessage(), 'constraint violation')) {
                 $this->request->handleErrorAndQuit(409, new Exception('Company settings already exist'));
@@ -162,11 +285,40 @@ class CompanySettingsController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Company settings updated');
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/company-settings/{id}",
+     *     tags={"Company Settings"},
+     *     summary="Delete company settings by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the company settings",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Company settings deleted"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Company settings not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function deleteCompanySettings(int $id): void
     {
         // get the company settings from the database by its id
         try {
-            $companySettings = $this->dao->getOneEntityBy(CompanySettings::class, ['id' => $id]);
+            $companySettings = $this->dao->getOneBy(CompanySettings::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -178,7 +330,7 @@ class CompanySettingsController extends AbstractController
 
         // remove the company settings
         try {
-            $this->dao->deleteEntity($companySettings);
+            $this->dao->delete($companySettings);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

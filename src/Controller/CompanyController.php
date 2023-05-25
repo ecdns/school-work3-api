@@ -6,13 +6,45 @@ namespace Controller;
 
 use DateInterval;
 use DateTime;
-use Doctrine\ORM\EntityManager;
 use Entity\Company;
 use Entity\License;
 use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="CompanyRequest",
+ *     required={"name", "address", "city", "country", "zipCode", "phone", "slogan", "logoPath", "license", "language"},
+ *     @OA\Property(property="name", type="string", example="Cube 3"),
+ *     @OA\Property(property="address", type="string", example="1, rue de la paix"),
+ *     @OA\Property(property="city", type="string", example="Paris"),
+ *     @OA\Property(property="country", type="string", example="France"),
+ *     @OA\Property(property="zipCode", type="string", example="75000"),
+ *     @OA\Property(property="phone", type="string", example="0123456789"),
+ *     @OA\Property(property="slogan", type="string", example="The best company ever"),
+ *     @OA\Property(property="logoPath", type="string", example="cube3.png"),
+ *     @OA\Property(property="license", type="integer", example="1"),
+ *     @OA\Property(property="language", type="string", example="fr")
+ * )
+ * @OA\Schema (
+ *     schema="CompanyResponse",
+ *     @OA\Property(property="id", type="integer", example="1"),
+ *     @OA\Property(property="name", type="string", example="Cube 3"),
+ *     @OA\Property(property="address", type="string", example="1, rue de la paix"),
+ *     @OA\Property(property="city", type="string", example="Paris"),
+ *     @OA\Property(property="country", type="string", example="France"),
+ *     @OA\Property(property="zipCode", type="string", example="75000"),
+ *     @OA\Property(property="phone", type="string", example="0123456789"),
+ *     @OA\Property(property="slogan", type="string", example="The best company ever"),
+ *     @OA\Property(property="logoPath", type="string", example="cube3.png"),
+ *     @OA\Property(property="license", type="object", ref="#/components/schemas/LicenseResponse"),
+ *     @OA\Property(property="language", type="string", example="fr"),
+ *     @OA\Property(property="licenseExpirationDate", type="datetime", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00")
+ * )
+ */
 class CompanyController extends AbstractController
 {
     private DAO $dao;
@@ -25,6 +57,37 @@ class CompanyController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/company",
+     *     tags={"Company"},
+     *     summary="Add a new company",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/CompanyRequest")
+     *     ),
+     *     @OA\Response(
+     *         response="201",
+     *         description="Company created"
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="License not found"
+     *     ),
+     *     @OA\Response(
+     *         response="409",
+     *         description="Company already exists"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function addCompany(): void
     {
         // get the request body
@@ -61,12 +124,12 @@ class CompanyController extends AbstractController
         $phone = $requestBody['phone'];
         $slogan = $requestBody['slogan'];
         $logoPath = $requestBody['logoPath'];
-        $licenseName = $requestBody['license'];
+        $licenseId = $requestBody['license'];
         $language = $requestBody['language'];
 
         // get the license from the database by its name
         try {
-            $license = $this->dao->getOneEntityBy(License::class, ['name' => $licenseName]);
+            $license = $this->dao->getOneBy(License::class, ['id' => $licenseId]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -101,7 +164,7 @@ class CompanyController extends AbstractController
 
         // add the company to the database
         try {
-            $this->dao->addEntity($company);
+            $this->dao->add($company);
         } catch (Exception $e) {
             if (str_contains($e->getMessage(), 'constraint violation')) {
                 $this->request->handleErrorAndQuit(409, new Exception('Company already exists'));
@@ -114,11 +177,32 @@ class CompanyController extends AbstractController
 
     }
 
+
+    /**
+     * @OA\Get(
+     *     path="/company/all",
+     *     tags={"Company"},
+     *     summary="Get all companies",
+     *     description="Returns a list of all companies",
+     *     @OA\Response(
+     *         response="200",
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/CompanyResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getCompanies(): void
     {
         // get the companies from the database
         try {
-            $companies = $this->dao->getAllEntities(Company::class);
+            $companies = $this->dao->getAll(Company::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -134,11 +218,44 @@ class CompanyController extends AbstractController
 
     }
 
+
+
+    /**
+     * @OA\Get(
+     *     path="/company/{id}",
+     *     tags={"Company"},
+     *     summary="Get a company by ID",
+     *     description="Returns a company by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the company to return",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/CompanyResponse")
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Company not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getCompanyById(int $id): void
     {
         // get the company from the database by its id
         try {
-            $company = $this->dao->getOneEntityBy(Company::class, ['id' => $id]);
+            $company = $this->dao->getOneBy(Company::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -156,11 +273,43 @@ class CompanyController extends AbstractController
 
     }
 
+
+
+    /**
+     * @OA\Get(
+     *     path="/company/{name}",
+     *     tags={"Company"},
+     *     summary="Get a company by name",
+     *     description="Returns a company by name",
+     *     @OA\Parameter(
+     *         name="name",
+     *         in="path",
+     *         description="Name of the company to return",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/CompanyResponse")
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Company not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getCompanyByName(string $name): void
     {
         // get the company from the database by its name
         try {
-            $company = $this->dao->getOneEntityBy(Company::class, ['name' => $name]);
+            $company = $this->dao->getOneBy(Company::class, ['name' => $name]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -178,6 +327,45 @@ class CompanyController extends AbstractController
 
     }
 
+
+    /**
+     * @OA\Put(
+     *     path="/company/{id}",
+     *     tags={"Company"},
+     *     summary="Update a company by id",
+     *     description="Updates a company by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Id of the company to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Company data to update",
+     *         @OA\JsonContent(ref="#/components/schemas/CompanyRequest")
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Successful operation",
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Company not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function updateCompany(int $id): void
     {
         // get the request body
@@ -207,7 +395,7 @@ class CompanyController extends AbstractController
 
         // get the company from the database by its id
         try {
-            $company = $this->dao->getOneEntityBy(Company::class, ['id' => $id]);
+            $company = $this->dao->getOneBy(Company::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -227,13 +415,13 @@ class CompanyController extends AbstractController
         $slogan = $requestBody['slogan'] ?? $company->getSlogan();
         $logoPath = $requestBody['logoPath'] ?? $company->getLogoPath();
         $language = $requestBody['language'] ?? $company->getLanguage();
-        $license = $requestBody['license'] ?? $company->getLicense()->getName();
+        $licenseId = $requestBody['license'] ?? $company->getLicense()->getName();
 
         // get the license from the database by its name
         try {
-            $license = $this->dao->getOneEntityBy(License::class, ['name' => $license]);
+            $licenseId = $this->dao->getOneBy(License::class, ['id' => $licenseId]);
             // if the license is not found, return an error
-            if (!$license) {
+            if (!$licenseId) {
                 $this->request->handleErrorAndQuit(404, new Exception('License not found'));
             }
         } catch (Exception $e) {
@@ -245,7 +433,7 @@ class CompanyController extends AbstractController
 
         // add the validity period to the current date
         try {
-            $licenseExpirationDate->add(new DateInterval('P' . $license->getValidityPeriod() . 'Y'));
+            $licenseExpirationDate->add(new DateInterval('P' . $licenseId->getValidityPeriod() . 'Y'));
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -266,13 +454,13 @@ class CompanyController extends AbstractController
         $company->setPhone($phone);
         $company->setSlogan($slogan);
         $company->setLogoPath($logoPath);
-        $company->setLicense($license);
+        $company->setLicense($licenseId);
         $company->setLanguage($language);
         $company->setIsEnabled($isEnabled);
 
         // update the company
         try {
-            $this->dao->updateEntity($company);
+            $this->dao->update($company);
         } catch (Exception $e) {
             if (str_contains($e->getMessage(), 'constraint violation')) {
                 $this->request->handleErrorAndQuit(409, new Exception('Company already exists'));
@@ -285,11 +473,40 @@ class CompanyController extends AbstractController
 
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/company/{id}",
+     *     tags={"Company"},
+     *     summary="Delete a company by id",
+     *     description="Deletes a company by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Id of the company to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Successful operation"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Company not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function deleteCompany(int $id): void
     {
         // get the company from the database by its id
         try {
-            $company = $this->dao->getOneEntityBy(Company::class, ['id' => $id]);
+            $company = $this->dao->getOneBy(Company::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -301,7 +518,7 @@ class CompanyController extends AbstractController
 
         // remove the company
         try {
-            $this->dao->deleteEntity($company);
+            $this->dao->delete($company);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

@@ -15,6 +15,34 @@ use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="TaskRequest",
+ *     required={"title", "description", "location", "dueDate", "project", "user", "taskStatus"},
+ *     @OA\Property(property="title", type="string", example="Task 1"),
+ *     @OA\Property(property="description", type="string", example="This is the first task"),
+ *     @OA\Property(property="location", type="string", example="Location 1"),
+ *     @OA\Property(property="dueDate", type="string", example="2021-01-01"),
+ *     @OA\Property(property="project", type="integer", example=1),
+ *     @OA\Property(property="user", type="integer", example=1),
+ *     @OA\Property(property="taskStatus", type="integer", example=1)
+ * )
+ *
+ * @OA\Schema (
+ *     schema="TaskResponse",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="title", type="string", example="Task 1"),
+ *     @OA\Property(property="description", type="string", example="This is the first task"),
+ *     @OA\Property(property="location", type="string", example="Location 1"),
+ *     @OA\Property(property="dueDate", type="string", example="2021-01-01"),
+ *     @OA\Property(property="project", type="object", ref="#/components/schemas/ProjectResponse"),
+ *     @OA\Property(property="user", type="object", ref="#/components/schemas/UserResponse"),
+ *     @OA\Property(property="taskStatus", type="object", ref="#/components/schemas/TaskStatusResponse"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00")
+ * )
+ *
+ */
 class TaskController extends AbstractController
 {
     
@@ -29,6 +57,39 @@ class TaskController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/task",
+     *     tags={"Task"},
+     *     summary="Add a new task",
+     *     description="Add a new task to the database",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Task object that needs to be added to the database",
+     *         @OA\JsonContent(ref="#/components/schemas/TaskRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Task created"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data",
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User, Project or TaskStatus not found"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Task already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function addTask(): void
     {
         // get the request body
@@ -67,9 +128,9 @@ class TaskController extends AbstractController
 
         // get the task FK from the database by its id
         try {
-            $projectObject = $this->dao->getOneEntityBy(Project::class, ['id' => $project]);
-            $userObject = $this->dao->getOneEntityBy(User::class, ['id' => $user]);
-            $taskStatusObject = $this->dao->getOneEntityBy(TaskStatus::class, ['id' => $taskStatus]);
+            $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project]);
+            $userObject = $this->dao->getOneBy(User::class, ['id' => $user]);
+            $taskStatusObject = $this->dao->getOneBy(TaskStatus::class, ['id' => $taskStatus]);
 
             if (!$projectObject || !$userObject || !$taskStatusObject) {
                 $this->request->handleErrorAndQuit(404, new Exception('User, Project or TaskStatus not found'));
@@ -84,7 +145,7 @@ class TaskController extends AbstractController
 
         // add the Task to the database
         try {
-            $this->dao->addEntity($task);
+            $this->dao->add($task);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -97,12 +158,36 @@ class TaskController extends AbstractController
         $this->request->handleSuccessAndQuit(201, 'Task created');
     }
 
+
+
+    /**
+     * Get all tasks
+     *
+     * @OA\Get(
+     *     path="/task/all",
+     *     tags={"Task"},
+     *     summary="Get all tasks",
+     *     description="Returns all tasks",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Tasks found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/TaskResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getTasks(): void
     {
         // get all tasks
         try {
             //get all Tasks
-            $tasks = $this->dao->getAllEntities(Task::class);
+            $tasks = $this->dao->getAll(Task::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -117,12 +202,51 @@ class TaskController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Tasks found', $response);
     }
 
+
+
+
+    /**
+     * Get all tasks by user
+     *
+     * @OA\Get(
+     *     path="/task/user/{id}",
+     *     tags={"Task"},
+     *     summary="Get all tasks by user",
+     *     description="Returns all tasks assigned to a user",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="User ID",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Tasks found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/TaskResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getTasksByUser(int $id): void
     {
         // get all roles
         try {
             //get all task by company
-            $tasks = $this->dao->getEntitiesBy(Task::class, ['user' => $id]);
+            $tasks = $this->dao->getBy(Task::class, ['user' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -137,12 +261,46 @@ class TaskController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Tasks found', $response);
     }
 
+
+
+    /**
+     * Get all tasks by project
+     *
+     * @OA\Get(
+     *     path="/task/project/{id}",
+     *     tags={"Task"},
+     *     summary="Get all tasks by project",
+     *     description="Returns all tasks assigned to a project",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Project ID",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Tasks found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/TaskResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getTasksByProject(int $id): void
     {
         // get all tasks
         try {
             //get all task by company
-            $tasks = $this->dao->getEntitiesBy(Task::class, ['project' => $id]);
+            $tasks = $this->dao->getBy(Task::class, ['project' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -157,11 +315,46 @@ class TaskController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Tasks found', $response);
     }
 
+
+
+    /**
+     * Get task by id
+     *
+     * @OA\Get(
+     *     path="/task/{id}",
+     *     tags={"Task"},
+     *     summary="Get task by id",
+     *     description="Returns a task by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Task ID",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Task found",
+     *         @OA\JsonContent(ref="#/components/schemas/TaskResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Task not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getTaskById(int $id): void
     {
         // get the task by id
         try {
-            $task= $this->dao->getOneEntityBy(Task::class, ['id' => $id]);
+            $task= $this->dao->getOneBy(Task::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -178,6 +371,52 @@ class TaskController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Task found', $response);
     }
 
+
+    /**
+     * Update a task by ID
+     *
+     * @OA\Put(
+     *     path="/task/{id}",
+     *     summary="Update a task by ID",
+     *     description="Update a task by ID",
+     *     tags={"Task"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the task to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Task object that needs to be updated",
+     *         @OA\JsonContent(ref="#/components/schemas/TaskRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Task updated"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Task not found"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Task already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function updateTask(int $id): void
     {
         // get the request body
@@ -193,7 +432,7 @@ class TaskController extends AbstractController
 
         // get the Task by id
         try {
-            $task = $this->dao->getOneEntityBy(Task::class, ['id' => $id]);
+            $task = $this->dao->getOneBy(Task::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -225,9 +464,9 @@ class TaskController extends AbstractController
 
 
         try {
-            $projectObject = $this->dao->getOneEntityBy(Project::class, ['id' => $project]);
-            $userObject = $this->dao->getOneEntityBy(User::class, ['id' => $user]);
-            $taskStatusObject = $this->dao->getOneEntityBy(TaskStatus::class, ['id' => $taskStatus]);
+            $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project]);
+            $userObject = $this->dao->getOneBy(User::class, ['id' => $user]);
+            $taskStatusObject = $this->dao->getOneBy(TaskStatus::class, ['id' => $taskStatus]);
 
             if (!$projectObject || !$userObject || !$taskStatusObject) {
                 $this->request->handleErrorAndQuit(404, new Exception('User, Project or TaskStatus not found'));
@@ -248,7 +487,7 @@ class TaskController extends AbstractController
 
         // update the task in the database
         try {
-            $this->dao->updateEntity($task);
+            $this->dao->update($task);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -262,11 +501,43 @@ class TaskController extends AbstractController
 
     }
 
+    /**
+     * Deletes a task by ID
+     *
+     * @OA\Delete(
+     *     path="/task/{id}",
+     *     tags={"Task"},
+     *     summary="Deletes a task by ID",
+     *     description="Deletes a task by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the task to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Task deleted"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Task not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function deleteTask(int $id): void
     {
         // get the Task by id
         try {
-            $task = $this->dao->getOneEntityBy(Task::class, ['id' => $id]);
+            $task = $this->dao->getOneBy(Task::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -278,7 +549,7 @@ class TaskController extends AbstractController
 
         // remove the Task
         try {
-            $this->dao->deleteEntity($task);
+            $this->dao->delete($task);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

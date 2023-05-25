@@ -10,6 +10,27 @@ use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="UserSettingsRequest",
+ *     required={"theme", "language", "user-id"},
+ *     @OA\Property(property="theme", type="string", example="dark"),
+ *     @OA\Property(property="language", type="string", example="en"),
+ *     @OA\Property(property="user-id", type="integer", example="1")
+ * )
+ *
+ * @OA\Schema (
+ *     schema="UserSettingsResponse",
+ *     required={"id", "theme", "language", "user-id"},
+ *     @OA\Property(property="id", type="integer", example="1"),
+ *     @OA\Property(property="theme", type="string", example="dark"),
+ *     @OA\Property(property="language", type="string", example="en"),
+ *     @OA\Property(property="user", type="object", ref="#/components/schemas/UserResponse"),
+ *     @OA\Property(property="created-at", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="updated-at", type="string", format="date-time", example="2021-01-01 00:00:00")
+ * )
+ *
+ */
 class UserSettingsController extends AbstractController
 {
 
@@ -23,6 +44,35 @@ class UserSettingsController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/user-settings",
+     *     tags={"User Settings"},
+     *     summary="Add user settings",
+     *     description="Add user settings",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="User settings object that needs to be added",
+     *         @OA\JsonContent(ref="#/components/schemas/UserSettingsRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="User settings created successfully"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function addUserSettings(): void
     {
         // get the request body
@@ -50,7 +100,7 @@ class UserSettingsController extends AbstractController
 
         // get the user by its id
         try {
-            $user = $this->dao->getOneEntityBy('Entity\User', ['id' => $id]);
+            $user = $this->dao->getOneBy('Entity\User', ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -68,7 +118,7 @@ class UserSettingsController extends AbstractController
 
         // add the user settings to the database (this will also update the user)
         try {
-            $this->dao->addEntity($userSettings);
+            $this->dao->add($userSettings);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -82,11 +132,44 @@ class UserSettingsController extends AbstractController
 
     }
 
+
+
+    /**
+     * @OA\Get(
+     *     path="/user-settings/{id}",
+     *     tags={"User Settings"},
+     *     summary="Get user settings by id",
+     *     description="Get user settings by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of user settings to return",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User settings found",
+     *         @OA\JsonContent(ref="#/components/schemas/UserSettingsResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User settings not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getUserSettingsById(int $id): void
     {
         // get the user settings
         try {
-            $userSettings = $this->dao->getOneEntityBy('Entity\UserSettings', ['id' => $id]);
+            $userSettings = $this->dao->getOneBy('Entity\UserSettings', ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -103,6 +186,46 @@ class UserSettingsController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'User settings found', $userSettings);
     }
 
+
+    /**
+     * @OA\Put(
+     *     path="/user-settings/{id}",
+     *     tags={"User Settings"},
+     *     summary="Update user settings by id",
+     *     description="Update user settings by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of user settings to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="User settings object that needs to be updated",
+     *         @OA\JsonContent(ref="#/components/schemas/UserSettingsRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User settings updated successfully"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data or user settings already exist"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User settings not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function updateUserSettings(int $id): void
     {
         // get the request body
@@ -124,7 +247,7 @@ class UserSettingsController extends AbstractController
 
         // get the user settings
         try {
-            $userSettings = $this->dao->getOneEntityBy('Entity\UserSettings', ['id' => $id]);
+            $userSettings = $this->dao->getOneBy('Entity\UserSettings', ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -144,7 +267,7 @@ class UserSettingsController extends AbstractController
 
         // flush the entity manager
         try {
-            $this->dao->updateEntity($userSettings);
+            $this->dao->update($userSettings);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -157,11 +280,42 @@ class UserSettingsController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'User settings updated successfully');
     }
 
+
+    /**
+     * @OA\Delete(
+     *     path="/user-settings/{id}",
+     *     tags={"User Settings"},
+     *     summary="Delete user settings by id",
+     *     description="Delete user settings by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of user settings to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User settings deleted successfully"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User settings not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function deleteUserSettings(int $id): void
     {
         // get the user settings
         try {
-            $userSettings = $this->dao->getOneEntityBy('Entity\UserSettings', ['id' => $id]);
+            $userSettings = $this->dao->getOneBy('Entity\UserSettings', ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -173,7 +327,7 @@ class UserSettingsController extends AbstractController
 
         // remove the user settings
         try {
-            $this->dao->deleteEntity($userSettings);
+            $this->dao->delete($userSettings);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

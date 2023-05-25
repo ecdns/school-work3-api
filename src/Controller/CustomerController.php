@@ -17,6 +17,40 @@ use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="CustomerRequest",
+ *     required={"firstName", "lastName", "email", "address", "city", "country", "zipCode", "phone", "company", "user", "status"},
+ *     @OA\Property(property="firstName", type="string", example="John"),
+ *     @OA\Property(property="lastName", type="string", example="Doe"),
+ *     @OA\Property(property="email", type="string", format="email", example="john-doe@gmail.com"),
+ *     @OA\Property(property="address", type="string", example="1, rue de la Paix"),
+ *     @OA\Property(property="city", type="string", example="Paris"),
+ *     @OA\Property(property="country", type="string", example="France"),
+ *     @OA\Property(property="zipCode", type="string", example="75000"),
+ *     @OA\Property(property="phone", type="string", example="0123456789"),
+ *     @OA\Property(property="company", type="integer", example="1"),
+ *     @OA\Property(property="user", type="integer", example="1"),
+ *     @OA\Property(property="status", type="integer", example="1")
+ * )
+ * @OA\Schema (
+ *     schema="CustomerResponse",
+ *     @OA\Property(property="id", type="integer", example="1"),
+ *     @OA\Property(property="firstName", type="string", example="John"),
+ *     @OA\Property(property="lastName", type="string", example="Doe"),
+ *     @OA\Property(property="email", type="string", format="email", example="john-doe@gmail.com"),
+ *     @OA\Property(property="address", type="string", example="1, rue de la Paix"),
+ *     @OA\Property(property="city", type="string", example="Paris"),
+ *     @OA\Property(property="country", type="string", example="France"),
+ *     @OA\Property(property="zipCode", type="string", example="75000"),
+ *     @OA\Property(property="phone", type="string", example="0123456789"),
+ *     @OA\Property(property="company", type="object", ref="#/components/schemas/CompanyResponse"),
+ *     @OA\Property(property="user", type="object", ref="#/components/schemas/UserResponse"),
+ *     @OA\Property(property="status", type="object", ref="#/components/schemas/CustomerStatusResponse"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00")
+ * )
+ */
 class CustomerController extends AbstractController
 {
 
@@ -30,6 +64,38 @@ class CustomerController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/customer",
+     *     tags={"Customer"},
+     *     summary="Add a new customer",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Customer data",
+     *         @OA\JsonContent(ref="#/components/schemas/CustomerRequest")
+     *     ),
+     *     @OA\Response(
+     *         response="201",
+     *         description="Customer created"
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Company, User or CustomerStatus not found"
+     *     ),
+     *     @OA\Response(
+     *         response="409",
+     *         description="Customer already exists"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function addCustomer(): void
     {
         // get the request body
@@ -73,9 +139,9 @@ class CustomerController extends AbstractController
 
         // get the company from the database by its id
         try {
-            $companyObject = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
-            $userObject = $this->dao->getOneEntityBy(User::class, ['id' => $user]);
-            $customerStatusObject = $this->dao->getOneEntityBy(CustomerStatus::class, ['id' => $status]);
+            $companyObject = $this->dao->getOneBy(Company::class, ['id' => $company]);
+            $userObject = $this->dao->getOneBy(User::class, ['id' => $user]);
+            $customerStatusObject = $this->dao->getOneBy(CustomerStatus::class, ['id' => $status]);
 
             if (!$companyObject || !$userObject || !$customerStatusObject) {
                 $this->request->handleErrorAndQuit(404, new Exception('Company, User or CustomerStatus not found'));
@@ -91,7 +157,7 @@ class CustomerController extends AbstractController
 
         // add the customer to the database
         try {
-            $this->dao->addEntity($customer);
+            $this->dao->add($customer);
         } catch (Exception $e) {
             if (str_contains($e->getMessage(), 'constraint violation')) {
                 $this->request->handleErrorAndQuit(409, new Exception('Customer already exists'));
@@ -104,11 +170,30 @@ class CustomerController extends AbstractController
 
     }
 
+    /**
+     * @OA\Get(
+     *     path="/customer/all",
+     *     tags={"Customer"},
+     *     summary="Get all customers",
+     *     @OA\Response(
+     *         response="200",
+     *         description="Customers found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/CustomerResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getCustomers(): void
     {
         // get the customers from the database
         try {
-            $companies = $this->dao->getAllEntities(Customer::class);
+            $companies = $this->dao->getAll(Customer::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -124,11 +209,40 @@ class CustomerController extends AbstractController
 
     }
 
+    /**
+     * @OA\Get(
+     *     path="/customer/{id}",
+     *     tags={"Customer"},
+     *     summary="Get customer by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the customer to retrieve",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Customer found"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Customer not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getCustomerById(int $id): void
     {
         // get the customer from the database by its id
         try {
-            $customer = $this->dao->getOneEntityBy(Customer::class, ['id' => $id]);
+            $customer = $this->dao->getOneBy(Customer::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -146,12 +260,45 @@ class CustomerController extends AbstractController
 
     }
 
+    /**
+     * @OA\Get(
+     *     path="/customer/company/{id}",
+     *     tags={"Customer"},
+     *     summary="Get customers by company id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the company to retrieve customers from",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Customers found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/CustomerResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Customers not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     //get by company id
     public function getCustomerByCompany(int $id): void
     {
         // get the customer from the database by its id
         try {
-            $customers = $this->dao->getEntitiesBy(Customer::class, ['company' => $id]);
+            $customers = $this->dao->getBy(Customer::class, ['company' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -172,6 +319,49 @@ class CustomerController extends AbstractController
 
     }
 
+
+    /**
+     * @OA\Put(
+     *     path="/customer/{id}",
+     *     tags={"Customer"},
+     *     summary="Update a customer",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the customer to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Customer data to update",
+     *         @OA\JsonContent(ref="#/components/schemas/CustomerRequest")
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Customer updated successfully"
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Customer not found"
+     *     ),
+     *     @OA\Response(
+     *         response="409",
+     *         description="Customer already exists"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function updateCustomer(int $id): void
     {
         // get the request body
@@ -201,7 +391,7 @@ class CustomerController extends AbstractController
 
         // get the customer from the database by its id
         try {
-            $customer = $this->dao->getOneEntityBy(Customer::class, ['id' => $id]);
+            $customer = $this->dao->getOneBy(Customer::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -225,9 +415,9 @@ class CustomerController extends AbstractController
 
         // get the controller from the database by its name
         try {
-            $companyObject = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
-            $userObject = $this->dao->getOneEntityBy(User::class, ['id' => $user]);
-            $customerStatusObject = $this->dao->getOneEntityBy(CustomerStatus::class, ['id' => $status]);
+            $companyObject = $this->dao->getOneBy(Company::class, ['id' => $company]);
+            $userObject = $this->dao->getOneBy(User::class, ['id' => $user]);
+            $customerStatusObject = $this->dao->getOneBy(CustomerStatus::class, ['id' => $status]);
 
             if (!$companyObject || !$userObject || !$customerStatusObject) {
                 $this->request->handleErrorAndQuit(404, new Exception('Company, User or CustomerStatus not found'));
@@ -251,7 +441,7 @@ class CustomerController extends AbstractController
 
         // update the customer
         try {
-            $this->dao->updateEntity($customer);
+            $this->dao->update($customer);
         } catch (Exception $e) {
             if (str_contains($e->getMessage(), 'constraint violation')) {
                 $this->request->handleErrorAndQuit(409, new Exception('Customer already exists'));
@@ -264,11 +454,40 @@ class CustomerController extends AbstractController
 
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/customer/{id}",
+     *     tags={"Customer"},
+     *     summary="Delete a customer",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the customer to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Customer deleted successfully"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Customer not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function deleteCustomer(int $id): void
     {
         // get the customer from the database by its id
         try {
-            $customer = $this->dao->getOneEntityBy(Customer::class, ['id' => $id]);
+            $customer = $this->dao->getOneBy(Customer::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -280,7 +499,7 @@ class CustomerController extends AbstractController
 
         // remove the customer
         try {
-            $this->dao->deleteEntity($customer);
+            $this->dao->delete($customer);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

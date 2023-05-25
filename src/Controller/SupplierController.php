@@ -12,6 +12,40 @@ use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="SupplierRequest",
+ *     required={"name", "firstName", "lastName", "email", "address", "city", "country", "zipCode", "phone", "company"},
+ *     @OA\Property(property="name", type="string", example="Aubade"),
+ *     @OA\Property(property="firstName", type="string", example="Jean"),
+ *     @OA\Property(property="lastName", type="string", example="Dupont"),
+ *     @OA\Property(property="email", type="string", format="email", example="jean.dupont@aubade"),
+ *     @OA\Property(property="address", type="string", example="1 rue de la lingerie"),
+ *     @OA\Property(property="city", type="string", example="Paris"),
+ *     @OA\Property(property="country", type="string", example="France"),
+ *     @OA\Property(property="zipCode", type="string", example="75000"),
+ *     @OA\Property(property="phone", type="string", example="0123456789"),
+ *     @OA\Property(property="company", type="integer", example=1)
+ * )
+ *
+ * @OA\Schema (
+ *     schema="SupplierResponse",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="Aubade"),
+ *     @OA\Property(property="firstName", type="string", example="Jean"),
+ *     @OA\Property(property="lastName", type="string", example="Dupont"),
+ *     @OA\Property(property="email", type="string", format="email", example="jean.dupont@aubade"),
+ *     @OA\Property(property="address", type="string", example="1 rue de la lingerie"),
+ *     @OA\Property(property="city", type="string", example="Paris"),
+ *     @OA\Property(property="country", type="string", example="France"),
+ *     @OA\Property(property="zipCode", type="string", example="75000"),
+ *     @OA\Property(property="phone", type="string", example="0123456789"),
+ *     @OA\Property(property="company", type="object", ref="#/components/schemas/CompanyResponse"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-03-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-03-01 00:00:00")
+ * )
+ *
+ */
 class SupplierController extends AbstractController
 {
 
@@ -26,6 +60,35 @@ class SupplierController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/supplier",
+     *     tags={"Supplier"},
+     *     summary="Add a new supplier",
+     *     description="Add a new supplier to the database",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Supplier object that needs to be added to the database",
+     *         @OA\JsonContent(ref="#/components/schemas/SupplierRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Supplier created"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Supplier already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function addSupplier(): void
     {
         // get the request body
@@ -67,7 +130,7 @@ class SupplierController extends AbstractController
 
         // get the company from the database by its name
         try {
-            $companyObject = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
+            $companyObject = $this->dao->getOneBy(Company::class, ['id' => $company]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -77,7 +140,7 @@ class SupplierController extends AbstractController
 
         // flush the entity manager
         try {
-            $this->dao->addEntity($supplier);
+            $this->dao->add($supplier);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -91,12 +154,31 @@ class SupplierController extends AbstractController
 
     }
 
-    //function for getting all Suppliers
+    /**
+     * @OA\Get(
+     *     path="/supplier/all",
+     *     tags={"Supplier"},
+     *     summary="Get all suppliers",
+     *     description="Returns all suppliers from the database",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Suppliers found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/SupplierResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getSuppliers(): void
     {
         // get all the Supplier from the database
         try {
-            $suppliers = $this->dao->getAllEntities(Supplier::class);
+            $suppliers = $this->dao->getAll(Supplier::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -111,11 +193,44 @@ class SupplierController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Supplier found', $response);
     }
 
+
+
+    /**
+     * @OA\Get(
+     *     path="/supplier/{id}",
+     *     tags={"Supplier"},
+     *     summary="Get a supplier by ID",
+     *     description="Returns a supplier from the database by its ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the supplier to retrieve",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Supplier found",
+     *         @OA\JsonContent(ref="#/components/schemas/SupplierResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Supplier not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getSupplierById(int $id): void
     {
         // get the supplier from the database by its id
         try {
-            $supplier = $this->dao->getOneEntityBy(Supplier::class, ['id' => $id]);
+            $supplier = $this->dao->getOneBy(Supplier::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -132,7 +247,49 @@ class SupplierController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Supplier found', $response);
     }
 
-    //function for updating a supplier
+    /**
+     * @OA\Put(
+     *     path="/supplier/{id}",
+     *     tags={"Supplier"},
+     *     summary="Update a supplier by ID",
+     *     description="Updates a supplier from the database by its ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the supplier to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Supplier object that needs to be updated",
+     *         @OA\JsonContent(ref="#/components/schemas/SupplierRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Supplier updated",
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Supplier not found"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Supplier already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function updateSupplier(int $id): void
     {
         // get the request body
@@ -162,7 +319,7 @@ class SupplierController extends AbstractController
 
         // get the supplier from the database by its id
         try {
-            $supplier = $this->dao->getOneEntityBy(Supplier::class, ['id' => $id]);
+            $supplier = $this->dao->getOneBy(Supplier::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -185,7 +342,7 @@ class SupplierController extends AbstractController
         $company = $requestBody['company'] ?? $supplier->getCompany()->getId();
 
         try {
-            $company = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
+            $company = $this->dao->getOneBy(Company::class, ['id' => $company]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -208,7 +365,7 @@ class SupplierController extends AbstractController
 
         // flush the entity manager
         try {
-            $this->dao->updateEntity($supplier);
+            $this->dao->update($supplier);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -222,12 +379,42 @@ class SupplierController extends AbstractController
 
     }
 
-    //function for deleting a Supplier
+
+    /**
+     * @OA\Delete(
+     *     path="/supplier/{id}",
+     *     tags={"Supplier"},
+     *     summary="Delete a supplier by ID",
+     *     description="Deletes a supplier from the database by its ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the supplier to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Supplier deleted"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Supplier not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function deleteSupplier(int $id): void
     {
         // get the Supplier from the database by its id
         try {
-            $supplier = $this->dao->getOneEntityBy(Supplier::class, ['id' => $id]);
+            $supplier = $this->dao->getOneBy(Supplier::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -239,7 +426,7 @@ class SupplierController extends AbstractController
 
         // remove the Supplier
         try {
-            $this->dao->deleteEntity($supplier);
+            $this->dao->delete($supplier);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -247,6 +434,7 @@ class SupplierController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'Supplier deleted');
     }
+
 
 
 }

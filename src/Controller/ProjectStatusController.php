@@ -9,6 +9,24 @@ use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="ProjectStatusRequest",
+ *     required={"name", "description"},
+ *     @OA\Property(property="name", type="string", example="ProjectStatus 1"),
+ *     @OA\Property(property="description", type="string", example="This is the first projectStatus")
+ * )
+ *
+ * @OA\Schema (
+ *     schema="ProjectStatusResponse",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="ProjectStatus 1"),
+ *     @OA\Property(property="description", type="string", example="This is the first projectStatus"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00")
+ * )
+ *
+ */
 class ProjectStatusController extends AbstractController
 {
 
@@ -22,6 +40,35 @@ class ProjectStatusController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/project-status",
+     *     tags={"ProjectStatus"},
+     *     summary="Add a new ProjectStatus",
+     *     description="Add a new ProjectStatus",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="ProjectStatus object that needs to be added",
+     *         @OA\JsonContent(ref="#/components/schemas/ProjectStatusRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="ProjectStatus created"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="ProjectStatus already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function addProjectStatus(): void
     {
         // get the request body
@@ -50,7 +97,7 @@ class ProjectStatusController extends AbstractController
 
         // persist the projectStatus
         try {
-            $this->dao->addEntity($projectStatus);
+            $this->dao->add($projectStatus);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -64,12 +111,31 @@ class ProjectStatusController extends AbstractController
 
     }
 
-    //function for getting all ProjectStatus
+    /**
+     * @OA\Get(
+     *     path="/project-status/all",
+     *     tags={"ProjectStatus"},
+     *     summary="Get all ProjectStatuses",
+     *     description="Get all ProjectStatuses",
+     *     @OA\Response(
+     *         response=200,
+     *         description="ProjectStatuses found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/ProjectStatusResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function getProjectStatuses(): void
     {
         // get all the ProjectStatus from the database
         try {
-            $productFamilies = $this->dao->getAllEntities(ProjectStatus::class);
+            $productFamilies = $this->dao->getAll(ProjectStatus::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -84,11 +150,44 @@ class ProjectStatusController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'ProjectStatus found', $response);
     }
 
+
+
+    /**
+     * @OA\Get(
+     *     path="/project-status/{id}",
+     *     tags={"ProjectStatus"},
+     *     summary="Get a ProjectStatus by ID",
+     *     description="Get a ProjectStatus by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the ProjectStatus to get",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="ProjectStatus found",
+     *         @OA\JsonContent(ref="#/components/schemas/ProjectStatusResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="ProjectStatus not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function getProjectStatusById(int $id): void
     {
         // get the license from the database by its id
         try {
-            $projectStatus = $this->dao->getOneEntityBy(ProjectStatus::class, ['id' => $id]);
+            $projectStatus = $this->dao->getOneBy(ProjectStatus::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -105,7 +204,51 @@ class ProjectStatusController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'ProjectStatus found', $response);
     }
 
+
     //function for updating a projectStatus
+    /**
+     * @OA\Put(
+     *     path="/project-status/{id}",
+     *     tags={"ProjectStatus"},
+     *     summary="Update a ProjectStatus by ID",
+     *     description="Update a ProjectStatus by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the ProjectStatus to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="ProjectStatus object that needs to be updated",
+     *         @OA\JsonContent(ref="#/components/schemas/ProjectStatusRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="ProjectStatus updated",
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="ProjectStatus not found"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="ProjectStatus already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function updateProjectStatus(int $id): void
     {
         // get the request body
@@ -127,7 +270,7 @@ class ProjectStatusController extends AbstractController
 
         // get the ProjectStatus from the database by its id
         try {
-            $projectStatus = $this->dao->getOneEntityBy(ProjectStatus::class, ['id' => $id]);
+            $projectStatus = $this->dao->getOneBy(ProjectStatus::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -147,7 +290,7 @@ class ProjectStatusController extends AbstractController
 
         // persist the projectStatus
         try {
-            $this->dao->updateEntity($projectStatus);
+            $this->dao->update($projectStatus);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -161,12 +304,42 @@ class ProjectStatusController extends AbstractController
 
     }
 
-    //function for deleting a ProjectStatus
+    /**
+     * @OA\Delete(
+     *     path="/project-status/{id}",
+     *     tags={"ProjectStatus"},
+     *     summary="Delete a ProjectStatus by ID",
+     *     description="Delete a ProjectStatus by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the ProjectStatus to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="ProjectStatus deleted"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="ProjectStatus not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function deleteProjectStatus(int $id): void
     {
         // get the ProjectStatus from the database by its id
         try {
-            $projectStatus = $this->dao->getOneEntityBy(ProjectStatus::class, ['id' => $id]);
+            $projectStatus = $this->dao->getOneBy(ProjectStatus::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -178,7 +351,7 @@ class ProjectStatusController extends AbstractController
 
         // remove the ProjectStatus
         try {
-            $this->dao->deleteEntity($projectStatus);
+            $this->dao->delete($projectStatus);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -186,5 +359,6 @@ class ProjectStatusController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'ProjectStatus deleted');
     }
+
 
 }

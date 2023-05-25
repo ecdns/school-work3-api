@@ -13,6 +13,34 @@ use Service\Auth;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="UserRequest",
+ *     required={"firstName", "lastName", "email", "password", "job", "phone", "role", "company"},
+ *     @OA\Property(property="firstName", type="string", example="John"),
+ *     @OA\Property(property="lastName", type="string", example="Doe"),
+ *     @OA\Property(property="email", type="string", example="john.doe@gmail.com"),
+ *     @OA\Property(property="password", type="string", format="password", example="password"),
+ *     @OA\Property(property="job", type="string", example="Developer"),
+ *     @OA\Property(property="phone", type="string", example="0123456789"),
+ *     @OA\Property(property="role", type="integer", example="1"),
+ *     @OA\Property(property="company", type="integer", example="1")
+ * )
+ *
+ * @OA\Schema (
+ *     schema="UserResponse",
+ *     @OA\Property(property="id", type="integer", example="1"),
+ *     @OA\Property(property="firstName", type="string", example="John"),
+ *     @OA\Property(property="lastName", type="string", example="Doe"),
+ *     @OA\Property(property="email", type="string", example="john.doe@gmail.com"),
+ *     @OA\Property(property="job", type="string", example="Developer"),
+ *     @OA\Property(property="phone", type="string", example="0123456789"),
+ *     @OA\Property(property="role", type="object", ref="#/components/schemas/RoleResponse"),
+ *     @OA\Property(property="company", type="object", ref="#/components/schemas/CompanyResponse"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-03-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-03-01 00:00:00")
+ * )
+ */
 class UserController extends AbstractController
 {
     private DAO $dao;
@@ -27,6 +55,37 @@ class UserController extends AbstractController
         $this->auth = $auth;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/user",
+     *     tags={"User"},
+     *     summary="Add a new user",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/UserRequest")
+     *     ),
+     *     @OA\Response(
+     *         response="201",
+     *         description="User created"
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Role or company not found"
+     *     ),
+     *     @OA\Response(
+     *         response="409",
+     *         description="User already exists"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function addUser(): void
     {
 
@@ -37,7 +96,7 @@ class UserController extends AbstractController
         // {
         //     "firstName": "John",
         //     "lastName": "Doe",
-        //     "email": "john.doe@gmail.com",
+        //     "email": "john.doe@gmail",
         //     "password": "password",
         //     "job": "Developer",
         //     "phone": "0123456789",
@@ -67,8 +126,8 @@ class UserController extends AbstractController
 
         // get the company and role from the database
         try {
-            $role = $this->dao->getOneEntityBy(Role::class, ['id' => $role]);
-            $company = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
+            $role = $this->dao->getOneBy(Role::class, ['id' => $role]);
+            $company = $this->dao->getOneBy(Company::class, ['id' => $company]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -88,7 +147,7 @@ class UserController extends AbstractController
 
         // add the user to the database
         try {
-            $this->dao->addEntity($user);
+            $this->dao->add($user);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -101,11 +160,38 @@ class UserController extends AbstractController
         $this->request->handleSuccessAndQuit(201, 'User created');
     }
 
+
+    /**
+     * Get all users
+     *
+     * @OA\Get(
+     *     path="/user/all",
+     *     tags={"User"},
+     *     summary="Get all users",
+     *     description="Returns all users",
+     *     @OA\Response(
+     *         response="200",
+     *         description="Users found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/UserResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="No users found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getUsers(): void
     {
         // get the users from the database
         try {
-            $users = $this->dao->getAllEntities(User::class);
+            $users = $this->dao->getAll(User::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -125,11 +211,45 @@ class UserController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Users found', $usersData);
     }
 
+
+    /**
+     * Get user by ID
+     *
+     * @OA\Get(
+     *     path="/user/{id}",
+     *     tags={"User"},
+     *     summary="Get user by ID",
+     *     description="Returns a user by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the user to return",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="User found",
+     *         @OA\JsonContent(ref="#/components/schemas/UserResponse")
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="User not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getUserById(int $id): void
     {
         // get the user from the database by its id
         try {
-            $user = $this->dao->getOneEntityBy(User::class, ['id' => $id]);
+            $user = $this->dao->getOneBy(User::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -146,6 +266,53 @@ class UserController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'User found', $userData);
     }
 
+
+
+    /**
+     * Update user by ID
+     *
+     * @OA\Put(
+     *     path="/user/{id}",
+     *     tags={"User"},
+     *     summary="Update user by ID",
+     *     description="Updates a user by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the user to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="User data to update",
+     *         @OA\JsonContent(ref="#/components/schemas/UserRequest")
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="User updated"
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="User not found"
+     *     ),
+     *     @OA\Response(
+     *         response="409",
+     *         description="User already exists"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function updateUser(int $id): void
     {
         // get the request body
@@ -173,7 +340,7 @@ class UserController extends AbstractController
 
         // get the user from the database by its id
         try {
-            $user = $this->dao->getOneEntityBy(User::class, ['id' => $id]);
+            $user = $this->dao->getOneBy(User::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -195,8 +362,8 @@ class UserController extends AbstractController
 
         // get the company and role from the database
         try {
-            $role = $this->dao->getOneEntityBy(Role::class, ['id' => $role]);
-            $company = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
+            $role = $this->dao->getOneBy(Role::class, ['id' => $role]);
+            $company = $this->dao->getOneBy(Company::class, ['id' => $company]);
 
             if (!$role || !$company) {
                 $this->request->handleErrorAndQuit(404, new Exception('Role or company not found'));
@@ -218,7 +385,7 @@ class UserController extends AbstractController
 
         // update the user in the database
         try {
-            $this->dao->updateEntity($user);
+            $this->dao->update($user);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -231,11 +398,43 @@ class UserController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'User updated');
     }
 
+    /**
+     * Delete user by ID
+     *
+     * @OA\Delete(
+     *     path="/user/{id}",
+     *     tags={"User"},
+     *     summary="Delete user by ID",
+     *     description="Deletes a user by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the user to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="User deleted"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="User not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function deleteUser(int $id): void
     {
         // get the user from the database by its id
         try {
-            $user = $this->dao->getOneEntityBy(User::class, ['id' => $id]);
+            $user = $this->dao->getOneBy(User::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -247,7 +446,7 @@ class UserController extends AbstractController
 
         // remove the user
         try {
-            $this->dao->deleteEntity($user);
+            $this->dao->delete($user);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -256,16 +455,46 @@ class UserController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'User deleted');
     }
 
+
+    /**
+     * Login user
+     *
+     * @OA\Post(
+     *     path="/user/login",
+     *     tags={"User"},
+     *     summary="Login user",
+     *     description="Logs in a user",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="User credentials",
+     *         @OA\JsonContent(
+     *             required={"email","password"},
+     *             @OA\Property(property="email", type="string", format="email", example="john.doe@gmail.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="password")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="User logged in"
+     *     ),
+     *     @OA\Response(
+     *         response="401",
+     *         description="Incorrect password or company is not active"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="User not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function loginUser(): void
     {
         // get the request body
         $requestBody = file_get_contents('php://input');
-
-        // it will look like this:
-        // {
-        //     "email": "john.doe@gmail",
-        //     "password": "password"
-        // }
 
         // decode the json
         $requestBody = json_decode($requestBody, true);
@@ -276,7 +505,7 @@ class UserController extends AbstractController
 
         // get the user from the database by its email
         try {
-            $user = $this->dao->getOneEntityBy(User::class, ['email' => $email]);
+            $user = $this->dao->getOneBy(User::class, ['email' => $email]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

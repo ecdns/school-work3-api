@@ -16,6 +16,44 @@ use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="ProductRequest",
+ *     required={"name", "description", "buyPrice", "sellPrice", "quantity", "discount", "isDiscount", "productFamily", "vat", "company", "quantityUnit", "supplier"},
+ *     @OA\Property(property="name", type="string", example="Jambon"),
+ *     @OA\Property(property="description", type="string", example="Jambon de Paris"),
+ *     @OA\Property(property="buyPrice", type="integer", example=10),
+ *     @OA\Property(property="sellPrice", type="integer", example=15),
+ *     @OA\Property(property="quantity", type="integer", example=10),
+ *     @OA\Property(property="discount", type="integer", example=0),
+ *     @OA\Property(property="isDiscount", type="boolean", example=false),
+ *     @OA\Property(property="productFamily", type="integer", example=1),
+ *     @OA\Property(property="vat", type="integer", example=1),
+ *     @OA\Property(property="company", type="integer", example=1),
+ *     @OA\Property(property="quantityUnit", type="integer", example=1),
+ *     @OA\Property(property="supplier", type="integer", example=1)
+ * )
+ *
+ * @OA\Schema (
+ *     schema="ProductResponse",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="Jambon"),
+ *     @OA\Property(property="description", type="string", example="Jambon de Paris"),
+ *     @OA\Property(property="buyPrice", type="integer", example=10),
+ *     @OA\Property(property="sellPrice", type="integer", example=15),
+ *     @OA\Property(property="quantity", type="integer", example=10),
+ *     @OA\Property(property="discount", type="integer", example=0),
+ *     @OA\Property(property="isDiscount", type="boolean", example=false),
+ *     @OA\Property(property="productFamily", type="object", ref="#/components/schemas/ProductFamilyResponse"),
+ *     @OA\Property(property="vat", type="object", ref="#/components/schemas/VatResponse"),
+ *     @OA\Property(property="company", type="object", ref="#/components/schemas/CompanyResponse"),
+ *     @OA\Property(property="quantityUnit", type="object", ref="#/components/schemas/QuantityUnitResponse"),
+ *     @OA\Property(property="supplier", type="integer", example=1),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-03-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-03-01 00:00:00")
+ * )
+ *
+ */
 class ProductController extends AbstractController
 {
     
@@ -29,6 +67,33 @@ class ProductController extends AbstractController
         $this->request = $request;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/product",
+     *     tags={"Product"},
+     *     summary="Add a new product",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/ProductRequest")
+     *     ),
+     *     @OA\Response(
+     *         response="201",
+     *         description="Product created",
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Invalid request data",
+     *     ),
+     *     @OA\Response(
+     *         response="409",
+     *         description="Product already exists",
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error",
+     *     )
+     * )
+     */
     public function addProduct(): void
     {
         // get the request body
@@ -77,35 +142,35 @@ class ProductController extends AbstractController
 
         // get the product family from the database by its id
         try {
-            $productFamilyObject = $this->dao->getOneEntityBy(ProductFamily::class, ['id' => $productFamily]);
+            $productFamilyObject = $this->dao->getOneBy(ProductFamily::class, ['id' => $productFamily]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
 
         // get the vat from the database by its id
         try {
-            $vatObject = $this->dao->getOneEntityBy(Vat::class, ['id' => $vat]);
+            $vatObject = $this->dao->getOneBy(Vat::class, ['id' => $vat]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
 
         // get the company from the database by its id
         try {
-            $companyObject = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
+            $companyObject = $this->dao->getOneBy(Company::class, ['id' => $company]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
 
         // get the quantity unit from the database by its id
         try {
-            $quantityUnitObject = $this->dao->getOneEntityBy(QuantityUnit::class, ['id' => $quantityUnit]);
+            $quantityUnitObject = $this->dao->getOneBy(QuantityUnit::class, ['id' => $quantityUnit]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
 
         // get the supplier from the database by its id
         try {
-            $supplierObject = $this->dao->getOneEntityBy(Supplier::class, ['id' => $supplier]);
+            $supplierObject = $this->dao->getOneBy(Supplier::class, ['id' => $supplier]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -116,7 +181,7 @@ class ProductController extends AbstractController
 
         // add the product to the database
         try {
-            $this->dao->addEntity($product);
+            $this->dao->add($product);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -129,12 +194,33 @@ class ProductController extends AbstractController
         $this->request->handleSuccessAndQuit(201, 'Product created');
     }
 
+
+    /**
+     * @OA\Get(
+     *     path="/product/all",
+     *     tags={"Product"},
+     *     summary="Get all products",
+     *     description="Returns all products",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/ProductResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *     )
+     * )
+     */
     public function getProducts(): void
     {
         // get all roles
         try {
             //get all products by company
-            $products = $this->dao->getAllEntities(Product::class);
+            $products = $this->dao->getAll(Product::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -149,12 +235,45 @@ class ProductController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Products found', $response);
     }
 
+
+
+    /**
+     * @OA\Get(
+     *     path="/product/{id}",
+     *     tags={"Product"},
+     *     summary="Get a product by id",
+     *     description="Returns a product by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the product to get",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/ProductResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Product not found",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *     )
+     * )
+     */
     public function getProductsByCompany(int $id): void
     {
         // get all roles
         try {
             //get all products by company
-            $products = $this->dao->getEntitiesBy(Product::class, ['company' => $id]);
+            $products = $this->dao->getBy(Product::class, ['company' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -169,11 +288,43 @@ class ProductController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Products found', $response);
     }
 
+
+    /**
+     * @OA\Get(
+     *     path="/product/{id}",
+     *     tags={"Product"},
+     *     summary="Get a product by id",
+     *     description="Returns a product by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the product to get",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/ProductResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Product not found",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *     )
+     * )
+     */
     public function getProductById(int $id): void
     {
         // get the role by id
         try {
-            $product = $this->dao->getOneEntityBy(Product::class, ['id' => $id]);
+            $product = $this->dao->getOneBy(Product::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -190,6 +341,45 @@ class ProductController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Product found', $response);
     }
 
+    /**
+     * @OA\Put(
+     *     path="/product/{id}",
+     *     tags={"Product"},
+     *     summary="Update a product by id",
+     *     description="Updates a product by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the product to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Product object that needs to be updated",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/ProductRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data",
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Product family, vat, company, quantity unit or supplier not found",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *     )
+     * )
+     */
     public function updateProduct(int $id): void
     {
         // get the request body
@@ -205,7 +395,7 @@ class ProductController extends AbstractController
 
         // get the product by id
         try {
-            $product = $this->dao->getOneEntityBy(Product::class, ['id' => $id]);
+            $product = $this->dao->getOneBy(Product::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -248,11 +438,11 @@ class ProductController extends AbstractController
 
         try {
 
-            $productFamily = $this->dao->getOneEntityBy(ProductFamily::class, ['id' => $productFamily]);
-            $vat = $this->dao->getOneEntityBy(Vat::class, ['id' => $vat]);
-            $company = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
-            $quantityUnit = $this->dao->getOneEntityBy(QuantityUnit::class, ['id' => $quantityUnit]);
-            $supplier = $this->dao->getOneEntityBy(Supplier::class, ['id' => $supplier]);
+            $productFamily = $this->dao->getOneBy(ProductFamily::class, ['id' => $productFamily]);
+            $vat = $this->dao->getOneBy(Vat::class, ['id' => $vat]);
+            $company = $this->dao->getOneBy(Company::class, ['id' => $company]);
+            $quantityUnit = $this->dao->getOneBy(QuantityUnit::class, ['id' => $quantityUnit]);
+            $supplier = $this->dao->getOneBy(Supplier::class, ['id' => $supplier]);
 
             if (!$productFamily || !$vat || !$company || !$quantityUnit || !$supplier) {
                 $this->request->handleErrorAndQuit(404, new Exception('Product family, vat, company, quantity unit or supplier not found'));
@@ -279,7 +469,7 @@ class ProductController extends AbstractController
 
         // update the product in the database
         try {
-            $this->dao->updateEntity($product);
+            $this->dao->update($product);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -293,11 +483,41 @@ class ProductController extends AbstractController
 
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/product/{id}",
+     *     tags={"Product"},
+     *     summary="Delete a product by id",
+     *     description="Deletes a product by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the product to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Product not found",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *     )
+     * )
+     */
     public function deleteProduct(int $id): void
     {
         // get the product by id
         try {
-            $product = $this->dao->getOneEntityBy(Product::class, ['id' => $id]);
+            $product = $this->dao->getOneBy(Product::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -309,7 +529,7 @@ class ProductController extends AbstractController
 
         // remove the product
         try {
-            $this->dao->deleteEntity($product);
+            $this->dao->delete($product);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

@@ -1,0 +1,3176 @@
+openapi: 3.0.0
+info:
+  title: 'Cube-3 API'
+  contact:
+    email: leo.paillard@gmail.com
+  version: 1.0.0
+servers:
+  -
+    url: 'http://cyber-dodo.fr/api/v1'
+    description: 'Cube-3 API'
+paths:
+  /company:
+    post:
+      tags:
+        - Company
+      summary: 'Add a new company'
+      operationId: 47bdad828e9f0a552214464f50cb81da
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyRequest'
+      responses:
+        '201':
+          description: 'Company created'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'License not found'
+        '409':
+          description: 'Company already exists'
+        '500':
+          description: 'Internal server error'
+  /company/all:
+    get:
+      tags:
+        - Company
+      summary: 'Get all companies'
+      description: 'Returns a list of all companies'
+      operationId: 0795ef8f1af4038edf687ac63f47bae6
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CompanyResponse'
+        '500':
+          description: 'Internal server error'
+  '/company/{id}':
+    get:
+      tags:
+        - Company
+      summary: 'Get a company by ID'
+      description: 'Returns a company by ID'
+      operationId: 0cff6c1c13b0bd5086f984d8d74604a2
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the company to return'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyResponse'
+        '404':
+          description: 'Company not found'
+        '500':
+          description: 'Internal server error'
+    put:
+      tags:
+        - Company
+      summary: 'Update a company by id'
+      description: 'Updates a company by id'
+      operationId: fcb5afcdb1e33614fa28d87b606c6b63
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the company to update'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: 'Company data to update'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyRequest'
+      responses:
+        '200':
+          description: 'Successful operation'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'Company not found'
+        '500':
+          description: 'Internal server error'
+    delete:
+      tags:
+        - Company
+      summary: 'Delete a company by id'
+      description: 'Deletes a company by id'
+      operationId: 15e7ac770c331709ad7259cbbfd374f3
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id of the company to delete'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful operation'
+        '404':
+          description: 'Company not found'
+        '500':
+          description: 'Internal server error'
+  '/company/{name}':
+    get:
+      tags:
+        - Company
+      summary: 'Get a company by name'
+      description: 'Returns a company by name'
+      operationId: 8d8889cf9ae0115ed4816cfd07f00258
+      parameters:
+        -
+          name: name
+          in: path
+          description: 'Name of the company to return'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyResponse'
+        '404':
+          description: 'Company not found'
+        '500':
+          description: 'Internal server error'
+  /company-settings:
+    post:
+      tags:
+        - 'Company Settings'
+      summary: 'Add company settings'
+      operationId: 94126c8d3844338dfdc29cb8671270ee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanySettingsRequest'
+      responses:
+        '201':
+          description: 'Company settings created'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'Company not found'
+        '409':
+          description: 'Company settings already exist'
+        '500':
+          description: 'Company settings could not be created'
+  '/company-settings/{id}':
+    get:
+      tags:
+        - 'Company Settings'
+      summary: 'Get company settings by id'
+      operationId: 2aa66e75d711bc80b3eba526111660a5
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the company settings'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Company settings found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanySettingsResponse'
+        '404':
+          description: 'Company settings not found'
+        '500':
+          description: 'Internal server error'
+    put:
+      tags:
+        - 'Company Settings'
+      summary: 'Update company settings by id'
+      operationId: 0105213f6dcebc4348c3e38981bd8bfc
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the company settings'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: 'Company settings object that needs to be updated'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanySettingsRequest'
+      responses:
+        '200':
+          description: 'Company settings updated'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'Company settings not found'
+        '409':
+          description: 'Company settings already exist'
+        '500':
+          description: 'Company settings could not be created'
+    delete:
+      tags:
+        - 'Company Settings'
+      summary: 'Delete company settings by id'
+      operationId: 3733f4e95b12a9b46b849dc2f9683746
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the company settings'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Company settings deleted'
+        '404':
+          description: 'Company settings not found'
+        '500':
+          description: 'Internal server error'
+  /customer:
+    post:
+      tags:
+        - Customer
+      summary: 'Add a new customer'
+      operationId: 448b50e6bad3d11d9d527fe33366a61e
+      requestBody:
+        description: 'Customer data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRequest'
+      responses:
+        '201':
+          description: 'Customer created'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'Company, User or CustomerStatus not found'
+        '409':
+          description: 'Customer already exists'
+        '500':
+          description: 'Internal server error'
+  /customer/all:
+    get:
+      tags:
+        - Customer
+      summary: 'Get all customers'
+      operationId: fcfb5653b2927c3fe119b62807cf78eb
+      responses:
+        '200':
+          description: 'Customers found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomerResponse'
+        '500':
+          description: 'Internal server error'
+  '/customer/{id}':
+    get:
+      tags:
+        - Customer
+      summary: 'Get customer by id'
+      operationId: 0da629f9258ab86ebdb7b908bd3a9a7b
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the customer to retrieve'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Customer found'
+        '404':
+          description: 'Customer not found'
+        '500':
+          description: 'Internal server error'
+    put:
+      tags:
+        - Customer
+      summary: 'Update a customer'
+      operationId: debaf18b1af5d04ee9fe39a6a4bc2676
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the customer to update'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: 'Customer data to update'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRequest'
+      responses:
+        '200':
+          description: 'Customer updated successfully'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'Customer not found'
+        '409':
+          description: 'Customer already exists'
+        '500':
+          description: 'Internal server error'
+    delete:
+      tags:
+        - Customer
+      summary: 'Delete a customer'
+      operationId: 21d795818a35e5bb74096d73661c1b34
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the customer to delete'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Customer deleted successfully'
+        '404':
+          description: 'Customer not found'
+        '500':
+          description: 'Internal server error'
+  '/customer/company/{id}':
+    get:
+      tags:
+        - Customer
+      summary: 'Get customers by company id'
+      operationId: 0729cb6591bfe79b21488a8d746ad726
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the company to retrieve customers from'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Customers found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomerResponse'
+        '404':
+          description: 'Customers not found'
+        '500':
+          description: 'Internal server error'
+  /customer-status:
+    post:
+      tags:
+        - CustomerStatus
+      summary: 'Add a new CustomerStatus'
+      description: 'Add a new CustomerStatus'
+      operationId: d7939a23c2d1913c51e406c3a80e85e5
+      requestBody:
+        description: 'CustomerStatus object that needs to be added'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerStatusRequest'
+      responses:
+        '201':
+          description: 'CustomerStatus created'
+        '400':
+          description: 'Invalid request data'
+        '409':
+          description: 'CustomerStatus already exists'
+        '500':
+          description: 'Internal Server Error'
+  /customer-status/all:
+    get:
+      tags:
+        - CustomerStatus
+      summary: 'Get all CustomerStatuses'
+      description: 'Get all CustomerStatuses'
+      operationId: 4a9af165a4b099a4901c67003c7b1700
+      responses:
+        '200':
+          description: 'CustomerStatuses found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomerStatusResponse'
+        '500':
+          description: 'Internal Server Error'
+  '/customer-status/{id}':
+    get:
+      tags:
+        - CustomerStatus
+      summary: 'Get a CustomerStatus by ID'
+      description: 'Get a CustomerStatus by ID'
+      operationId: b816e7d0a30929f7f3cd3ae642527cba
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the CustomerStatus to get'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'CustomerStatus found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerStatusResponse'
+        '404':
+          description: 'CustomerStatus not found'
+        '500':
+          description: 'Internal Server Error'
+    put:
+      tags:
+        - CustomerStatus
+      summary: 'Update a CustomerStatus by ID'
+      description: 'Update a CustomerStatus by ID'
+      operationId: 890f9c1bbb4f5b62b8d7a37553ede8c9
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the CustomerStatus to update'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: 'CustomerStatus object that needs to be updated'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerStatusRequest'
+      responses:
+        '200':
+          description: 'CustomerStatus updated'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'CustomerStatus not found'
+        '409':
+          description: 'CustomerStatus already exists'
+        '500':
+          description: 'Internal Server Error'
+    delete:
+      tags:
+        - CustomerStatus
+      summary: 'Delete a CustomerStatus by ID'
+      description: 'Delete a CustomerStatus by ID'
+      operationId: f21af2db7418bb0eef27b8540fc18ba7
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the CustomerStatus to delete'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'CustomerStatus deleted'
+        '404':
+          description: 'CustomerStatus not found'
+        '500':
+          description: 'Internal Server Error'
+  /license:
+    post:
+      tags:
+        - License
+      summary: 'Add a new license'
+      description: 'Add a new license to the database'
+      operationId: fbdf95331b7ea6def10cac699b7480ae
+      requestBody:
+        description: 'License data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LicenseRequest'
+      responses:
+        '201':
+          description: 'License created'
+        '400':
+          description: 'Invalid request data'
+        '409':
+          description: 'License already exists'
+        '500':
+          description: 'Internal server error'
+  /license/all:
+    get:
+      tags:
+        - License
+      summary: 'Get all licenses'
+      description: 'Get all licenses from the database'
+      operationId: 1d1adcd6155d54d26d008a29888f2be1
+      responses:
+        '200':
+          description: 'Licenses found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LicenseResponse'
+        '500':
+          description: 'Internal server error'
+  '/license/{id}':
+    get:
+      tags:
+        - License
+      summary: 'Get a license by ID'
+      description: 'Get a license from the database by its ID'
+      operationId: 10daf489e6b81c2e846dfbff6a7e8480
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the license to get'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'License found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LicenseResponse'
+        '404':
+          description: 'License not found'
+        '500':
+          description: 'Internal server error'
+    put:
+      tags:
+        - License
+      summary: 'Update a license by ID'
+      description: 'Update a license from the database by its ID'
+      operationId: b05f98bcae4ed1cf88d69426ee99149a
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the license to update'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: 'License object that needs to be updated'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LicenseRequest'
+      responses:
+        '200':
+          description: 'License updated'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'License not found'
+        '409':
+          description: 'License already exists'
+        '500':
+          description: 'Internal server error'
+    delete:
+      tags:
+        - License
+      summary: 'Delete a license by ID'
+      description: 'Delete a license from the database by its ID'
+      operationId: 23e640b20191b952f9cda55b9b9a58d0
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the license to delete'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'License deleted'
+        '404':
+          description: 'License not found'
+        '500':
+          description: 'Internal server error'
+  /product:
+    post:
+      tags:
+        - Product
+      summary: 'Add a new product'
+      operationId: 14974102cb1a0271f30ebddfd47a7019
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+      responses:
+        '201':
+          description: 'Product created'
+        '400':
+          description: 'Invalid request data'
+        '409':
+          description: 'Product already exists'
+        '500':
+          description: 'Internal server error'
+  /product/all:
+    get:
+      tags:
+        - Product
+      summary: 'Get all products'
+      description: 'Returns all products'
+      operationId: e36b2f7452d4fb7c26217fcf420a8bba
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductResponse'
+        '500':
+          description: 'Internal server error'
+  '/product/{id}':
+    get:
+      tags:
+        - Product
+      summary: 'Get a product by id'
+      description: 'Returns a product by id'
+      operationId: 8203a808a8376a231f2333ccde393c1b
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the product to get'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '404':
+          description: 'Product not found'
+        '500':
+          description: 'Internal server error'
+    put:
+      tags:
+        - Product
+      summary: 'Update a product by id'
+      description: 'Updates a product by id'
+      operationId: e4da03dc46062b7267a98527d7c51276
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the product to update'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: 'Product object that needs to be updated'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+      responses:
+        '200':
+          description: 'Successful operation'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'Product family, vat, company, quantity unit or supplier not found'
+        '500':
+          description: 'Internal server error'
+    delete:
+      tags:
+        - Product
+      summary: 'Delete a product by id'
+      description: 'Deletes a product by id'
+      operationId: 0c8da0dc55202af0005d5528792f6463
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the product to delete'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Successful operation'
+        '404':
+          description: 'Product not found'
+        '500':
+          description: 'Internal server error'
+  /product-family:
+    post:
+      tags:
+        - ProductFamily
+      summary: 'Add a new ProductFamily'
+      description: 'Add a new ProductFamily'
+      operationId: 805e69377c4445a6e50535764dcccad2
+      requestBody:
+        description: 'ProductFamily object that needs to be added'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductFamilyRequest'
+      responses:
+        '201':
+          description: 'ProductFamily created'
+        '400':
+          description: 'Invalid request data'
+        '409':
+          description: 'ProductFamily already exists'
+        '500':
+          description: 'Internal Server Error'
+  /product-family/all:
+    get:
+      tags:
+        - ProductFamily
+      summary: 'Get all ProductFamilies'
+      description: 'Get all ProductFamilies'
+      operationId: 9eacd5aab7f6357d8e11e73b7803dfe1
+      responses:
+        '200':
+          description: 'ProductFamilies found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductFamilyResponse'
+        '500':
+          description: 'Internal Server Error'
+  '/product-family/{id}':
+    get:
+      tags:
+        - ProductFamily
+      summary: 'Get a ProductFamily by ID'
+      description: 'Get a ProductFamily by ID'
+      operationId: ac066a8a31e43a13ee06298191b3b875
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the ProductFamily to get'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'ProductFamily found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductFamilyResponse'
+        '404':
+          description: 'ProductFamily not found'
+        '500':
+          description: 'Internal Server Error'
+    put:
+      tags:
+        - ProductFamily
+      summary: 'Update a ProductFamily by ID'
+      description: 'Update a ProductFamily by ID'
+      operationId: d149cafd78ca79c7ba520177620a0094
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the ProductFamily to update'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: 'ProductFamily object that needs to be updated'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductFamilyRequest'
+      responses:
+        '200':
+          description: 'ProductFamily updated'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'ProductFamily not found'
+        '409':
+          description: 'ProductFamily already exists'
+        '500':
+          description: 'Internal Server Error'
+    delete:
+      tags:
+        - ProductFamily
+      summary: 'Delete a ProductFamily by ID'
+      description: 'Delete a ProductFamily by ID'
+      operationId: efa22d4f0b56c46c54ddee9723c94f87
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the ProductFamily to delete'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'ProductFamily deleted'
+        '404':
+          description: 'ProductFamily not found'
+        '500':
+          description: 'Internal Server Error'
+  /project:
+    post:
+      tags:
+        - Project
+      summary: 'Add a new project'
+      description: 'Add a new project to the database'
+      operationId: 9081b9e2192169a55ec59d2599e718b4
+      requestBody:
+        description: 'Project object that needs to be added to the database'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+      responses:
+        '201':
+          description: 'Project created'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'Company, User, Customer or ProjectStatus not found'
+        '409':
+          description: 'Project already exists'
+        '500':
+          description: 'Internal server error'
+  /project/all:
+    get:
+      tags:
+        - Project
+      summary: 'Get all projects'
+      description: 'Returns an array of all projects'
+      operationId: cf90794d753204172d1d1f69894c5bad
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectResponse'
+        '500':
+          description: 'Internal server error'
+  '/project/company/{id}':
+    get:
+      tags:
+        - Project
+      summary: 'Get all projects by company'
+      description: 'Returns an array of all projects by company'
+      operationId: 12c56853b256d9a79c5e1f23313f87d9
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the company'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectResponse'
+        '500':
+          description: 'Internal server error'
+  '/project/{id}':
+    get:
+      tags:
+        - Project
+      summary: 'Get project by ID'
+      description: 'Returns a project by ID'
+      operationId: b6a995d168f58dc32b01368b17579574
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the project'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        '404':
+          description: 'Project not found'
+        '500':
+          description: 'Internal server error'
+    put:
+      tags:
+        - Project
+      summary: 'Update project by ID'
+      description: 'Updates a project by ID'
+      operationId: ae3d476fe3741ad8b46dc2539855d54a
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the project'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: 'Project object that needs to be updated'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+      responses:
+        '200':
+          description: 'Successful operation'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'Project not found'
+        '409':
+          description: 'Project already exists'
+        '500':
+          description: 'Internal server error'
+    delete:
+      tags:
+        - Project
+      summary: 'Delete project by ID'
+      description: 'Deletes a project by ID'
+      operationId: 30527729ad8b7a7eb62c5685943cdc30
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the project'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Successful operation'
+        '404':
+          description: 'Project not found'
+        '500':
+          description: 'Internal server error'
+  /project-status:
+    post:
+      tags:
+        - ProjectStatus
+      summary: 'Add a new ProjectStatus'
+      description: 'Add a new ProjectStatus'
+      operationId: 0fefaf16e5acb18be8768e515d6a8a1f
+      requestBody:
+        description: 'ProjectStatus object that needs to be added'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectStatusRequest'
+      responses:
+        '201':
+          description: 'ProjectStatus created'
+        '400':
+          description: 'Invalid request data'
+        '409':
+          description: 'ProjectStatus already exists'
+        '500':
+          description: 'Internal Server Error'
+  /project-status/all:
+    get:
+      tags:
+        - ProjectStatus
+      summary: 'Get all ProjectStatuses'
+      description: 'Get all ProjectStatuses'
+      operationId: 1eedc4528a3f9a2f7b748a723e49eb08
+      responses:
+        '200':
+          description: 'ProjectStatuses found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectStatusResponse'
+        '500':
+          description: 'Internal Server Error'
+  '/project-status/{id}':
+    get:
+      tags:
+        - ProjectStatus
+      summary: 'Get a ProjectStatus by ID'
+      description: 'Get a ProjectStatus by ID'
+      operationId: 715c693baa7822fc4cd8026476b98fe8
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the ProjectStatus to get'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'ProjectStatus found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectStatusResponse'
+        '404':
+          description: 'ProjectStatus not found'
+        '500':
+          description: 'Internal Server Error'
+    put:
+      tags:
+        - ProjectStatus
+      summary: 'Update a ProjectStatus by ID'
+      description: 'Update a ProjectStatus by ID'
+      operationId: dcfdc5fc41489e0ed11ce0432359ed5f
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the ProjectStatus to update'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: 'ProjectStatus object that needs to be updated'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectStatusRequest'
+      responses:
+        '200':
+          description: 'ProjectStatus updated'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'ProjectStatus not found'
+        '409':
+          description: 'ProjectStatus already exists'
+        '500':
+          description: 'Internal Server Error'
+    delete:
+      tags:
+        - ProjectStatus
+      summary: 'Delete a ProjectStatus by ID'
+      description: 'Delete a ProjectStatus by ID'
+      operationId: b82cc4646d77534aadd935052e28e065
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the ProjectStatus to delete'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'ProjectStatus deleted'
+  /quantity-unit:
+    post:
+      tags:
+        - QuantityUnit
+      summary: 'Add a new QuantityUnit'
+      description: 'Add a new QuantityUnit'
+      operationId: 2975f8d0997293430fc84dbcccc66efb
+      requestBody:
+        description: 'QuantityUnit data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuantityUnitRequest'
+      responses:
+        '201':
+          description: 'QuantityUnit created'
+        '400':
+          description: 'Invalid request data'
+        '409':
+          description: 'QuantityUnit already exists'
+        '500':
+          description: 'Internal server error'
+  /quantity-unit/all:
+    get:
+      tags:
+        - QuantityUnit
+      summary: 'Get all QuantityUnits'
+      description: 'Get all QuantityUnits'
+      operationId: 03ffc7dd0906650b6b616a3aa4ce45b3
+      responses:
+        '200':
+          description: 'QuantityUnits found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QuantityUnitResponse'
+        '500':
+          description: 'Internal server error'
+  '/quantity-unit/{id}':
+    get:
+      tags:
+        - QuantityUnit
+      summary: 'Get a QuantityUnit by ID'
+      description: 'Get a QuantityUnit by ID'
+      operationId: 6ab6f16b25fc7a273305ebaf84e4ac25
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the QuantityUnit to get'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'QuantityUnit found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuantityUnitResponse'
+        '404':
+          description: 'QuantityUnit not found'
+        '500':
+          description: 'Internal server error'
+    put:
+      tags:
+        - QuantityUnit
+      summary: 'Update a QuantityUnit by ID'
+      description: 'Update a QuantityUnit by ID'
+      operationId: 69719808ae317109b86fa647d2c69eb8
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the QuantityUnit to update'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: 'QuantityUnit object that needs to be updated'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuantityUnitRequest'
+      responses:
+        '200':
+          description: 'QuantityUnit updated'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'QuantityUnit not found'
+        '409':
+          description: 'QuantityUnit already exists'
+        '500':
+          description: 'Internal server error'
+    delete:
+      tags:
+        - QuantityUnit
+      summary: 'Delete a QuantityUnit by ID'
+      description: 'Delete a QuantityUnit by ID'
+      operationId: dbac2b47323338c213b64af20978aa99
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the QuantityUnit to delete'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'QuantityUnit deleted'
+        '404':
+          description: 'QuantityUnit not found'
+        '500':
+          description: 'Internal server error'
+  /role:
+    post:
+      tags:
+        - Role
+      summary: 'Add a new role'
+      description: 'Add a new role to the database'
+      operationId: a12632e54face2d571f9ee5c2509d838
+      requestBody:
+        description: 'Role object that needs to be added to the database'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleRequest'
+      responses:
+        '201':
+          description: 'Role created'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message: { type: string, example: 'Role created' }
+                type: object
+        '400':
+          description: 'Invalid request data'
+        '409':
+          description: 'Role already exists'
+        '500':
+          description: 'Internal server error'
+  /role/all:
+    get:
+      tags:
+        - Role
+      summary: 'Get all roles'
+      description: 'Get all roles from the database'
+      operationId: b0a28a9dffe41859400833803e3b0e9e
+      responses:
+        '200':
+          description: 'Roles found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoleResponse'
+        '500':
+          description: 'Internal server error'
+  '/role/{id}':
+    get:
+      tags:
+        - Role
+      summary: 'Get a role by id'
+      description: 'Get a role from the database by its id'
+      operationId: e028f93d0e66781d8b722dfd20be1f50
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the role to get'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Role found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleResponse'
+        '404':
+          description: 'Role not found'
+        '500':
+          description: 'Internal server error'
+    put:
+      tags:
+        - Role
+      summary: 'Update a role by id'
+      description: 'Update a role from the database by its id'
+      operationId: 0d44461ab465956903e68c666f7abd5f
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the role to update'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: 'Role object that needs to be updated'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleRequest'
+      responses:
+        '200':
+          description: 'Role updated'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'Role not found'
+        '409':
+          description: 'Role already exists'
+        '500':
+          description: 'Internal server error'
+    delete:
+      tags:
+        - Role
+      summary: 'Delete a role by id'
+      description: 'Delete a role from the database by its id'
+      operationId: 775bb6bd3f605535dc46cb1bb7437d29
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the role to delete'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Role deleted'
+        '404':
+          description: 'Role not found'
+        '500':
+          description: 'Internal server error'
+  /supplier:
+    post:
+      tags:
+        - Supplier
+      summary: 'Add a new supplier'
+      description: 'Add a new supplier to the database'
+      operationId: a612f649a5a9775e431de76419de3f86
+      requestBody:
+        description: 'Supplier object that needs to be added to the database'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupplierRequest'
+      responses:
+        '201':
+          description: 'Supplier created'
+        '400':
+          description: 'Invalid request data'
+        '409':
+          description: 'Supplier already exists'
+        '500':
+          description: 'Internal server error'
+  /supplier/all:
+    get:
+      tags:
+        - Supplier
+      summary: 'Get all suppliers'
+      description: 'Returns all suppliers from the database'
+      operationId: 927efbc204f08cfe5a118dc98b5a4ce9
+      responses:
+        '200':
+          description: 'Suppliers found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SupplierResponse'
+        '500':
+          description: 'Internal server error'
+  '/supplier/{id}':
+    get:
+      tags:
+        - Supplier
+      summary: 'Get a supplier by ID'
+      description: 'Returns a supplier from the database by its ID'
+      operationId: 8e4159f22f3a5b1122c3001e09aa890b
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the supplier to retrieve'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Supplier found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupplierResponse'
+        '404':
+          description: 'Supplier not found'
+        '500':
+          description: 'Internal server error'
+    put:
+      tags:
+        - Supplier
+      summary: 'Update a supplier by ID'
+      description: 'Updates a supplier from the database by its ID'
+      operationId: 4804eae219e28b7252147706a9e7ebff
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the supplier to update'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: 'Supplier object that needs to be updated'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupplierRequest'
+      responses:
+        '200':
+          description: 'Supplier updated'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'Supplier not found'
+        '409':
+          description: 'Supplier already exists'
+        '500':
+          description: 'Internal server error'
+    delete:
+      tags:
+        - Supplier
+      summary: 'Delete a supplier by ID'
+      description: 'Deletes a supplier from the database by its ID'
+      operationId: 723d190f925fd16fcb075e69e34ae66a
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the supplier to delete'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Supplier deleted'
+        '404':
+          description: 'Supplier not found'
+        '500':
+          description: 'Internal server error'
+  /task:
+    post:
+      tags:
+        - Task
+      summary: 'Add a new task'
+      description: 'Add a new task to the database'
+      operationId: 7f1ce22b98f5151d7ca2602801db555e
+      requestBody:
+        description: 'Task object that needs to be added to the database'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskRequest'
+      responses:
+        '201':
+          description: 'Task created'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'User, Project or TaskStatus not found'
+        '409':
+          description: 'Task already exists'
+        '500':
+          description: 'Internal server error'
+  /task/all:
+    get:
+      tags:
+        - Task
+      summary: 'Get all tasks'
+      description: 'Returns all tasks'
+      operationId: d85a7cb58dd5f645ce501b6963fb9a32
+      responses:
+        '200':
+          description: 'Tasks found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskResponse'
+        '500':
+          description: 'Internal server error'
+  '/task/user/{id}':
+    get:
+      tags:
+        - Task
+      summary: 'Get all tasks by user'
+      description: 'Returns all tasks assigned to a user'
+      operationId: 26b84f9fd60a949c9d2e60cb3a178f24
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'User ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Tasks found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskResponse'
+        '404':
+          description: 'User not found'
+        '500':
+          description: 'Internal server error'
+  '/task/project/{id}':
+    get:
+      tags:
+        - Task
+      summary: 'Get all tasks by project'
+      description: 'Returns all tasks assigned to a project'
+      operationId: 41dbadc7c0530c7542fd1f8a641466fe
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Project ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Tasks found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskResponse'
+        '500':
+          description: 'Internal server error'
+  '/task/{id}':
+    get:
+      tags:
+        - Task
+      summary: 'Get task by id'
+      description: 'Returns a task by id'
+      operationId: 82adb562defb983aa7f09a7b1ea8224a
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Task ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Task found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '404':
+          description: 'Task not found'
+        '500':
+          description: 'Internal server error'
+    put:
+      tags:
+        - Task
+      summary: 'Update a task by ID'
+      description: 'Update a task by ID'
+      operationId: bd75423333b743d05991e8a34133a7d5
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the task to update'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: 'Task object that needs to be updated'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskRequest'
+      responses:
+        '200':
+          description: 'Task updated'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'Task not found'
+        '409':
+          description: 'Task already exists'
+        '500':
+          description: 'Internal server error'
+    delete:
+      tags:
+        - Task
+      summary: 'Deletes a task by ID'
+      description: 'Deletes a task by ID'
+      operationId: ca22588758e816deca16255f28fd4bef
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the task to delete'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Task deleted'
+        '404':
+          description: 'Task not found'
+        '500':
+          description: 'Internal server error'
+  /task-status:
+    post:
+      tags:
+        - TaskStatus
+      summary: 'Add a new TaskStatus'
+      description: 'Add a new TaskStatus'
+      operationId: ef8c8f616d2bcd23a6c49dd795156a1f
+      requestBody:
+        description: 'TaskStatus object that needs to be added'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskStatusRequest'
+      responses:
+        '201':
+          description: 'TaskStatus created'
+        '400':
+          description: 'Invalid request data'
+        '409':
+          description: 'TaskStatus already exists'
+        '500':
+          description: 'Internal server error'
+  /task-status/all:
+    get:
+      tags:
+        - TaskStatus
+      summary: 'Get all TaskStatuses'
+      description: 'Get all TaskStatuses'
+      operationId: c04d0b1f407a615d95cc688ea4dd2807
+      responses:
+        '200':
+          description: 'TaskStatuses found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskStatusResponse'
+        '500':
+          description: 'Internal server error'
+  '/task-status/{id}':
+    get:
+      tags:
+        - TaskStatus
+      summary: 'Get TaskStatus by ID'
+      description: 'Get TaskStatus by ID'
+      operationId: 1d61214bdd7ad1723d4ddf345f35431f
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the TaskStatus to get'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'TaskStatus found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStatusResponse'
+        '404':
+          description: 'TaskStatus not found'
+        '500':
+          description: 'Internal server error'
+    put:
+      tags:
+        - TaskStatus
+      summary: 'Update TaskStatus by ID'
+      description: 'Update TaskStatus by ID'
+      operationId: 05004a72b708f5e83d27e6f9b71c2132
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the TaskStatus to update'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: 'TaskStatus object that needs to be updated'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskStatusRequest'
+      responses:
+        '200':
+          description: 'TaskStatus updated'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'TaskStatus not found'
+        '409':
+          description: 'TaskStatus already exists'
+        '500':
+          description: 'Internal server error'
+    delete:
+      tags:
+        - TaskStatus
+      summary: 'Delete TaskStatus by ID'
+      description: 'Delete TaskStatus by ID'
+      operationId: 4a5637ac882bd0ced2c453311ca831df
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the TaskStatus to delete'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'TaskStatus deleted'
+        '404':
+          description: 'TaskStatus not found'
+        '500':
+          description: 'Internal server error'
+  /user:
+    post:
+      tags:
+        - User
+      summary: 'Add a new user'
+      operationId: 171791401445e886aa842a5188cea2cb
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '201':
+          description: 'User created'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'Role or company not found'
+        '409':
+          description: 'User already exists'
+        '500':
+          description: 'Internal server error'
+  /user/all:
+    get:
+      tags:
+        - User
+      summary: 'Get all users'
+      description: 'Returns all users'
+      operationId: 6350a03c15157e21a3d9120bb7345f36
+      responses:
+        '200':
+          description: 'Users found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserResponse'
+        '404':
+          description: 'No users found'
+        '500':
+          description: 'Internal server error'
+  '/user/{id}':
+    get:
+      tags:
+        - User
+      summary: 'Get user by ID'
+      description: 'Returns a user by ID'
+      operationId: 4dee8058c89ba3e2cb8927db556a98fb
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the user to return'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'User found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '404':
+          description: 'User not found'
+        '500':
+          description: 'Internal server error'
+    put:
+      tags:
+        - User
+      summary: 'Update user by ID'
+      description: 'Updates a user by ID'
+      operationId: cad045afb5cdb72d1f5a003c27839028
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the user to update'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: 'User data to update'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: 'User updated'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'User not found'
+        '409':
+          description: 'User already exists'
+        '500':
+          description: 'Internal server error'
+    delete:
+      tags:
+        - User
+      summary: 'Delete user by ID'
+      description: 'Deletes a user by ID'
+      operationId: fb793005d8987f75bbfc40819b91e9f3
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the user to delete'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'User deleted'
+        '404':
+          description: 'User not found'
+        '500':
+          description: 'Internal server error'
+  /user/login:
+    post:
+      tags:
+        - User
+      summary: 'Login user'
+      description: 'Logs in a user'
+      operationId: f9ef097253f479dabe7bc8ff8d33f0fe
+      requestBody:
+        description: 'User credentials'
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: john.doe@gmail.com
+                password:
+                  type: string
+                  format: password
+                  example: password
+              type: object
+      responses:
+        '200':
+          description: 'User logged in'
+        '401':
+          description: 'Incorrect password or company is not active'
+        '404':
+          description: 'User not found'
+        '500':
+          description: 'Internal server error'
+  /user-settings:
+    post:
+      tags:
+        - 'User Settings'
+      summary: 'Add user settings'
+      description: 'Add user settings'
+      operationId: d511abe11ef9e266a8418d13f56f590c
+      requestBody:
+        description: 'User settings object that needs to be added'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSettingsRequest'
+      responses:
+        '201':
+          description: 'User settings created successfully'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'User not found'
+        '500':
+          description: 'Internal server error'
+  '/user-settings/{id}':
+    get:
+      tags:
+        - 'User Settings'
+      summary: 'Get user settings by id'
+      description: 'Get user settings by id'
+      operationId: c0f65a513b8bad80a542881544ced283
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of user settings to return'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'User settings found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSettingsResponse'
+        '404':
+          description: 'User settings not found'
+        '500':
+          description: 'Internal server error'
+    put:
+      tags:
+        - 'User Settings'
+      summary: 'Update user settings by id'
+      description: 'Update user settings by id'
+      operationId: d65a245c3767f3d8836378ef21d2da73
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of user settings to update'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: 'User settings object that needs to be updated'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSettingsRequest'
+      responses:
+        '200':
+          description: 'User settings updated successfully'
+        '400':
+          description: 'Invalid request data or user settings already exist'
+        '404':
+          description: 'User settings not found'
+        '500':
+          description: 'Internal server error'
+    delete:
+      tags:
+        - 'User Settings'
+      summary: 'Delete user settings by id'
+      description: 'Delete user settings by id'
+      operationId: a58226138a116773cd838555f388dc94
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of user settings to delete'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'User settings deleted successfully'
+        '404':
+          description: 'User settings not found'
+        '500':
+          description: 'Internal server error'
+  /vat:
+    post:
+      tags:
+        - Vat
+      summary: 'Add a new vat'
+      description: 'Add a new vat'
+      operationId: 8e90b5533de030fe1a31e1324e5ebad6
+      requestBody:
+        description: 'Vat object that needs to be added'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VatRequest'
+      responses:
+        '201':
+          description: 'Vat created'
+        '400':
+          description: 'Invalid request data'
+        '409':
+          description: 'Vat already exists'
+        '500':
+          description: 'Internal server error'
+  /vat/all:
+    get:
+      tags:
+        - Vat
+      summary: 'Get all vats'
+      description: 'Get all vats'
+      operationId: 57c3582ed1e4dcc7ce0bf2edd61f89bd
+      responses:
+        '200':
+          description: 'Vats found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VatResponse'
+        '500':
+          description: 'Internal server error'
+  '/vat/{id}':
+    get:
+      tags:
+        - Vat
+      summary: 'Get a vat by id'
+      description: 'Get a vat by id'
+      operationId: 8ab6971d070d53afeb71452fd517ceb7
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the vat to get'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Vat found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VatResponse'
+        '404':
+          description: 'Vat not found'
+        '500':
+          description: 'Internal server error'
+    put:
+      tags:
+        - Vat
+      summary: 'Update a vat by id'
+      description: 'Update a vat by id'
+      operationId: b30176989f6190163adce04fc9fc180c
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the vat to update'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: 'Vat object that needs to be updated'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VatRequest'
+      responses:
+        '200':
+          description: 'Vat updated'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'Vat not found'
+        '409':
+          description: 'Vat already exists'
+        '500':
+          description: 'Internal server error'
+    delete:
+      tags:
+        - Vat
+      summary: 'Delete a vat by id'
+      description: 'Delete a vat by id'
+      operationId: 8b7d14cfb0ba93d9dd8f52bc32e08d6c
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the vat to delete'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Vat deleted'
+        '404':
+          description: 'Vat not found'
+        '500':
+          description: 'Internal server error'
+components:
+  schemas:
+    CompanyRequest:
+      required:
+        - name
+        - address
+        - city
+        - country
+        - zipCode
+        - phone
+        - slogan
+        - logoPath
+        - license
+        - language
+      properties:
+        name:
+          type: string
+          example: 'Cube 3'
+        address:
+          type: string
+          example: '1, rue de la paix'
+        city:
+          type: string
+          example: Paris
+        country:
+          type: string
+          example: France
+        zipCode:
+          type: string
+          example: '75000'
+        phone:
+          type: string
+          example: '0123456789'
+        slogan:
+          type: string
+          example: 'The best company ever'
+        logoPath:
+          type: string
+          example: cube3.png
+        license:
+          type: integer
+          example: '1'
+        language:
+          type: string
+          example: fr
+      type: object
+    CompanyResponse:
+      properties:
+        id:
+          type: integer
+          example: '1'
+        name:
+          type: string
+          example: 'Cube 3'
+        address:
+          type: string
+          example: '1, rue de la paix'
+        city:
+          type: string
+          example: Paris
+        country:
+          type: string
+          example: France
+        zipCode:
+          type: string
+          example: '75000'
+        phone:
+          type: string
+          example: '0123456789'
+        slogan:
+          type: string
+          example: 'The best company ever'
+        logoPath:
+          type: string
+          example: cube3.png
+        license:
+          $ref: '#/components/schemas/LicenseResponse'
+        language:
+          type: string
+          example: fr
+        licenseExpirationDate:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+      type: object
+    CompanySettingsRequest:
+      required:
+        - primaryColor
+        - secondaryColor
+        - tertiaryColor
+        - company
+      properties:
+        primaryColor:
+          type: string
+          example: '#000000'
+        secondaryColor:
+          type: string
+          example: '#000000'
+        tertiaryColor:
+          type: string
+          example: '#000000'
+        company:
+          type: integer
+          example: 1
+      type: object
+    CompanySettingsResponse:
+      properties:
+        id:
+          type: integer
+        primaryColor:
+          type: string
+          example: '#000000'
+        secondaryColor:
+          type: string
+          example: '#000000'
+        tertiaryColor:
+          type: string
+          example: '#000000'
+        company:
+          $ref: '#/components/schemas/CompanyResponse'
+        created_at:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+      type: object
+    CustomerRequest:
+      required:
+        - firstName
+        - lastName
+        - email
+        - address
+        - city
+        - country
+        - zipCode
+        - phone
+        - company
+        - user
+        - status
+      properties:
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+        email:
+          type: string
+          format: email
+          example: john-doe@gmail.com
+        address:
+          type: string
+          example: '1, rue de la Paix'
+        city:
+          type: string
+          example: Paris
+        country:
+          type: string
+          example: France
+        zipCode:
+          type: string
+          example: '75000'
+        phone:
+          type: string
+          example: '0123456789'
+        company:
+          type: integer
+          example: '1'
+        user:
+          type: integer
+          example: '1'
+        status:
+          type: integer
+          example: '1'
+      type: object
+    CustomerResponse:
+      properties:
+        id:
+          type: integer
+          example: '1'
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+        email:
+          type: string
+          format: email
+          example: john-doe@gmail.com
+        address:
+          type: string
+          example: '1, rue de la Paix'
+        city:
+          type: string
+          example: Paris
+        country:
+          type: string
+          example: France
+        zipCode:
+          type: string
+          example: '75000'
+        phone:
+          type: string
+          example: '0123456789'
+        company:
+          $ref: '#/components/schemas/CompanyResponse'
+        user:
+          $ref: '#/components/schemas/UserResponse'
+        status:
+          $ref: '#/components/schemas/CustomerStatusResponse'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+      type: object
+    CustomerStatusRequest:
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+          example: 'CustomerStatus 1'
+        description:
+          type: string
+          example: 'This is the first customerStatus'
+      type: object
+    CustomerStatusResponse:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'CustomerStatus 1'
+        description:
+          type: string
+          example: 'This is the first customerStatus'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+      type: object
+    LicenseRequest:
+      required:
+        - name
+        - description
+        - price
+        - maxUsers
+        - validityPeriod
+      properties:
+        name:
+          type: string
+          example: basic
+        description:
+          type: string
+          example: 'basic license for 1 user'
+        price:
+          type: integer
+          example: 100
+        maxUsers:
+          type: integer
+          example: 1
+        validityPeriod:
+          type: integer
+          example: 1
+      type: object
+    LicenseResponse:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: basic
+        description:
+          type: string
+          example: 'basic license for 1 user'
+        price:
+          type: integer
+          example: 100
+        maxUsers:
+          type: integer
+          example: 1
+        validityPeriod:
+          type: integer
+          example: 1
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-09-30 12:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-09-30 12:00:00'
+      type: object
+    ProductRequest:
+      required:
+        - name
+        - description
+        - buyPrice
+        - sellPrice
+        - quantity
+        - discount
+        - isDiscount
+        - productFamily
+        - vat
+        - company
+        - quantityUnit
+        - supplier
+      properties:
+        name:
+          type: string
+          example: Jambon
+        description:
+          type: string
+          example: 'Jambon de Paris'
+        buyPrice:
+          type: integer
+          example: 10
+        sellPrice:
+          type: integer
+          example: 15
+        quantity:
+          type: integer
+          example: 10
+        discount:
+          type: integer
+          example: 0
+        isDiscount:
+          type: boolean
+          example: false
+        productFamily:
+          type: integer
+          example: 1
+        vat:
+          type: integer
+          example: 1
+        company:
+          type: integer
+          example: 1
+        quantityUnit:
+          type: integer
+          example: 1
+        supplier:
+          type: integer
+          example: 1
+      type: object
+    ProductResponse:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Jambon
+        description:
+          type: string
+          example: 'Jambon de Paris'
+        buyPrice:
+          type: integer
+          example: 10
+        sellPrice:
+          type: integer
+          example: 15
+        quantity:
+          type: integer
+          example: 10
+        discount:
+          type: integer
+          example: 0
+        isDiscount:
+          type: boolean
+          example: false
+        productFamily:
+          $ref: '#/components/schemas/ProductFamilyResponse'
+        vat:
+          $ref: '#/components/schemas/VatResponse'
+        company:
+          $ref: '#/components/schemas/CompanyResponse'
+        quantityUnit:
+          $ref: '#/components/schemas/QuantityUnitResponse'
+        supplier:
+          type: integer
+          example: 1
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-03-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-03-01 00:00:00'
+      type: object
+    ProductFamilyRequest:
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+          example: 'Salle de Bain'
+        description:
+          type: string
+          example: 'Catégorie regroupant tous les produits pour la salle de bain'
+      type: object
+    ProductFamilyResponse:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'Salle de Bain'
+        description:
+          type: string
+          example: 'Catégorie regroupant tous les produits pour la salle de bain'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-03-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-03-01 00:00:00'
+      type: object
+    ProjectRequest:
+      required:
+        - name
+        - description
+        - company
+        - creator
+        - customer
+        - projectStatus
+      properties:
+        name:
+          type: string
+          example: 'Project 1'
+        description:
+          type: string
+          example: 'This is the first project'
+        company:
+          type: integer
+          example: '1'
+        creator:
+          type: integer
+          example: '1'
+        customer:
+          type: integer
+          example: '1'
+        projectStatus:
+          type: integer
+          example: '1'
+      type: object
+    ProjectResponse:
+      properties:
+        id:
+          type: integer
+          example: '1'
+        name:
+          type: string
+          example: 'Project 1'
+        description:
+          type: string
+          example: 'This is the first project'
+        company:
+          $ref: '#/components/schemas/CompanyResponse'
+        creator:
+          $ref: '#/components/schemas/UserResponse'
+        customer:
+          $ref: '#/components/schemas/CustomerResponse'
+        projectStatus:
+          type: integer
+          example: '1'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+      type: object
+    ProjectStatusRequest:
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+          example: 'ProjectStatus 1'
+        description:
+          type: string
+          example: 'This is the first projectStatus'
+      type: object
+    ProjectStatusResponse:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'ProjectStatus 1'
+        description:
+          type: string
+          example: 'This is the first projectStatus'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+      type: object
+    QuantityUnitRequest:
+      required:
+        - name
+        - unit
+        - description
+      properties:
+        name:
+          type: string
+          example: Litre
+        unit:
+          type: string
+          example: l
+        description:
+          type: string
+          example: Litre
+      type: object
+    QuantityUnitResponse:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Litre
+        unit:
+          type: string
+          example: l
+        description:
+          type: string
+          example: Litre
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-03-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-03-01 00:00:00'
+      type: object
+    RoleRequest:
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+          example: Admin
+        description:
+          type: string
+          example: Administrator
+      type: object
+    RoleResponse:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Admin
+        description:
+          type: string
+          example: Administrator
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+      type: object
+    SupplierRequest:
+      required:
+        - name
+        - firstName
+        - lastName
+        - email
+        - address
+        - city
+        - country
+        - zipCode
+        - phone
+        - company
+      properties:
+        name:
+          type: string
+          example: Aubade
+        firstName:
+          type: string
+          example: Jean
+        lastName:
+          type: string
+          example: Dupont
+        email:
+          type: string
+          format: email
+          example: jean.dupont@aubade
+        address:
+          type: string
+          example: '1 rue de la lingerie'
+        city:
+          type: string
+          example: Paris
+        country:
+          type: string
+          example: France
+        zipCode:
+          type: string
+          example: '75000'
+        phone:
+          type: string
+          example: '0123456789'
+        company:
+          type: integer
+          example: 1
+      type: object
+    SupplierResponse:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Aubade
+        firstName:
+          type: string
+          example: Jean
+        lastName:
+          type: string
+          example: Dupont
+        email:
+          type: string
+          format: email
+          example: jean.dupont@aubade
+        address:
+          type: string
+          example: '1 rue de la lingerie'
+        city:
+          type: string
+          example: Paris
+        country:
+          type: string
+          example: France
+        zipCode:
+          type: string
+          example: '75000'
+        phone:
+          type: string
+          example: '0123456789'
+        company:
+          $ref: '#/components/schemas/CompanyResponse'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-03-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-03-01 00:00:00'
+      type: object
+    TaskRequest:
+      required:
+        - title
+        - description
+        - location
+        - dueDate
+        - project
+        - user
+        - taskStatus
+      properties:
+        title:
+          type: string
+          example: 'Task 1'
+        description:
+          type: string
+          example: 'This is the first task'
+        location:
+          type: string
+          example: 'Location 1'
+        dueDate:
+          type: string
+          example: '2021-01-01'
+        project:
+          type: integer
+          example: 1
+        user:
+          type: integer
+          example: 1
+        taskStatus:
+          type: integer
+          example: 1
+      type: object
+    TaskResponse:
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: 'Task 1'
+        description:
+          type: string
+          example: 'This is the first task'
+        location:
+          type: string
+          example: 'Location 1'
+        dueDate:
+          type: string
+          example: '2021-01-01'
+        project:
+          $ref: '#/components/schemas/ProjectResponse'
+        user:
+          $ref: '#/components/schemas/UserResponse'
+        taskStatus:
+          $ref: '#/components/schemas/TaskStatusResponse'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+      type: object
+    TaskStatusRequest:
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+          example: 'TaskStatus 1'
+        description:
+          type: string
+          example: 'This is the first taskStatus'
+      type: object
+    TaskStatusResponse:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'TaskStatus 1'
+        description:
+          type: string
+          example: 'This is the first taskStatus'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+      type: object
+    UserRequest:
+      required:
+        - firstName
+        - lastName
+        - email
+        - password
+        - job
+        - phone
+        - role
+        - company
+      properties:
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+        email:
+          type: string
+          example: john.doe@gmail.com
+        password:
+          type: string
+          format: password
+          example: password
+        job:
+          type: string
+          example: Developer
+        phone:
+          type: string
+          example: '0123456789'
+        role:
+          type: integer
+          example: '1'
+        company:
+          type: integer
+          example: '1'
+      type: object
+    UserResponse:
+      properties:
+        id:
+          type: integer
+          example: '1'
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+        email:
+          type: string
+          example: john.doe@gmail.com
+        job:
+          type: string
+          example: Developer
+        phone:
+          type: string
+          example: '0123456789'
+        role:
+          $ref: '#/components/schemas/RoleResponse'
+        company:
+          $ref: '#/components/schemas/CompanyResponse'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-03-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-03-01 00:00:00'
+      type: object
+    UserSettingsRequest:
+      required:
+        - theme
+        - language
+        - user-id
+      properties:
+        theme:
+          type: string
+          example: dark
+        language:
+          type: string
+          example: en
+        user-id:
+          type: integer
+          example: '1'
+      type: object
+    UserSettingsResponse:
+      required:
+        - id
+        - theme
+        - language
+        - user-id
+      properties:
+        id:
+          type: integer
+          example: '1'
+        theme:
+          type: string
+          example: dark
+        language:
+          type: string
+          example: en
+        user:
+          $ref: '#/components/schemas/UserResponse'
+        created-at:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updated-at:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+      type: object
+    VatRequest:
+      required:
+        - name
+        - rate
+        - description
+      properties:
+        name:
+          type: string
+          example: 20%
+        rate:
+          type: integer
+          example: 20
+        description:
+          type: string
+          example: '20% VAT'
+      type: object
+    VatResponse:
+      required:
+        - id
+        - name
+        - rate
+        - description
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 20%
+        rate:
+          type: integer
+          example: 20
+        description:
+          type: string
+          example: '20% VAT'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+      type: object
+  responses:
+    '404':
+      description: 'ProjectStatus not found'
+    '500':
+      description: 'Internal Server Error'
