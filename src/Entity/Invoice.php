@@ -36,8 +36,7 @@ class Invoice implements EntityInterface
 
 
     // many to many product
-    #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'invoices')]
-    #[ORM\JoinTable(name: 'invoice_product')]
+    #[ORM\OneToMany(mappedBy: 'invoice', targetEntity: InvoiceProduct::class)]
     private Collection $invoiceProducts;
 
     public function __construct(string $name, string $description, Project $project)
@@ -79,9 +78,9 @@ class Invoice implements EntityInterface
     }
 
     #[ORM\PrePersist]
-    public function setCreatedAt(DateTime $createdAt): void
+    public function setCreatedAt(): void
     {
-        $this->createdAt = $createdAt;
+        $this->createdAt = new DateTime();
     }
 
     public function getUpdatedAt(): DateTime|null
@@ -90,9 +89,9 @@ class Invoice implements EntityInterface
     }
 
     #[ORM\PreUpdate]
-    public function setUpdatedAt(DateTime|null $updatedAt): void
+    public function setUpdatedAt(): void
     {
-        $this->updatedAt = $updatedAt;
+        $this->updatedAt = new DateTime();
     }
 
     public function getProject(): Project
@@ -110,12 +109,14 @@ class Invoice implements EntityInterface
         return $this->invoiceProducts;
     }
 
-    public function addInvoiceProduct(Product $product): void
+    //add product to estimate
+    public function addInvoiceProduct(InvoiceProduct $product): void
     {
         $this->invoiceProducts->add($product);
     }
 
-    public function removeInvoiceProduct(Product $product): void
+    //remove product from estimate
+    public function removeInvoiceProduct(InvoiceProduct $product): void
     {
         $this->invoiceProducts->removeElement($product);
     }

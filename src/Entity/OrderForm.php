@@ -34,9 +34,9 @@ class OrderForm implements EntityInterface
     private Project $project;
 
     // many to many product
-    #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'orderForms')]
-    #[ORM\JoinTable(name: 'order_form_product')]
+    #[ORM\OneToMany(mappedBy: 'orderForm', targetEntity: OrderFormProduct::class)]
     private Collection $orderFormProducts;
+
 
     public function __construct(string $name, string $description, Project $project)
     {
@@ -77,9 +77,9 @@ class OrderForm implements EntityInterface
     }
 
     #[ORM\PrePersist]
-    public function setCreatedAt(DateTime $createdAt): void
+    public function setCreatedAt(): void
     {
-        $this->createdAt = $createdAt;
+        $this->createdAt = new DateTime();
     }
 
     public function getUpdatedAt(): DateTime|null
@@ -88,10 +88,11 @@ class OrderForm implements EntityInterface
     }
 
     #[ORM\PreUpdate]
-    public function setUpdatedAt(DateTime $updatedAt): void
+    public function setUpdatedAt(): void
     {
-        $this->updatedAt = $updatedAt;
+        $this->updatedAt = new DateTime();
     }
+
 
     public function getProject(): Project
     {
@@ -108,14 +109,14 @@ class OrderForm implements EntityInterface
         return $this->orderFormProducts;
     }
 
-    //add product
-    public function addOrderFormProduct(Product $product): void
+    //add product to orderForm
+    public function addOrderFormProduct(OrderFormProduct $product): void
     {
         $this->orderFormProducts->add($product);
     }
 
-    //remove product
-    public function removeOrderFormProduct(Product $product): void
+    //remove product from orderForm
+    public function removeOrderFormProduct(OrderFormProduct $product): void
     {
         $this->orderFormProducts->removeElement($product);
     }

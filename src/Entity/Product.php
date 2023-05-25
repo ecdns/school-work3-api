@@ -68,13 +68,11 @@ class Product implements EntityInterface
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: EstimateProduct::class)]
     private Collection $estimateProduct;
 
-    //Many to Many for invoice product
-    #[ORM\ManyToMany(targetEntity: Invoice::class, mappedBy: 'invoiceProducts')]
-    private Collection $invoices;
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: InvoiceProduct::class)]
+    private Collection $invoiceProduct;
 
-    //Many to Many for order product
-    #[ORM\ManyToMany(targetEntity: OrderForm::class, mappedBy: 'orderFormProducts')]
-    private Collection $orderForms;
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: OrderFormProduct::class)]
+    private Collection $orderFormProduct;
 
 
     public function __construct(

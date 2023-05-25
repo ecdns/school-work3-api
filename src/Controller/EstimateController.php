@@ -288,6 +288,50 @@ class EstimateController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Product added to Estimate');
     }
 
+    //remove Prducts From Estimate
+    public function removeProductsFromEstimate(int $estimateId, int $productId): void
+    {
+        // get the request body
+        $requestBody = file_get_contents('php://input');
+
+        // decode the json
+        $requestBody = json_decode($requestBody, true);
+
+        // get the estimate by id
+        try {
+            $estimate = $this->dao->getOneBy(Estimate::class, ['id' => $estimateId]);
+
+            $product = $this->dao->getOneBy(Product::class, ['id' => $productId]);
+
+            //if the estimate is not found
+            if (!$estimate || !$product) {
+                $this->request->handleErrorAndQuit(404, new Exception('Estimate or Product not found'));
+            }
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        //get EstimateProduct by estimate and product
+        try {
+            $estimateProduct = $this->dao->getOneBy(EstimateProduct::class, ['estimate' => $estimate, 'product' => $product]);
+            if ($estimateProduct==null) {
+                $this->request->handleErrorAndQuit(404, new Exception('EstimateProduct not found'));
+            }else{
+                if ($estimateProduct->getQuantity()>1) {
+                    $estimateProduct->setQuantity($estimateProduct->getQuantity()-1);
+                    $this->dao->update($estimateProduct);
+                }else{
+                    $this->dao->delete($estimateProduct);
+                }
+            }
+
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        $this->request->handleSuccessAndQuit(200, 'Product removed from Estimate');
+    }
+
 
     public function deleteEstimate(int $id): void
     {

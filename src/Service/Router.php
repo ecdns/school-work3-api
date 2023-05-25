@@ -10,7 +10,9 @@ use Controller\CustomerController;
 use Controller\CustomerStatusController;
 use Controller\EstimateController;
 use Controller\EstimateStatusController;
+use Controller\InvoiceController;
 use Controller\LicenseController;
+use Controller\OrderFormController;
 use Controller\ProductController;
 use Controller\ProductFamilyController;
 use Controller\ProjectController;
@@ -174,6 +176,7 @@ class Router
                 //Estimate routes
                 $r->addRoute('POST', '/estimate', [EstimateController::class, 'addEstimate']);
                 $r->addRoute('POST', '/estimate/{estimateId:\d+}/add/{productId:\d+}', [EstimateController::class, 'addProductsToEstimate']);
+                $r->addRoute('POST', '/estimate/{estimateId:\d+}/remove/{productId:\d+}', [EstimateController::class, 'removeProductsFromEstimate']);
                 $r->addRoute('GET', '/estimate/all', [EstimateController::class, 'getEstimates']);
                 $r->addRoute('GET', '/estimate/{id:\d+}', [EstimateController::class, 'getEstimateById']);
                 $r->addRoute('GET', '/estimate/project/{id:\d+}', [EstimateController::class, 'getEstimatesByProject']);
@@ -187,6 +190,24 @@ class Router
                 $r->addRoute('PUT', '/estimateStatus/{id:\d+}', [EstimateStatusController::class, 'updateEstimateStatus']);
                 $r->addRoute('DELETE', '/estimateStatus/{id:\d+}', [EstimateStatusController::class, 'deleteEstimateStatus']);
 
+                //Invoice routes
+                $r->addRoute('POST', '/invoice', [InvoiceController::class, 'addInvoice']);
+                $r->addRoute('POST', '/invoice/{invoiceId:\d+}/add/{productId:\d+}', [InvoiceController::class, 'addProductsToInvoice']);
+                $r->addRoute('POST', '/invoice/{invoiceId:\d+}/remove/{productId:\d+}', [InvoiceController::class, 'removeProductsFromInvoice']);
+                $r->addRoute('GET', '/invoice/all', [InvoiceController::class, 'getInvoices']);
+                $r->addRoute('GET', '/invoice/{id:\d+}', [InvoiceController::class, 'getInvoiceById']);
+                $r->addRoute('GET', '/invoice/project/{id:\d+}', [InvoiceController::class, 'getInvoicesByProject']);
+                $r->addRoute('PUT', '/invoice/{id:\d+}', [InvoiceController::class, 'updateInvoice']);
+
+                //OrderForm routes
+                $r->addRoute('POST', '/orderForm', [OrderFormController::class, 'addOrderForm']);
+                $r->addRoute('POST', '/orderForm/{orderFormId:\d+}/add/{productId:\d+}', [OrderFormController::class, 'addProductsToOrderForm']);
+                $r->addRoute('POST', '/orderForm/{orderFormId:\d+}/remove/{productId:\d+}', [OrderFormController::class, 'removeProductsFromOrderForm']);
+                $r->addRoute('GET', '/orderForm/all', [OrderFormController::class, 'getOrderForms']);
+                $r->addRoute('GET', '/orderForm/{id:\d+}', [OrderFormController::class, 'getOrderFormById']);
+                $r->addRoute('GET', '/orderForm/project/{id:\d+}', [OrderFormController::class, 'getOrderFormsByProject']);
+                $r->addRoute('PUT', '/orderForm/{id:\d+}', [OrderFormController::class, 'updateOrderForm']);
+                $r->addRoute('DELETE', '/orderForm/{id:\d+}', [OrderFormController::class, 'deleteOrderForm']);
             });
 
         });

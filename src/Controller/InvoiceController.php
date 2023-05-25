@@ -5,15 +5,10 @@ declare(strict_types=1);
 namespace Controller;
 
 use DateTime;
-use Doctrine\ORM\EntityManager;
-use Entity\Company;
 use Entity\Invoice;
-use Entity\InvoiceStatus;
+use Entity\InvoiceProduct;
+use Entity\Product;
 use Entity\Project;
-use Entity\QuantityUnit;
-use Entity\Role;
-use Entity\Supplier;
-use Entity\Vat;
 use Exception;
 use Service\DAO;
 use Service\Request;
@@ -31,6 +26,7 @@ class InvoiceController extends AbstractController
         $this->request = $request;
     }
 
+
     public function addInvoice(): void
     {
         // get the request body
@@ -40,9 +36,7 @@ class InvoiceController extends AbstractController
 //         {
 //             "name": "Invoice 1",
 //             "description": "This is the first invoice",
-//             "project": 1,
-//             "expiredAt": "2021-09-30",
-//             "invoiceStatus": 1
+//             "project": 1
 //         }
 
 
@@ -62,12 +56,11 @@ class InvoiceController extends AbstractController
 
         // get the invoice from the database by its id
         try {
-            $projectObject = $this->dao->getOneEntityBy(Project::class, ['id' => $project]);
-            $expiredAt = DateTime::createFromFormat('Y-m-d', $expiredAt);
+            $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project]);
 
 
-            if (!$projectObject || !$expiredAt) {
-                $this->request->handleErrorAndQuit(404, new Exception('InvoiceStatus, Project, ExpiredDate not found'));
+            if (!$projectObject) {
+                $this->request->handleErrorAndQuit(404, new Exception('Project not found'));
             }
 
         } catch (Exception $e) {
@@ -81,7 +74,7 @@ class InvoiceController extends AbstractController
 
         // add the invoice to the database
         try {
-            $this->dao->addEntity($invoice);
+            $this->dao->add($invoice);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -94,12 +87,13 @@ class InvoiceController extends AbstractController
         $this->request->handleSuccessAndQuit(201, 'Invoice created');
     }
 
+
     public function getInvoices(): void
     {
         // get all roles
         try {
             //get all invoices
-            $invoices = $this->dao->getAllEntities(Invoice::class);
+            $invoices = $this->dao->getAll(Invoice::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -119,7 +113,7 @@ class InvoiceController extends AbstractController
         // get all roles
         try {
             //get all invoices by company
-            $invoices = $this->dao->getEntitiesBy(Invoice::class, ['project' => $id]);
+            $invoices = $this->dao->getBy(Invoice::class, ['project' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -138,7 +132,7 @@ class InvoiceController extends AbstractController
     {
         // get the role by id
         try {
-            $invoice = $this->dao->getOneEntityBy(Invoice::class, ['id' => $id]);
+            $invoice = $this->dao->getOneBy(Invoice::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -170,7 +164,7 @@ class InvoiceController extends AbstractController
 
         // get the invoice by id
         try {
-            $invoice = $this->dao->getOneEntityBy(Invoice::class, ['id' => $id]);
+            $invoice = $this->dao->getOneBy(Invoice::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -181,29 +175,25 @@ class InvoiceController extends AbstractController
         }
 
         // it will look like this:
-        // {
-        //     "name": "Invoice 1",
-        //     "description": "This is the first invoice",
-        //     "project": 1,
-        //     "expiredAt": "2021-09-30",
-        //     "invoiceStatus": 1
-        // }
+//         {
+//             "name": "Invoice 1",
+//             "description": "This is the first invoice",
+//             "project": 1,
+//             "expiredAt": "2021-09-30",
+//             "invoiceStatus": 1
+//         }
 
 
         // get the invoice data from the request body
         $name = $requestBody['name'] ?? $invoice->getName();
         $description = $requestBody['description'] ?? $invoice->getDescription();
         $project = $requestBody['project'] ?? $invoice->getProject()->getId();
-        $expiredAt = $requestBody['expiredAt'] ?? $invoice->getExpiredAt();
-        $invoiceStatus = $requestBody['invoiceStatus'] ?? $invoice->getInvoiceStatus()->getId();
-
         try {
 
-            $projectObject = $this->dao->getOneEntityBy(Project::class, ['id' => $project]);
-            $invoiceStatusObject = $this->dao->getOneEntityBy(InvoiceStatus::class, ['id' => $invoiceStatus]);
-            $expiredAt = DateTime::createFromFormat('Y-m-d', $expiredAt);
+            $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project]);
 
-            if (!$invoiceStatusObject || !$projectObject) {
+
+            if (!$projectObject) {
                 $this->request->handleErrorAndQuit(404, new Exception('InvoiceStatus, Project or ExpiredDate not found'));
             }
 
@@ -216,12 +206,11 @@ class InvoiceController extends AbstractController
         $invoice->setName($name);
         $invoice->setDescription($description);
         $invoice->setProject($projectObject);
-        $invoice->setExpiredAt($expiredAt);
-        $invoice->setInvoiceStatus($invoiceStatusObject);
+
 
         // update the invoice in the database
         try {
-            $this->dao->updateEntity($invoice);
+            $this->dao->update($invoice);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -235,11 +224,103 @@ class InvoiceController extends AbstractController
 
     }
 
+    //add Prducts To Invoice
+    public function addProductsToInvoice(int $invoiceId, int $productId): void
+    {
+        // get the request body
+        $requestBody = file_get_contents('php://input');
+
+        // decode the json
+        $requestBody = json_decode($requestBody, true);
+
+
+
+
+        // get the invoice by id
+        try {
+            $invoice = $this->dao->getOneBy(Invoice::class, ['id' => $invoiceId]);
+
+            $product = $this->dao->getOneBy(Product::class, ['id' => $productId]);
+
+            //if the invoice is not found
+            if (!$invoice || !$product) {
+                $this->request->handleErrorAndQuit(404, new Exception('Invoice or Product not found'));
+            }
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        //get InvoiceProduct by invoice and product
+        try {
+            $invoiceProduct = $this->dao->getOneBy(InvoiceProduct::class, ['invoice' => $invoice, 'product' => $product]);
+            if ($invoiceProduct==null) {
+                $invoiceProduct = new InvoiceProduct($invoice, $product, 1);
+                $this->dao->add($invoiceProduct);
+                $invoice->addInvoiceProduct($invoiceProduct);
+                $this->dao->update($invoice);
+            }else{
+                $invoiceProduct->setQuantity($invoiceProduct->getQuantity()+1);
+                $this->dao->update($invoiceProduct);
+            }
+
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+
+        $this->request->handleSuccessAndQuit(200, 'Product added to Invoice');
+    }
+
+    //remove Prducts From Invoice
+    public function removeProductsFromInvoice(int $invoiceId, int $productId): void
+    {
+        // get the request body
+        $requestBody = file_get_contents('php://input');
+
+        // decode the json
+        $requestBody = json_decode($requestBody, true);
+
+        // get the invoice by id
+        try {
+            $invoice = $this->dao->getOneBy(Invoice::class, ['id' => $invoiceId]);
+
+            $product = $this->dao->getOneBy(Product::class, ['id' => $productId]);
+
+            //if the invoice is not found
+            if (!$invoice || !$product) {
+                $this->request->handleErrorAndQuit(404, new Exception('Invoice or Product not found'));
+            }
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        //get InvoiceProduct by invoice and product
+        try {
+            $invoiceProduct = $this->dao->getOneBy(InvoiceProduct::class, ['invoice' => $invoice, 'product' => $product]);
+            if ($invoiceProduct==null) {
+                $this->request->handleErrorAndQuit(404, new Exception('InvoiceProduct not found'));
+            }else{
+                if ($invoiceProduct->getQuantity()>1) {
+                    $invoiceProduct->setQuantity($invoiceProduct->getQuantity()-1);
+                    $this->dao->update($invoiceProduct);
+                }else{
+                    $this->dao->delete($invoiceProduct);
+                }
+            }
+
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        $this->request->handleSuccessAndQuit(200, 'Product removed from Invoice');
+    }
+
+
     public function deleteInvoice(int $id): void
     {
         // get the invoice by id
         try {
-            $invoice = $this->dao->getOneEntityBy(Invoice::class, ['id' => $id]);
+            $invoice = $this->dao->getOneBy(Invoice::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -251,7 +332,7 @@ class InvoiceController extends AbstractController
 
         // remove the invoice
         try {
-            $this->dao->deleteEntity($invoice);
+            $this->dao->delete($invoice);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
