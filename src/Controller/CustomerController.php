@@ -36,19 +36,19 @@ class CustomerController extends AbstractController
         $requestBody = file_get_contents('php://input');
 
         // it will look like this:
-/*         {
-             "firstName": "John",
-             "lastName": "Doe",
-             "email": "john.doe@example",
-             "address": "John Doe Street 1",
-             "city": "John Doe City",
-             "country": "John Doe Country",
-             "zipCode": "12345",
-             "phone": "123456789",
-             "company": 1,
-             "user": 1,
-             "status": 1
-         }*/
+//         {
+//             "firstName": "John",
+//             "lastName": "Doe",
+//             "email": "john.doe@example",
+//             "address": "John Doe Street 1",
+//             "city": "John Doe City",
+//             "country": "John Doe Country",
+//             "zipCode": "12345",
+//             "phone": "123456789",
+//             "company": 1,
+//             "user": 1,
+//             "status": 1
+//         }
 
         // decode the json
         $requestBody = json_decode($requestBody, true);
