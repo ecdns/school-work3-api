@@ -100,7 +100,7 @@ class UserSettingsController extends AbstractController
 
         // get the user by its id
         try {
-            $user = $this->dao->getOneEntityBy('Entity\User', ['id' => $id]);
+            $user = $this->dao->getOneBy('Entity\User', ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -118,7 +118,7 @@ class UserSettingsController extends AbstractController
 
         // add the user settings to the database (this will also update the user)
         try {
-            $this->dao->addEntity($userSettings);
+            $this->dao->add($userSettings);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -169,7 +169,7 @@ class UserSettingsController extends AbstractController
     {
         // get the user settings
         try {
-            $userSettings = $this->dao->getOneEntityBy('Entity\UserSettings', ['id' => $id]);
+            $userSettings = $this->dao->getOneBy('Entity\UserSettings', ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -247,7 +247,7 @@ class UserSettingsController extends AbstractController
 
         // get the user settings
         try {
-            $userSettings = $this->dao->getOneEntityBy('Entity\UserSettings', ['id' => $id]);
+            $userSettings = $this->dao->getOneBy('Entity\UserSettings', ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -267,7 +267,7 @@ class UserSettingsController extends AbstractController
 
         // flush the entity manager
         try {
-            $this->dao->updateEntity($userSettings);
+            $this->dao->update($userSettings);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -315,7 +315,7 @@ class UserSettingsController extends AbstractController
     {
         // get the user settings
         try {
-            $userSettings = $this->dao->getOneEntityBy('Entity\UserSettings', ['id' => $id]);
+            $userSettings = $this->dao->getOneBy('Entity\UserSettings', ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -327,7 +327,7 @@ class UserSettingsController extends AbstractController
 
         // remove the user settings
         try {
-            $this->dao->deleteEntity($userSettings);
+            $this->dao->delete($userSettings);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

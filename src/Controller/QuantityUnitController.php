@@ -100,7 +100,7 @@ class QuantityUnitController extends AbstractController
 
         // flush the entity manager
         try {
-            $this->dao->addEntity($quantityUnit);
+            $this->dao->add($quantityUnit);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -137,7 +137,7 @@ class QuantityUnitController extends AbstractController
     {
         // get all the quantityUnit from the database
         try {
-            $quantityUnits = $this->dao->getAllEntities(QuantityUnit::class);
+            $quantityUnits = $this->dao->getAll(QuantityUnit::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -187,7 +187,7 @@ class QuantityUnitController extends AbstractController
     {
         // get the quantityUnit from the database by its id
         try {
-            $quantityUnit = $this->dao->getOneEntityBy(QuantityUnit::class, ['id' => $id]);
+            $quantityUnit = $this->dao->getOneBy(QuantityUnit::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -270,7 +270,7 @@ class QuantityUnitController extends AbstractController
 
         // get the quantityUnit from the database by its id
         try {
-            $quantityUnit = $this->dao->getOneEntityBy(QuantityUnit::class, ['id' => $id]);
+            $quantityUnit = $this->dao->getOneBy(QuantityUnit::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -292,7 +292,7 @@ class QuantityUnitController extends AbstractController
 
         // flush the entity manager
         try {
-            $this->dao->updateEntity($quantityUnit);
+            $this->dao->update($quantityUnit);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -341,7 +341,7 @@ class QuantityUnitController extends AbstractController
     {
         // get the quantityUnit from the database by its id
         try {
-            $quantityUnit = $this->dao->getOneEntityBy(QuantityUnit::class, ['id' => $id]);
+            $quantityUnit = $this->dao->getOneBy(QuantityUnit::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -353,7 +353,7 @@ class QuantityUnitController extends AbstractController
 
         // remove the quantityUnit
         try {
-            $this->dao->deleteEntity($quantityUnit);
+            $this->dao->delete($quantityUnit);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

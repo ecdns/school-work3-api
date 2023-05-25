@@ -99,7 +99,7 @@ class VatController extends AbstractController
 
         // flush the entity manager
         try {
-            $this->dao->addEntity($vat);
+            $this->dao->add($vat);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -137,7 +137,7 @@ class VatController extends AbstractController
     {
         // get all the licenses from the database
         try {
-            $vats = $this->dao->getAllEntities(Vat::class);
+            $vats = $this->dao->getAll(Vat::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -189,7 +189,7 @@ class VatController extends AbstractController
     {
         // get the license from the database by its id
         try {
-            $vat = $this->dao->getOneEntityBy(Vat::class, ['id' => $id]);
+            $vat = $this->dao->getOneBy(Vat::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -271,7 +271,7 @@ class VatController extends AbstractController
 
         // get the vat from the database by its id
         try {
-            $vat = $this->dao->getOneEntityBy(Vat::class, ['id' => $id]);
+            $vat = $this->dao->getOneBy(Vat::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -293,7 +293,7 @@ class VatController extends AbstractController
 
         // flush the entity manager
         try {
-            $this->dao->updateEntity($vat);
+            $this->dao->update($vat);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -341,7 +341,7 @@ class VatController extends AbstractController
     {
         // get the vat from the database by its id
         try {
-            $vat = $this->dao->getOneEntityBy(Vat::class, ['id' => $id]);
+            $vat = $this->dao->getOneBy(Vat::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -353,7 +353,7 @@ class VatController extends AbstractController
 
         // remove the vat
         try {
-            $this->dao->deleteEntity($vat);
+            $this->dao->delete($vat);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

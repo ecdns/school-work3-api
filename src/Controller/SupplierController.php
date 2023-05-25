@@ -130,7 +130,7 @@ class SupplierController extends AbstractController
 
         // get the company from the database by its name
         try {
-            $companyObject = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
+            $companyObject = $this->dao->getOneBy(Company::class, ['id' => $company]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -140,7 +140,7 @@ class SupplierController extends AbstractController
 
         // flush the entity manager
         try {
-            $this->dao->addEntity($supplier);
+            $this->dao->add($supplier);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -178,7 +178,7 @@ class SupplierController extends AbstractController
     {
         // get all the Supplier from the database
         try {
-            $suppliers = $this->dao->getAllEntities(Supplier::class);
+            $suppliers = $this->dao->getAll(Supplier::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -230,7 +230,7 @@ class SupplierController extends AbstractController
     {
         // get the supplier from the database by its id
         try {
-            $supplier = $this->dao->getOneEntityBy(Supplier::class, ['id' => $id]);
+            $supplier = $this->dao->getOneBy(Supplier::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -319,7 +319,7 @@ class SupplierController extends AbstractController
 
         // get the supplier from the database by its id
         try {
-            $supplier = $this->dao->getOneEntityBy(Supplier::class, ['id' => $id]);
+            $supplier = $this->dao->getOneBy(Supplier::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -342,7 +342,7 @@ class SupplierController extends AbstractController
         $company = $requestBody['company'] ?? $supplier->getCompany()->getId();
 
         try {
-            $company = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
+            $company = $this->dao->getOneBy(Company::class, ['id' => $company]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -365,7 +365,7 @@ class SupplierController extends AbstractController
 
         // flush the entity manager
         try {
-            $this->dao->updateEntity($supplier);
+            $this->dao->update($supplier);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -414,7 +414,7 @@ class SupplierController extends AbstractController
     {
         // get the Supplier from the database by its id
         try {
-            $supplier = $this->dao->getOneEntityBy(Supplier::class, ['id' => $id]);
+            $supplier = $this->dao->getOneBy(Supplier::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -426,7 +426,7 @@ class SupplierController extends AbstractController
 
         // remove the Supplier
         try {
-            $this->dao->deleteEntity($supplier);
+            $this->dao->delete($supplier);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

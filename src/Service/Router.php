@@ -173,6 +173,7 @@ class Router
 
                 //Estimate routes
                 $r->addRoute('POST', '/estimate', [EstimateController::class, 'addEstimate']);
+                $r->addRoute('POST', '/estimate/{estimateId:\d+}/add/{productId:\d+}', [EstimateController::class, 'addProductsToEstimate']);
                 $r->addRoute('GET', '/estimate/all', [EstimateController::class, 'getEstimates']);
                 $r->addRoute('GET', '/estimate/{id:\d+}', [EstimateController::class, 'getEstimateById']);
                 $r->addRoute('GET', '/estimate/project/{id:\d+}', [EstimateController::class, 'getEstimatesByProject']);

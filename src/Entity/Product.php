@@ -64,9 +64,9 @@ class Product implements EntityInterface
     #[ORM\JoinColumn(name: 'supplier_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Supplier $supplier;
 
-    //Many to Many for estimate product
-    #[ORM\ManyToMany(targetEntity: Estimate::class, mappedBy: 'estimateProducts')]
-    private Collection $estimates;
+
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: EstimateProduct::class)]
+    private Collection $estimateProduct;
 
     //Many to Many for invoice product
     #[ORM\ManyToMany(targetEntity: Invoice::class, mappedBy: 'invoiceProducts')]

@@ -126,8 +126,8 @@ class UserController extends AbstractController
 
         // get the company and role from the database
         try {
-            $role = $this->dao->getOneEntityBy(Role::class, ['id' => $role]);
-            $company = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
+            $role = $this->dao->getOneBy(Role::class, ['id' => $role]);
+            $company = $this->dao->getOneBy(Company::class, ['id' => $company]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -147,7 +147,7 @@ class UserController extends AbstractController
 
         // add the user to the database
         try {
-            $this->dao->addEntity($user);
+            $this->dao->add($user);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -191,7 +191,7 @@ class UserController extends AbstractController
     {
         // get the users from the database
         try {
-            $users = $this->dao->getAllEntities(User::class);
+            $users = $this->dao->getAll(User::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -249,7 +249,7 @@ class UserController extends AbstractController
     {
         // get the user from the database by its id
         try {
-            $user = $this->dao->getOneEntityBy(User::class, ['id' => $id]);
+            $user = $this->dao->getOneBy(User::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -340,7 +340,7 @@ class UserController extends AbstractController
 
         // get the user from the database by its id
         try {
-            $user = $this->dao->getOneEntityBy(User::class, ['id' => $id]);
+            $user = $this->dao->getOneBy(User::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -362,8 +362,8 @@ class UserController extends AbstractController
 
         // get the company and role from the database
         try {
-            $role = $this->dao->getOneEntityBy(Role::class, ['id' => $role]);
-            $company = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
+            $role = $this->dao->getOneBy(Role::class, ['id' => $role]);
+            $company = $this->dao->getOneBy(Company::class, ['id' => $company]);
 
             if (!$role || !$company) {
                 $this->request->handleErrorAndQuit(404, new Exception('Role or company not found'));
@@ -385,7 +385,7 @@ class UserController extends AbstractController
 
         // update the user in the database
         try {
-            $this->dao->updateEntity($user);
+            $this->dao->update($user);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -434,7 +434,7 @@ class UserController extends AbstractController
     {
         // get the user from the database by its id
         try {
-            $user = $this->dao->getOneEntityBy(User::class, ['id' => $id]);
+            $user = $this->dao->getOneBy(User::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -446,7 +446,7 @@ class UserController extends AbstractController
 
         // remove the user
         try {
-            $this->dao->deleteEntity($user);
+            $this->dao->delete($user);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -505,7 +505,7 @@ class UserController extends AbstractController
 
         // get the user from the database by its email
         try {
-            $user = $this->dao->getOneEntityBy(User::class, ['email' => $email]);
+            $user = $this->dao->getOneBy(User::class, ['email' => $email]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

@@ -129,7 +129,7 @@ class CompanyController extends AbstractController
 
         // get the license from the database by its name
         try {
-            $license = $this->dao->getOneEntityBy(License::class, ['id' => $licenseId]);
+            $license = $this->dao->getOneBy(License::class, ['id' => $licenseId]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -164,7 +164,7 @@ class CompanyController extends AbstractController
 
         // add the company to the database
         try {
-            $this->dao->addEntity($company);
+            $this->dao->add($company);
         } catch (Exception $e) {
             if (str_contains($e->getMessage(), 'constraint violation')) {
                 $this->request->handleErrorAndQuit(409, new Exception('Company already exists'));
@@ -202,7 +202,7 @@ class CompanyController extends AbstractController
     {
         // get the companies from the database
         try {
-            $companies = $this->dao->getAllEntities(Company::class);
+            $companies = $this->dao->getAll(Company::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -255,7 +255,7 @@ class CompanyController extends AbstractController
     {
         // get the company from the database by its id
         try {
-            $company = $this->dao->getOneEntityBy(Company::class, ['id' => $id]);
+            $company = $this->dao->getOneBy(Company::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -309,7 +309,7 @@ class CompanyController extends AbstractController
     {
         // get the company from the database by its name
         try {
-            $company = $this->dao->getOneEntityBy(Company::class, ['name' => $name]);
+            $company = $this->dao->getOneBy(Company::class, ['name' => $name]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -395,7 +395,7 @@ class CompanyController extends AbstractController
 
         // get the company from the database by its id
         try {
-            $company = $this->dao->getOneEntityBy(Company::class, ['id' => $id]);
+            $company = $this->dao->getOneBy(Company::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -419,7 +419,7 @@ class CompanyController extends AbstractController
 
         // get the license from the database by its name
         try {
-            $licenseId = $this->dao->getOneEntityBy(License::class, ['id' => $licenseId]);
+            $licenseId = $this->dao->getOneBy(License::class, ['id' => $licenseId]);
             // if the license is not found, return an error
             if (!$licenseId) {
                 $this->request->handleErrorAndQuit(404, new Exception('License not found'));
@@ -460,7 +460,7 @@ class CompanyController extends AbstractController
 
         // update the company
         try {
-            $this->dao->updateEntity($company);
+            $this->dao->update($company);
         } catch (Exception $e) {
             if (str_contains($e->getMessage(), 'constraint violation')) {
                 $this->request->handleErrorAndQuit(409, new Exception('Company already exists'));
@@ -506,7 +506,7 @@ class CompanyController extends AbstractController
     {
         // get the company from the database by its id
         try {
-            $company = $this->dao->getOneEntityBy(Company::class, ['id' => $id]);
+            $company = $this->dao->getOneBy(Company::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -518,7 +518,7 @@ class CompanyController extends AbstractController
 
         // remove the company
         try {
-            $this->dao->deleteEntity($company);
+            $this->dao->delete($company);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

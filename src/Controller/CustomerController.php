@@ -102,19 +102,19 @@ class CustomerController extends AbstractController
         $requestBody = file_get_contents('php://input');
 
         // it will look like this:
-/*         {
-             "firstName": "John",
-             "lastName": "Doe",
-             "email": "john.doe@example",
-             "address": "John Doe Street 1",
-             "city": "John Doe City",
-             "country": "John Doe Country",
-             "zipCode": "12345",
-             "phone": "123456789",
-             "company": 1,
-             "user": 1,
-             "status": 1
-         }*/
+//         {
+//             "firstName": "John",
+//             "lastName": "Doe",
+//             "email": "john.doe@example",
+//             "address": "John Doe Street 1",
+//             "city": "John Doe City",
+//             "country": "John Doe Country",
+//             "zipCode": "12345",
+//             "phone": "123456789",
+//             "company": 1,
+//             "user": 1,
+//             "status": 1
+//         }
 
         // decode the json
         $requestBody = json_decode($requestBody, true);
@@ -139,9 +139,9 @@ class CustomerController extends AbstractController
 
         // get the company from the database by its id
         try {
-            $companyObject = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
-            $userObject = $this->dao->getOneEntityBy(User::class, ['id' => $user]);
-            $customerStatusObject = $this->dao->getOneEntityBy(CustomerStatus::class, ['id' => $status]);
+            $companyObject = $this->dao->getOneBy(Company::class, ['id' => $company]);
+            $userObject = $this->dao->getOneBy(User::class, ['id' => $user]);
+            $customerStatusObject = $this->dao->getOneBy(CustomerStatus::class, ['id' => $status]);
 
             if (!$companyObject || !$userObject || !$customerStatusObject) {
                 $this->request->handleErrorAndQuit(404, new Exception('Company, User or CustomerStatus not found'));
@@ -157,7 +157,7 @@ class CustomerController extends AbstractController
 
         // add the customer to the database
         try {
-            $this->dao->addEntity($customer);
+            $this->dao->add($customer);
         } catch (Exception $e) {
             if (str_contains($e->getMessage(), 'constraint violation')) {
                 $this->request->handleErrorAndQuit(409, new Exception('Customer already exists'));
@@ -193,7 +193,7 @@ class CustomerController extends AbstractController
     {
         // get the customers from the database
         try {
-            $companies = $this->dao->getAllEntities(Customer::class);
+            $companies = $this->dao->getAll(Customer::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -242,7 +242,7 @@ class CustomerController extends AbstractController
     {
         // get the customer from the database by its id
         try {
-            $customer = $this->dao->getOneEntityBy(Customer::class, ['id' => $id]);
+            $customer = $this->dao->getOneBy(Customer::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -298,7 +298,7 @@ class CustomerController extends AbstractController
     {
         // get the customer from the database by its id
         try {
-            $customers = $this->dao->getEntitiesBy(Customer::class, ['company' => $id]);
+            $customers = $this->dao->getBy(Customer::class, ['company' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -391,7 +391,7 @@ class CustomerController extends AbstractController
 
         // get the customer from the database by its id
         try {
-            $customer = $this->dao->getOneEntityBy(Customer::class, ['id' => $id]);
+            $customer = $this->dao->getOneBy(Customer::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -415,9 +415,9 @@ class CustomerController extends AbstractController
 
         // get the controller from the database by its name
         try {
-            $companyObject = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
-            $userObject = $this->dao->getOneEntityBy(User::class, ['id' => $user]);
-            $customerStatusObject = $this->dao->getOneEntityBy(CustomerStatus::class, ['id' => $status]);
+            $companyObject = $this->dao->getOneBy(Company::class, ['id' => $company]);
+            $userObject = $this->dao->getOneBy(User::class, ['id' => $user]);
+            $customerStatusObject = $this->dao->getOneBy(CustomerStatus::class, ['id' => $status]);
 
             if (!$companyObject || !$userObject || !$customerStatusObject) {
                 $this->request->handleErrorAndQuit(404, new Exception('Company, User or CustomerStatus not found'));
@@ -441,7 +441,7 @@ class CustomerController extends AbstractController
 
         // update the customer
         try {
-            $this->dao->updateEntity($customer);
+            $this->dao->update($customer);
         } catch (Exception $e) {
             if (str_contains($e->getMessage(), 'constraint violation')) {
                 $this->request->handleErrorAndQuit(409, new Exception('Customer already exists'));
@@ -487,7 +487,7 @@ class CustomerController extends AbstractController
     {
         // get the customer from the database by its id
         try {
-            $customer = $this->dao->getOneEntityBy(Customer::class, ['id' => $id]);
+            $customer = $this->dao->getOneBy(Customer::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -499,7 +499,7 @@ class CustomerController extends AbstractController
 
         // remove the customer
         try {
-            $this->dao->deleteEntity($customer);
+            $this->dao->delete($customer);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

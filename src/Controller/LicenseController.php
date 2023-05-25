@@ -108,7 +108,7 @@ class LicenseController extends AbstractController
 
         // persist the license
         try {
-            $this->dao->addEntity($license);
+            $this->dao->add($license);
         } catch (Exception $e) {
             if (str_contains($e->getMessage(), 'constraint violation')) {
                 $this->request->handleErrorAndQuit(409, new Exception('License already exists'));
@@ -146,7 +146,7 @@ class LicenseController extends AbstractController
     {
         // get all the licenses from the database
         try {
-            $licenses = $this->dao->getAllEntities(License::class);
+            $licenses = $this->dao->getAll(License::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -197,7 +197,7 @@ class LicenseController extends AbstractController
     {
         // get the license from the database by its id
         try {
-            $license = $this->dao->getOneEntityBy(License::class, ['id' => $id]);
+            $license = $this->dao->getOneBy(License::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -281,7 +281,7 @@ class LicenseController extends AbstractController
 
         // get the license from the database by its id
         try {
-            $license = $this->dao->getOneEntityBy(License::class, ['id' => $id]);
+            $license = $this->dao->getOneBy(License::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -307,7 +307,7 @@ class LicenseController extends AbstractController
 
         // persist the license
         try {
-            $this->dao->updateEntity($license);
+            $this->dao->update($license);
         } catch (Exception $e) {
             if (str_contains($e->getMessage(), 'constraint violation')) {
                 $this->request->handleErrorAndQuit(409, new Exception('License already exists'));
@@ -355,7 +355,7 @@ class LicenseController extends AbstractController
     {
         // get the license from the database by its id
         try {
-            $license = $this->dao->getOneEntityBy(License::class, ['id' => $id]);
+            $license = $this->dao->getOneBy(License::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -367,7 +367,7 @@ class LicenseController extends AbstractController
 
         // remove the license
         try {
-            $this->dao->deleteEntity($license);
+            $this->dao->delete($license);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

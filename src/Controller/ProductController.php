@@ -142,35 +142,35 @@ class ProductController extends AbstractController
 
         // get the product family from the database by its id
         try {
-            $productFamilyObject = $this->dao->getOneEntityBy(ProductFamily::class, ['id' => $productFamily]);
+            $productFamilyObject = $this->dao->getOneBy(ProductFamily::class, ['id' => $productFamily]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
 
         // get the vat from the database by its id
         try {
-            $vatObject = $this->dao->getOneEntityBy(Vat::class, ['id' => $vat]);
+            $vatObject = $this->dao->getOneBy(Vat::class, ['id' => $vat]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
 
         // get the company from the database by its id
         try {
-            $companyObject = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
+            $companyObject = $this->dao->getOneBy(Company::class, ['id' => $company]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
 
         // get the quantity unit from the database by its id
         try {
-            $quantityUnitObject = $this->dao->getOneEntityBy(QuantityUnit::class, ['id' => $quantityUnit]);
+            $quantityUnitObject = $this->dao->getOneBy(QuantityUnit::class, ['id' => $quantityUnit]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
 
         // get the supplier from the database by its id
         try {
-            $supplierObject = $this->dao->getOneEntityBy(Supplier::class, ['id' => $supplier]);
+            $supplierObject = $this->dao->getOneBy(Supplier::class, ['id' => $supplier]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -181,7 +181,7 @@ class ProductController extends AbstractController
 
         // add the product to the database
         try {
-            $this->dao->addEntity($product);
+            $this->dao->add($product);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -220,7 +220,7 @@ class ProductController extends AbstractController
         // get all roles
         try {
             //get all products by company
-            $products = $this->dao->getAllEntities(Product::class);
+            $products = $this->dao->getAll(Product::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -273,7 +273,7 @@ class ProductController extends AbstractController
         // get all roles
         try {
             //get all products by company
-            $products = $this->dao->getEntitiesBy(Product::class, ['company' => $id]);
+            $products = $this->dao->getBy(Product::class, ['company' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -324,7 +324,7 @@ class ProductController extends AbstractController
     {
         // get the role by id
         try {
-            $product = $this->dao->getOneEntityBy(Product::class, ['id' => $id]);
+            $product = $this->dao->getOneBy(Product::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -395,7 +395,7 @@ class ProductController extends AbstractController
 
         // get the product by id
         try {
-            $product = $this->dao->getOneEntityBy(Product::class, ['id' => $id]);
+            $product = $this->dao->getOneBy(Product::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -438,11 +438,11 @@ class ProductController extends AbstractController
 
         try {
 
-            $productFamily = $this->dao->getOneEntityBy(ProductFamily::class, ['id' => $productFamily]);
-            $vat = $this->dao->getOneEntityBy(Vat::class, ['id' => $vat]);
-            $company = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
-            $quantityUnit = $this->dao->getOneEntityBy(QuantityUnit::class, ['id' => $quantityUnit]);
-            $supplier = $this->dao->getOneEntityBy(Supplier::class, ['id' => $supplier]);
+            $productFamily = $this->dao->getOneBy(ProductFamily::class, ['id' => $productFamily]);
+            $vat = $this->dao->getOneBy(Vat::class, ['id' => $vat]);
+            $company = $this->dao->getOneBy(Company::class, ['id' => $company]);
+            $quantityUnit = $this->dao->getOneBy(QuantityUnit::class, ['id' => $quantityUnit]);
+            $supplier = $this->dao->getOneBy(Supplier::class, ['id' => $supplier]);
 
             if (!$productFamily || !$vat || !$company || !$quantityUnit || !$supplier) {
                 $this->request->handleErrorAndQuit(404, new Exception('Product family, vat, company, quantity unit or supplier not found'));
@@ -469,7 +469,7 @@ class ProductController extends AbstractController
 
         // update the product in the database
         try {
-            $this->dao->updateEntity($product);
+            $this->dao->update($product);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -517,7 +517,7 @@ class ProductController extends AbstractController
     {
         // get the product by id
         try {
-            $product = $this->dao->getOneEntityBy(Product::class, ['id' => $id]);
+            $product = $this->dao->getOneBy(Product::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -529,7 +529,7 @@ class ProductController extends AbstractController
 
         // remove the product
         try {
-            $this->dao->deleteEntity($product);
+            $this->dao->delete($product);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

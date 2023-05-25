@@ -73,10 +73,10 @@ class CustomerStatusController extends AbstractController
         $requestBody = file_get_contents('php://input');
 
         // it will look like this:
-        // {
-        //     "name": "CustomerStatus 1",
-        //     "description": "This is the first customerStatus"
-        // }
+//         {
+//             "name": "CustomerStatus 1",
+//             "description": "This is the first customerStatus"
+//         }
 
         // decode the json
         $requestBody = json_decode($requestBody, true);
@@ -95,7 +95,7 @@ class CustomerStatusController extends AbstractController
 
         // persist the customerStatus
         try {
-            $this->dao->addEntity($customerStatus);
+            $this->dao->add($customerStatus);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -134,7 +134,7 @@ class CustomerStatusController extends AbstractController
     {
         // get all the CustomerStatus from the database
         try {
-            $productFamilies = $this->dao->getAllEntities(CustomerStatus::class);
+            $productFamilies = $this->dao->getAll(CustomerStatus::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -186,7 +186,7 @@ class CustomerStatusController extends AbstractController
     {
         // get the license from the database by its id
         try {
-            $customerStatus = $this->dao->getOneEntityBy(CustomerStatus::class, ['id' => $id]);
+            $customerStatus = $this->dao->getOneBy(CustomerStatus::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -268,7 +268,7 @@ class CustomerStatusController extends AbstractController
 
         // get the CustomerStatus from the database by its id
         try {
-            $customerStatus = $this->dao->getOneEntityBy(CustomerStatus::class, ['id' => $id]);
+            $customerStatus = $this->dao->getOneBy(CustomerStatus::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -288,7 +288,7 @@ class CustomerStatusController extends AbstractController
 
         // persist the customerStatus
         try {
-            $this->dao->updateEntity($customerStatus);
+            $this->dao->update($customerStatus);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -337,7 +337,7 @@ class CustomerStatusController extends AbstractController
     {
         // get the CustomerStatus from the database by its id
         try {
-            $customerStatus = $this->dao->getOneEntityBy(CustomerStatus::class, ['id' => $id]);
+            $customerStatus = $this->dao->getOneBy(CustomerStatus::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -349,7 +349,7 @@ class CustomerStatusController extends AbstractController
 
         // remove the CustomerStatus
         try {
-            $this->dao->deleteEntity($customerStatus);
+            $this->dao->delete($customerStatus);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
