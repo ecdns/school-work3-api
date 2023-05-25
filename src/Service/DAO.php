@@ -19,7 +19,7 @@ class DAO
         $this->entityManager = $entityManager;
     }
 
-    public function addEntity($entity): void
+    public function add($entity): void
     {
         try {
             $this->entityManager->persist($entity);
@@ -30,7 +30,7 @@ class DAO
 
     }
 
-    public function deleteEntity($entity): void
+    public function delete($entity): void
     {
         try {
             $this->entityManager->remove($entity);
@@ -40,7 +40,7 @@ class DAO
         }
     }
 
-    public function updateEntity($entity = null): void
+    public function update($entity = null): void
     {
         try {
             $this->entityManager->flush($entity);
@@ -49,7 +49,7 @@ class DAO
         }
     }
 
-    public function getOneEntity($entity, $id)
+    public function getOne($entity, $id)
     {
         try {
             return $this->entityManager->find($entity, $id);
@@ -58,7 +58,7 @@ class DAO
         }
     }
 
-    public function getAllEntities($entity): array
+    public function getAll($entity): array
     {
         try {
             return $this->entityManager->getRepository($entity)->findAll();
@@ -67,7 +67,7 @@ class DAO
         }
     }
 
-    public function getEntitiesBy($entity, $criteria): array
+    public function getBy($entity, $criteria): array
     {
         try {
             return $this->entityManager->getRepository($entity)->findBy($criteria);
@@ -76,7 +76,7 @@ class DAO
         }
     }
 
-    public function getOneEntityBy($entity, $criteria)
+    public function getOneBy($entity, $criteria)
     {
         try {
             return $this->entityManager->getRepository($entity)->findOneBy($criteria);
@@ -85,7 +85,7 @@ class DAO
         }
     }
 
-    public function getEntityByOrder($entity, $criteria, $order): array
+    public function getByOrder($entity, $criteria, $order): array
     {
         try {
             return $this->entityManager->getRepository($entity)->findBy($criteria, $order);

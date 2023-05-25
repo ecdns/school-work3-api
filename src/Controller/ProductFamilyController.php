@@ -96,7 +96,7 @@ class ProductFamilyController extends AbstractController
 
         // persist the productFamily
         try {
-            $this->dao->addEntity($productFamily);
+            $this->dao->add($productFamily);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -134,7 +134,7 @@ class ProductFamilyController extends AbstractController
     {
         // get all the ProductFamily from the database
         try {
-            $productFamilies = $this->dao->getAllEntities(ProductFamily::class);
+            $productFamilies = $this->dao->getAll(ProductFamily::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -185,7 +185,7 @@ class ProductFamilyController extends AbstractController
     {
         // get the license from the database by its id
         try {
-            $productFamily = $this->dao->getOneEntityBy(ProductFamily::class, ['id' => $id]);
+            $productFamily = $this->dao->getOneBy(ProductFamily::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -266,7 +266,7 @@ class ProductFamilyController extends AbstractController
 
         // get the ProductFamily from the database by its id
         try {
-            $productFamily = $this->dao->getOneEntityBy(ProductFamily::class, ['id' => $id]);
+            $productFamily = $this->dao->getOneBy(ProductFamily::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -286,7 +286,7 @@ class ProductFamilyController extends AbstractController
 
         // persist the productFamily
         try {
-            $this->dao->updateEntity($productFamily);
+            $this->dao->update($productFamily);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -335,7 +335,7 @@ class ProductFamilyController extends AbstractController
     {
         // get the ProductFamily from the database by its id
         try {
-            $productFamily = $this->dao->getOneEntityBy(ProductFamily::class, ['id' => $id]);
+            $productFamily = $this->dao->getOneBy(ProductFamily::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -347,7 +347,7 @@ class ProductFamilyController extends AbstractController
 
         // remove the ProductFamily
         try {
-            $this->dao->deleteEntity($productFamily);
+            $this->dao->delete($productFamily);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

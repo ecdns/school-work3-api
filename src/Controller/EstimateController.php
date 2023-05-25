@@ -37,13 +37,13 @@ class EstimateController extends AbstractController
         $requestBody = file_get_contents('php://input');
 
         // it will look like this:
-//         {
-//             "name": "Estimate 1",
-//             "description": "This is the first estimate",
-//             "project": 1,
-//             "expiredAt": "2021-09-30",
-//             "estimateStatus": 1
-//         }
+        // {
+        //     "name": "Estimate 1",
+        //     "description": "This is the first estimate",
+        //     "project": 1,
+        //     "expiredAt": "2021-09-30",
+        //     "estimateStatus": 1
+        // }
 
 
         // decode the json
@@ -64,8 +64,8 @@ class EstimateController extends AbstractController
 
         // get the estimate from the database by its id
         try {
-            $projectObject = $this->dao->getOneEntityBy(Project::class, ['id' => $project]);
-            $estimateStatusObject = $this->dao->getOneEntityBy(EstimateStatus::class, ['id' => $estimateStatus]);
+            $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project]);
+            $estimateStatusObject = $this->dao->getOneBy(EstimateStatus::class, ['id' => $estimateStatus]);
             $expiredAt = DateTime::createFromFormat('Y-m-d', $expiredAt);
 
 
@@ -84,7 +84,7 @@ class EstimateController extends AbstractController
 
         // add the estimate to the database
         try {
-            $this->dao->addEntity($estimate);
+            $this->dao->add($estimate);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -102,7 +102,7 @@ class EstimateController extends AbstractController
         // get all roles
         try {
             //get all estimates
-            $estimates = $this->dao->getAllEntities(Estimate::class);
+            $estimates = $this->dao->getAll(Estimate::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -122,7 +122,7 @@ class EstimateController extends AbstractController
         // get all roles
         try {
             //get all estimates by company
-            $estimates = $this->dao->getEntitiesBy(Estimate::class, ['project' => $id]);
+            $estimates = $this->dao->getBy(Estimate::class, ['project' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -141,7 +141,7 @@ class EstimateController extends AbstractController
     {
         // get the role by id
         try {
-            $estimate = $this->dao->getOneEntityBy(Estimate::class, ['id' => $id]);
+            $estimate = $this->dao->getOneBy(Estimate::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -173,7 +173,7 @@ class EstimateController extends AbstractController
 
         // get the estimate by id
         try {
-            $estimate = $this->dao->getOneEntityBy(Estimate::class, ['id' => $id]);
+            $estimate = $this->dao->getOneBy(Estimate::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -202,8 +202,8 @@ class EstimateController extends AbstractController
 
         try {
 
-            $projectObject = $this->dao->getOneEntityBy(Project::class, ['id' => $project]);
-            $estimateStatusObject = $this->dao->getOneEntityBy(EstimateStatus::class, ['id' => $estimateStatus]);
+            $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project]);
+            $estimateStatusObject = $this->dao->getOneBy(EstimateStatus::class, ['id' => $estimateStatus]);
             $expiredAt = DateTime::createFromFormat('Y-m-d', $expiredAt);
 
             if (!$estimateStatusObject || !$projectObject) {
@@ -224,7 +224,7 @@ class EstimateController extends AbstractController
 
         // update the estimate in the database
         try {
-            $this->dao->updateEntity($estimate);
+            $this->dao->update($estimate);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -242,7 +242,7 @@ class EstimateController extends AbstractController
     {
         // get the estimate by id
         try {
-            $estimate = $this->dao->getOneEntityBy(Estimate::class, ['id' => $id]);
+            $estimate = $this->dao->getOneBy(Estimate::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -254,7 +254,7 @@ class EstimateController extends AbstractController
 
         // remove the estimate
         try {
-            $this->dao->deleteEntity($estimate);
+            $this->dao->delete($estimate);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

@@ -128,9 +128,9 @@ class TaskController extends AbstractController
 
         // get the task FK from the database by its id
         try {
-            $projectObject = $this->dao->getOneEntityBy(Project::class, ['id' => $project]);
-            $userObject = $this->dao->getOneEntityBy(User::class, ['id' => $user]);
-            $taskStatusObject = $this->dao->getOneEntityBy(TaskStatus::class, ['id' => $taskStatus]);
+            $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project]);
+            $userObject = $this->dao->getOneBy(User::class, ['id' => $user]);
+            $taskStatusObject = $this->dao->getOneBy(TaskStatus::class, ['id' => $taskStatus]);
 
             if (!$projectObject || !$userObject || !$taskStatusObject) {
                 $this->request->handleErrorAndQuit(404, new Exception('User, Project or TaskStatus not found'));
@@ -145,7 +145,7 @@ class TaskController extends AbstractController
 
         // add the Task to the database
         try {
-            $this->dao->addEntity($task);
+            $this->dao->add($task);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -187,7 +187,7 @@ class TaskController extends AbstractController
         // get all tasks
         try {
             //get all Tasks
-            $tasks = $this->dao->getAllEntities(Task::class);
+            $tasks = $this->dao->getAll(Task::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -246,7 +246,7 @@ class TaskController extends AbstractController
         // get all roles
         try {
             //get all task by company
-            $tasks = $this->dao->getEntitiesBy(Task::class, ['user' => $id]);
+            $tasks = $this->dao->getBy(Task::class, ['user' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -300,7 +300,7 @@ class TaskController extends AbstractController
         // get all tasks
         try {
             //get all task by company
-            $tasks = $this->dao->getEntitiesBy(Task::class, ['project' => $id]);
+            $tasks = $this->dao->getBy(Task::class, ['project' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -354,7 +354,7 @@ class TaskController extends AbstractController
     {
         // get the task by id
         try {
-            $task= $this->dao->getOneEntityBy(Task::class, ['id' => $id]);
+            $task= $this->dao->getOneBy(Task::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -432,7 +432,7 @@ class TaskController extends AbstractController
 
         // get the Task by id
         try {
-            $task = $this->dao->getOneEntityBy(Task::class, ['id' => $id]);
+            $task = $this->dao->getOneBy(Task::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -464,9 +464,9 @@ class TaskController extends AbstractController
 
 
         try {
-            $projectObject = $this->dao->getOneEntityBy(Project::class, ['id' => $project]);
-            $userObject = $this->dao->getOneEntityBy(User::class, ['id' => $user]);
-            $taskStatusObject = $this->dao->getOneEntityBy(TaskStatus::class, ['id' => $taskStatus]);
+            $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project]);
+            $userObject = $this->dao->getOneBy(User::class, ['id' => $user]);
+            $taskStatusObject = $this->dao->getOneBy(TaskStatus::class, ['id' => $taskStatus]);
 
             if (!$projectObject || !$userObject || !$taskStatusObject) {
                 $this->request->handleErrorAndQuit(404, new Exception('User, Project or TaskStatus not found'));
@@ -487,7 +487,7 @@ class TaskController extends AbstractController
 
         // update the task in the database
         try {
-            $this->dao->updateEntity($task);
+            $this->dao->update($task);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -537,7 +537,7 @@ class TaskController extends AbstractController
     {
         // get the Task by id
         try {
-            $task = $this->dao->getOneEntityBy(Task::class, ['id' => $id]);
+            $task = $this->dao->getOneBy(Task::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -549,7 +549,7 @@ class TaskController extends AbstractController
 
         // remove the Task
         try {
-            $this->dao->deleteEntity($task);
+            $this->dao->delete($task);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

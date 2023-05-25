@@ -97,7 +97,7 @@ class TaskStatusController extends AbstractController
 
         // persist the taskStatus
         try {
-            $this->dao->addEntity($taskStatus);
+            $this->dao->add($taskStatus);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -135,7 +135,7 @@ class TaskStatusController extends AbstractController
     {
         // get all the TaskStatus from the database
         try {
-            $productFamilies = $this->dao->getAllEntities(TaskStatus::class);
+            $productFamilies = $this->dao->getAll(TaskStatus::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -187,7 +187,7 @@ class TaskStatusController extends AbstractController
     {
         // get the license from the database by its id
         try {
-            $taskStatus = $this->dao->getOneEntityBy(TaskStatus::class, ['id' => $id]);
+            $taskStatus = $this->dao->getOneBy(TaskStatus::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -268,7 +268,7 @@ class TaskStatusController extends AbstractController
 
         // get the TaskStatus from the database by its id
         try {
-            $taskStatus = $this->dao->getOneEntityBy(TaskStatus::class, ['id' => $id]);
+            $taskStatus = $this->dao->getOneBy(TaskStatus::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -288,7 +288,7 @@ class TaskStatusController extends AbstractController
 
         // persist the taskStatus
         try {
-            $this->dao->updateEntity($taskStatus);
+            $this->dao->update($taskStatus);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -337,7 +337,7 @@ class TaskStatusController extends AbstractController
     {
         // get the TaskStatus from the database by its id
         try {
-            $taskStatus = $this->dao->getOneEntityBy(TaskStatus::class, ['id' => $id]);
+            $taskStatus = $this->dao->getOneBy(TaskStatus::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -349,7 +349,7 @@ class TaskStatusController extends AbstractController
 
         // remove the TaskStatus
         try {
-            $this->dao->deleteEntity($taskStatus);
+            $this->dao->delete($taskStatus);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

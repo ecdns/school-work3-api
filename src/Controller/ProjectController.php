@@ -122,10 +122,10 @@ class ProjectController extends AbstractController
 
         // get the project FK from the database by its id
         try {
-            $companyObject = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
-            $creatorObject = $this->dao->getOneEntityBy(User::class, ['id' => $creator]);
-            $customerObject = $this->dao->getOneEntityBy(Customer::class, ['id' => $customer]);
-            $projectStatusObject = $this->dao->getOneEntityBy(ProjectStatus::class, ['id' => $projectStatus]);
+            $companyObject = $this->dao->getOneBy(Company::class, ['id' => $company]);
+            $creatorObject = $this->dao->getOneBy(User::class, ['id' => $creator]);
+            $customerObject = $this->dao->getOneBy(Customer::class, ['id' => $customer]);
+            $projectStatusObject = $this->dao->getOneBy(ProjectStatus::class, ['id' => $projectStatus]);
 
             if (!$companyObject || !$creatorObject || !$customerObject || !$projectStatusObject) {
                 $this->request->handleErrorAndQuit(404, new Exception('Company, User, Customer or ProjectStatus not found'));
@@ -140,7 +140,7 @@ class ProjectController extends AbstractController
 
         // add the Project to the database
         try {
-            $this->dao->addEntity($project);
+            $this->dao->add($project);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -179,7 +179,7 @@ class ProjectController extends AbstractController
         // get all roles
         try {
             //get all Projects
-            $projects = $this->dao->getAllEntities(Project::class);
+            $projects = $this->dao->getAll(Project::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -229,7 +229,7 @@ class ProjectController extends AbstractController
         // get all roles
         try {
             //get all project by company
-            $projects = $this->dao->getEntitiesBy(Project::class, ['company' => $id]);
+            $projects = $this->dao->getBy(Project::class, ['company' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -281,7 +281,7 @@ class ProjectController extends AbstractController
     {
         // get the project by id
         try {
-            $project= $this->dao->getOneEntityBy(Project::class, ['id' => $id]);
+            $project= $this->dao->getOneBy(Project::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -357,7 +357,7 @@ class ProjectController extends AbstractController
 
         // get the Project by id
         try {
-            $project = $this->dao->getOneEntityBy(Project::class, ['id' => $id]);
+            $project = $this->dao->getOneBy(Project::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -387,10 +387,10 @@ class ProjectController extends AbstractController
 
 
         try {
-            $companyObject = $this->dao->getOneEntityBy(Company::class, ['id' => $company]);
-            $creatorObject = $this->dao->getOneEntityBy(User::class, ['id' => $creator]);
-            $customerObject = $this->dao->getOneEntityBy(Customer::class, ['id' => $customer]);
-            $projectStatusObject = $this->dao->getOneEntityBy(ProjectStatus::class, ['id' => $projectStatus]);
+            $companyObject = $this->dao->getOneBy(Company::class, ['id' => $company]);
+            $creatorObject = $this->dao->getOneBy(User::class, ['id' => $creator]);
+            $customerObject = $this->dao->getOneBy(Customer::class, ['id' => $customer]);
+            $projectStatusObject = $this->dao->getOneBy(ProjectStatus::class, ['id' => $projectStatus]);
 
             if (!$companyObject || !$creatorObject || !$customerObject || !$projectStatusObject) {
                 $this->request->handleErrorAndQuit(404, new Exception('Company, User, Customer or ProjectStatus not found'));
@@ -411,7 +411,7 @@ class ProjectController extends AbstractController
 
         // update the project in the database
         try {
-            $this->dao->updateEntity($project);
+            $this->dao->update($project);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -460,7 +460,7 @@ class ProjectController extends AbstractController
     {
         // get the Project by id
         try {
-            $project = $this->dao->getOneEntityBy(Project::class, ['id' => $id]);
+            $project = $this->dao->getOneBy(Project::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -472,7 +472,7 @@ class ProjectController extends AbstractController
 
         // remove the Project
         try {
-            $this->dao->deleteEntity($project);
+            $this->dao->delete($project);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

@@ -97,7 +97,7 @@ class ProjectStatusController extends AbstractController
 
         // persist the projectStatus
         try {
-            $this->dao->addEntity($projectStatus);
+            $this->dao->add($projectStatus);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -135,7 +135,7 @@ class ProjectStatusController extends AbstractController
     {
         // get all the ProjectStatus from the database
         try {
-            $productFamilies = $this->dao->getAllEntities(ProjectStatus::class);
+            $productFamilies = $this->dao->getAll(ProjectStatus::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -187,7 +187,7 @@ class ProjectStatusController extends AbstractController
     {
         // get the license from the database by its id
         try {
-            $projectStatus = $this->dao->getOneEntityBy(ProjectStatus::class, ['id' => $id]);
+            $projectStatus = $this->dao->getOneBy(ProjectStatus::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -270,7 +270,7 @@ class ProjectStatusController extends AbstractController
 
         // get the ProjectStatus from the database by its id
         try {
-            $projectStatus = $this->dao->getOneEntityBy(ProjectStatus::class, ['id' => $id]);
+            $projectStatus = $this->dao->getOneBy(ProjectStatus::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -290,7 +290,7 @@ class ProjectStatusController extends AbstractController
 
         // persist the projectStatus
         try {
-            $this->dao->updateEntity($projectStatus);
+            $this->dao->update($projectStatus);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -339,7 +339,7 @@ class ProjectStatusController extends AbstractController
     {
         // get the ProjectStatus from the database by its id
         try {
-            $projectStatus = $this->dao->getOneEntityBy(ProjectStatus::class, ['id' => $id]);
+            $projectStatus = $this->dao->getOneBy(ProjectStatus::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -351,7 +351,7 @@ class ProjectStatusController extends AbstractController
 
         // remove the ProjectStatus
         try {
-            $this->dao->deleteEntity($projectStatus);
+            $this->dao->delete($projectStatus);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

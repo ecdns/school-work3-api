@@ -102,7 +102,7 @@ class RoleController extends AbstractController
 
         // add the role to the database
         try {
-            $this->dao->addEntity($role);
+            $this->dao->add($role);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -140,7 +140,7 @@ class RoleController extends AbstractController
     {
         // get all roles
         try {
-            $roles = $this->dao->getAllEntities(Role::class);
+            $roles = $this->dao->getAll(Role::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -189,7 +189,7 @@ class RoleController extends AbstractController
     {
         // get the role by id
         try {
-            $role = $this->dao->getOneEntityBy(Role::class, ['id' => $id]);
+            $role = $this->dao->getOneBy(Role::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -268,7 +268,7 @@ class RoleController extends AbstractController
 
         // get the role by id
         try {
-            $role = $this->dao->getOneEntityBy(Role::class, ['id' => $id]);
+            $role = $this->dao->getOneBy(Role::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -288,7 +288,7 @@ class RoleController extends AbstractController
 
         // flush the entity manager
         try {
-            $this->dao->updateEntity($role);
+            $this->dao->update($role);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -333,7 +333,7 @@ class RoleController extends AbstractController
     {
         // get the role by id
         try {
-            $role = $this->dao->getOneEntityBy(Role::class, ['id' => $id]);
+            $role = $this->dao->getOneBy(Role::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -345,7 +345,7 @@ class RoleController extends AbstractController
 
         // remove the role
         try {
-            $this->dao->deleteEntity($role);
+            $this->dao->delete($role);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

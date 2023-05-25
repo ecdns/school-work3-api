@@ -103,7 +103,7 @@ class CompanySettingsController extends AbstractController
 
         // get the company from the database by its name
         try {
-            $companyId = $this->dao->getOneEntityBy(Company::class, ['id' => $companyId]);
+            $companyId = $this->dao->getOneBy(Company::class, ['id' => $companyId]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -121,7 +121,7 @@ class CompanySettingsController extends AbstractController
 
         // persist (save) the company settings in the database (this will also save the company settings in the company table)
         try {
-            $this->dao->addEntity($companySettings);
+            $this->dao->add($companySettings);
         } catch (Exception $e) {
             if (str_contains($e->getMessage(), 'constraint violation')) {
                 $this->request->handleErrorAndQuit(409, new Exception('Company settings already exist'));
@@ -168,7 +168,7 @@ class CompanySettingsController extends AbstractController
     {
         // get the company settings from the database by its id
         try {
-            $companySettings = $this->dao->getOneEntityBy(CompanySettings::class, ['id' => $id]);
+            $companySettings = $this->dao->getOneBy(CompanySettings::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -251,7 +251,7 @@ class CompanySettingsController extends AbstractController
 
         // get the company settings from the database by its id
         try {
-            $companySettings = $this->dao->getOneEntityBy(CompanySettings::class, ['id' => $id]);
+            $companySettings = $this->dao->getOneBy(CompanySettings::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -273,7 +273,7 @@ class CompanySettingsController extends AbstractController
 
         // persist
         try {
-            $this->dao->updateEntity($companySettings);
+            $this->dao->update($companySettings);
         } catch (Exception $e) {
             if (str_contains($e->getMessage(), 'constraint violation')) {
                 $this->request->handleErrorAndQuit(409, new Exception('Company settings already exist'));
@@ -318,7 +318,7 @@ class CompanySettingsController extends AbstractController
     {
         // get the company settings from the database by its id
         try {
-            $companySettings = $this->dao->getOneEntityBy(CompanySettings::class, ['id' => $id]);
+            $companySettings = $this->dao->getOneBy(CompanySettings::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -330,7 +330,7 @@ class CompanySettingsController extends AbstractController
 
         // remove the company settings
         try {
-            $this->dao->deleteEntity($companySettings);
+            $this->dao->delete($companySettings);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

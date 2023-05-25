@@ -50,7 +50,7 @@ class EstimateStatusController extends AbstractController
 
         // persist the estimateStatus
         try {
-            $this->dao->addEntity($estimateStatus);
+            $this->dao->add($estimateStatus);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -69,7 +69,7 @@ class EstimateStatusController extends AbstractController
     {
         // get all the EstimateStatus from the database
         try {
-            $productFamilies = $this->dao->getAllEntities(EstimateStatus::class);
+            $productFamilies = $this->dao->getAll(EstimateStatus::class);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -88,7 +88,7 @@ class EstimateStatusController extends AbstractController
     {
         // get the license from the database by its id
         try {
-            $estimateStatus = $this->dao->getOneEntityBy(EstimateStatus::class, ['id' => $id]);
+            $estimateStatus = $this->dao->getOneBy(EstimateStatus::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -127,7 +127,7 @@ class EstimateStatusController extends AbstractController
 
         // get the EstimateStatus from the database by its id
         try {
-            $estimateStatus = $this->dao->getOneEntityBy(EstimateStatus::class, ['id' => $id]);
+            $estimateStatus = $this->dao->getOneBy(EstimateStatus::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -147,7 +147,7 @@ class EstimateStatusController extends AbstractController
 
         // persist the estimateStatus
         try {
-            $this->dao->updateEntity($estimateStatus);
+            $this->dao->update($estimateStatus);
         } catch (Exception $e) {
             $error = $e->getMessage();
             if (str_contains($error, 'constraint violation')) {
@@ -166,7 +166,7 @@ class EstimateStatusController extends AbstractController
     {
         // get the EstimateStatus from the database by its id
         try {
-            $estimateStatus = $this->dao->getOneEntityBy(EstimateStatus::class, ['id' => $id]);
+            $estimateStatus = $this->dao->getOneBy(EstimateStatus::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -178,7 +178,7 @@ class EstimateStatusController extends AbstractController
 
         // remove the EstimateStatus
         try {
-            $this->dao->deleteEntity($estimateStatus);
+            $this->dao->delete($estimateStatus);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
