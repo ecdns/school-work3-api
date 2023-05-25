@@ -8,6 +8,7 @@ use Controller\CompanyController;
 use Controller\CompanySettingsController;
 use Controller\CustomerController;
 use Controller\CustomerStatusController;
+use Controller\DocumentationController;
 use Controller\EstimateController;
 use Controller\EstimateStatusController;
 use Controller\InvoiceController;
@@ -209,7 +210,10 @@ class Router
                 $r->addRoute('PUT', '/orderForm/{id:\d+}', [OrderFormController::class, 'updateOrderForm']);
                 $r->addRoute('DELETE', '/orderForm/{id:\d+}', [OrderFormController::class, 'deleteOrderForm']);
             });
-
+            // add a groupe for documentation
+            $r->addGroup('/doc', function (RouteCollector $r) {
+                $r->addRoute('GET', '/v1', [DocumentationController::class, 'getDocumentation']);
+            });
         });
     }
 
