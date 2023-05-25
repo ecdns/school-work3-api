@@ -200,9 +200,9 @@ class EstimateController extends AbstractController
 
         try {
 
-            $projectObject = $this->dao->getOneEntityBy(Project::class, ['id' => $project]);
+            $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project]);
 
-            $estimateStatusObject = $this->dao->getOneEntityBy(EstimateStatus::class, ['id' => $estimateStatus]);
+            $estimateStatusObject = $this->dao->getOneBy(EstimateStatus::class, ['id' => $estimateStatus]);
 
             if (gettype($expiredAt) == 'string') {
                 $expiredAt = DateTime::createFromFormat('Y-m-d', $expiredAt);
@@ -255,9 +255,9 @@ class EstimateController extends AbstractController
 
         // get the estimate by id
         try {
-            $estimate = $this->dao->getOneEntityBy(Estimate::class, ['id' => $estimateId]);
+            $estimate = $this->dao->getOneBy(Estimate::class, ['id' => $estimateId]);
 
-            $product = $this->dao->getOneEntityBy(Product::class, ['id' => $productId]);
+            $product = $this->dao->getOneBy(Product::class, ['id' => $productId]);
 
             //if the estimate is not found
             if (!$estimate || !$product) {
@@ -269,15 +269,15 @@ class EstimateController extends AbstractController
 
         //get EstimateProduct by estimate and product
         try {
-            $estimateProduct = $this->dao->getOneEntityBy(EstimateProduct::class, ['estimate' => $estimate, 'product' => $product]);
+            $estimateProduct = $this->dao->getOneBy(EstimateProduct::class, ['estimate' => $estimate, 'product' => $product]);
             if ($estimateProduct==null) {
                 $estimateProduct = new EstimateProduct($estimate, $product, 1);
-                $this->dao->addEntity($estimateProduct);
+                $this->dao->add($estimateProduct);
                 $estimate->addEstimateProduct($estimateProduct);
-                $this->dao->updateEntity($estimate);
+                $this->dao->update($estimate);
             }else{
                 $estimateProduct->setQuantity($estimateProduct->getQuantity()+1);
-                $this->dao->updateEntity($estimateProduct);
+                $this->dao->update($estimateProduct);
             }
 
         } catch (Exception $e) {
