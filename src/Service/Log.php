@@ -7,6 +7,28 @@ namespace Service;
 class Log
 {
 
+    private const LOG_DIR = __DIR__ . '/../../log/';
+    private const SUCCESS_LOG = self::LOG_DIR . 'success.log';
+    private const ERROR_LOG = self::LOG_DIR . 'error.log';
+
+    public function __construct()
+    {
+        $this->init();
+    }
+
+    private function init(): void
+    {
+        if (!file_exists(self::LOG_DIR)) {
+            mkdir(self::LOG_DIR);
+        }
+        if (!file_exists(self::SUCCESS_LOG)) {
+            touch(self::SUCCESS_LOG);
+        }
+        if (!file_exists(self::ERROR_LOG)) {
+            touch(self::ERROR_LOG);
+        }
+    }
+
     public function getContext(): string
     {
         $context = '';
@@ -57,14 +79,14 @@ class Log
 
     public function addSuccessLog(string $message): void
     {
-        $file = fopen('../log/success.log', 'a+');
+        $file = fopen(self::SUCCESS_LOG, 'a+');
         fwrite($file, date('Y-m-d H:i:s') . ' - ' . $message . PHP_EOL);
         fclose($file);
     }
 
     public function addErrorLog(string $message): void
     {
-        $file = fopen('../log/error.log', 'a+');
+        $file = fopen(self::ERROR_LOG, 'a+');
         fwrite($file, date('Y-m-d H:i:s') . ' - ' . $message . PHP_EOL);
         fclose($file);
     }
