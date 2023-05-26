@@ -298,7 +298,7 @@ class Router
      */
     private function authentication(array $requestInfo): void
     {
-        if ($requestInfo[1][0] !== UserController::class || $requestInfo[1][1] !== 'loginUser' || $requestInfo[1][0] !== DocumentationController::class) $this->authenticate();
+        if ($requestInfo[1][1] !== 'loginUser' || $requestInfo[1][1] !== 'getDocumentation') $this->authenticate();
     }
 
 }
