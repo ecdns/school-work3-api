@@ -3,7 +3,6 @@
 namespace Controller;
 
 // controller for entity EstimateStatus
-use Doctrine\ORM\EntityManager;
 use Entity\EstimateStatus;
 use Exception;
 use Service\DAO;

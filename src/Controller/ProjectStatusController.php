@@ -3,7 +3,6 @@
 namespace Controller;
 
 // controller for entity ProjectStatus
-use Doctrine\ORM\EntityManager;
 use Entity\ProjectStatus;
 use Exception;
 use Service\DAO;

@@ -3,7 +3,6 @@
 namespace Controller;
 
 // controller for entity CustomerStatus
-use Doctrine\ORM\EntityManager;
 use Entity\CustomerStatus;
 use Exception;
 use Service\DAO;

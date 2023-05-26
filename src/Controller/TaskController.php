@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Controller;
 
-use Doctrine\ORM\EntityManager;
-use Entity\Company;
-use Entity\Customer;
 use Entity\Project;
 use Entity\Task;
 use Entity\TaskStatus;

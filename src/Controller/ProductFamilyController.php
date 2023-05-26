@@ -3,7 +3,6 @@
 namespace Controller;
 
 // controller for entity ProductFamily
-use Doctrine\ORM\EntityManager;
 use Entity\Company;
 use Entity\ProductFamily;
 use Exception;
@@ -15,7 +14,8 @@ use Service\Request;
  *     schema="ProductFamilyRequest",
  *     required={"name", "description"},
  *     @OA\Property(property="name", type="string", example="Salle de Bain"),
- *     @OA\Property(property="description", type="string", example="Catégorie regroupant tous les produits pour la salle de bain")
+ *     @OA\Property(property="description", type="string", example="Catégorie regroupant tous les produits pour la salle de bain"),
+ *     @OA\Property(property="company", type="integer", example=1)
  * )
  *
  * @OA\Schema (
@@ -23,6 +23,7 @@ use Service\Request;
  *     @OA\Property(property="id", type="integer", example=1),
  *     @OA\Property(property="name", type="string", example="Salle de Bain"),
  *     @OA\Property(property="description", type="string", example="Catégorie regroupant tous les produits pour la salle de bain"),
+ *     @OA\Property(property="company", type="object", ref="#/components/schemas/CompanyResponse"),
  *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-03-01 00:00:00"),
  *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-03-01 00:00:00")
  * )

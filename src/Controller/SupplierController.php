@@ -3,10 +3,7 @@
 namespace Controller;
 
 // controller for entity Supplier
-use Doctrine\ORM\EntityManager;
 use Entity\Company;
-use Entity\License;
-use Entity\ProductFamily;
 use Entity\Supplier;
 use Exception;
 use Service\DAO;

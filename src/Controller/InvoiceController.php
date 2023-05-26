@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Controller;
 
-use DateTime;
 use Entity\Invoice;
 use Entity\InvoiceProduct;
 use Entity\Product;

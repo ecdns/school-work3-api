@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Controller;
 
-use Doctrine\ORM\EntityManager;
 use Entity\UserSettings;
 use Exception;
 use Service\DAO;

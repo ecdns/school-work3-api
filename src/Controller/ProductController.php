@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Controller;
 
-use Doctrine\ORM\EntityManager;
 use Entity\Company;
 use Entity\Product;
 use Entity\ProductFamily;
 use Entity\QuantityUnit;
-use Entity\Role;
 use Entity\Supplier;
 use Entity\Vat;
 use Exception;

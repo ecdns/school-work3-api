@@ -4,14 +4,9 @@ declare(strict_types=1);
 
 namespace Controller;
 
-use DateInterval;
-use DateTime;
-use Doctrine\ORM\EntityManager;
 use Entity\Company;
 use Entity\Customer;
 use Entity\CustomerStatus;
-use Entity\License;
-use Entity\ProjectStatus;
 use Entity\User;
 use Exception;
 use Service\DAO;

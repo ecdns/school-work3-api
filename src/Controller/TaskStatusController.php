@@ -3,7 +3,6 @@
 namespace Controller;
 
 // controller for entity TaskStatus
-use Doctrine\ORM\EntityManager;
 use Entity\TaskStatus;
 use Exception;
 use Service\DAO;
