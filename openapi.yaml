@@ -6,7 +6,7 @@ info:
   version: 1.0.0
 servers:
   -
-    url: 'http://cyber-dodo.fr/api/v1'
+    url: 'http://cyber-dodo.fr:8080/api/v1'
     description: 'Cube-3 API'
 paths:
   /company:
@@ -3175,7 +3175,7 @@ components:
           type: string
           example: '#000000'
         company:
-          type: id
+          type: integer
           example: 1
       type: object
     CompanySettingsResponse:
@@ -4343,3 +4343,7 @@ components:
       description: 'ProjectStatus not found'
     '500':
       description: 'Internal Server Error'
+  securitySchemes:
+    bearer:
+      type: http
+      bearerFormat: JWT
