@@ -54,7 +54,8 @@ $builder->addDefinitions([
         ->constructorParameter('jwtKey', getenv('JWT_KEY')),
 
     // Service\Auth
-    'Service\Auth' => DI\autowire(),
+    'Service\Auth' => DI\autowire()
+        ->constructorParameter('passwordKey', getenv('PASSWORD_KEY')),
 
     // Controllers
     'Controller\CompanyController' => DI\autowire()
