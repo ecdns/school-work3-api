@@ -28,6 +28,9 @@ use Controller\UserController;
 use Controller\UserSettingsController;
 use Controller\VatController;
 use DI\Container;
+use DI\DependencyException;
+use DI\NotFoundException;
+use Entity\User;
 use Exception;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
@@ -39,11 +42,17 @@ class Router
     private Dispatcher $dispatcher;
     private Request $request;
     private Container $container;
+    private Auth $auth;
+    private DAO $dao;
+    private string $jwtKey;
 
-    public function __construct(Request $request, Container $container)
+    public function __construct(Request $request, Container $container, Auth $auth, DAO $dao, string $jwtKey)
     {
         $this->request = $request;
         $this->container = $container;
+        $this->auth = $auth;
+        $this->dao = $dao;
+        $this->jwtKey = $jwtKey;
         $this->dispatcher = $this->addRoutes();
     }
 
@@ -233,6 +242,11 @@ class Router
         return $this->dispatcher->dispatch($requestMethod, $route);
     }
 
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws Exception
+     */
     public function trigRequest(array $requestInfo): void
     {
         switch ($requestInfo[0]) {
@@ -242,6 +256,7 @@ class Router
                 $allowedMethods = $requestInfo[1];
                 $this->request->handleErrorAndQuit(405, new Exception('Method not allowed. Allowed methods: ' . implode(', ', $allowedMethods)));
             case Dispatcher::FOUND:
+                $this->authenticate();
                 $controller = $this->container->get($requestInfo[1][0]);
                 $method = $requestInfo[1][1];
                 $params = $requestInfo[2];
@@ -249,6 +264,30 @@ class Router
                 break;
             default:
                 $this->request->handleErrorAndQuit(500, new Exception('Internal server error'));
+        }
+    }
+
+    /**
+     * @return void
+     * @throws Exception
+     */
+    public function authenticate(): void
+    {
+        $headers = getallheaders();
+        $token = $headers['Authorization'] ?? null;
+        // check if token is valid
+        if ($token) {
+            $token = explode(' ', $token)[1];
+            $isTokenValid = $this->auth->authenticateRequestToken($this->jwtKey, $token);
+            if (!$isTokenValid) {
+                $this->request->handleErrorAndQuit(401, new Exception('Unauthorized'));
+            }
+        }
+
+        $user = $this->dao->getOneBy(User::class, ['jwt' => $token]);
+
+        if (!$user) {
+            $this->request->handleErrorAndQuit(401, new Exception('Unauthorized'));
         }
     }
 }

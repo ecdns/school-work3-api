@@ -45,13 +45,15 @@ class UserController extends AbstractController
     private DAO $dao;
     private Request $request;
     private Auth $auth;
+    private string $jwtKey;
     private const REQUIRED_FIELDS = ['firstName', 'lastName', 'email', 'password', 'job', 'phone', 'role', 'company'];
 
-    public function __construct(DAO $dao, Request $request, Auth $auth)
+    public function __construct(DAO $dao, Request $request, Auth $auth, string $jwtKey)
     {
         $this->dao = $dao;
         $this->request = $request;
         $this->auth = $auth;
+        $this->jwtKey = $jwtKey;
     }
 
     /**
@@ -519,13 +521,28 @@ class UserController extends AbstractController
             $this->request->handleErrorAndQuit(401, new Exception('Incorrect password'));
         }
 
+        $jwt = $this->auth->encodeJWT($email, $this->jwtKey);
+
+        $response = [
+            'jwt' => $jwt
+        ];
+
+        // add the jwt to the user
+        $user->setJwt($jwt);
+
+        try {
+            $this->dao->update($user);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, new Exception('Could not update user'));
+        }
+
         // check if the user company is active
         if (!$user->getCompany()->getIsEnabled()) {
             $this->request->handleErrorAndQuit(401, new Exception('Company is not active'));
         }
 
         // handle the response
-        $this->request->handleSuccessAndQuit(200, 'User logged in');
+        $this->request->handleSuccessAndQuit(200, 'User logged in', $response);
     }
 
 }

@@ -19,7 +19,7 @@ if (false !== $pos = strpos($uri, '?')) {
 $container = require '../config/di.php';
 
 // Création du routeur
-$router = new Router($container->get('Service\Request'), $container);
+$router = $container->get(Router::class);
 
 // Décodage de l'URI
 $uri = rawurldecode($uri);
