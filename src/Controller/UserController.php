@@ -550,6 +550,34 @@ class UserController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'User logged in', $response);
     }
 
+
+    /**
+     * Get current user
+     *
+     * @OA\Get(
+     *     path="/user/me",
+     *     tags={"User"},
+     *     summary="Get current user",
+     *     description="Returns the current user",
+     *     @OA\Response(
+     *         response="200",
+     *         description="User found",
+     *         @OA\JsonContent(ref="#/components/schemas/UserResponse")
+     *     ),
+     *     @OA\Response(
+     *         response="401",
+     *         description="Unauthorized"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="No users found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getMe(): void
     {
 
@@ -559,6 +587,10 @@ class UserController extends AbstractController
 
         try {
             $user = $this->dao->getOneBy(User::class, ['jwt' => $token]);
+
+            if (!$user) {
+                $this->request->handleErrorAndQuit(404, new Exception('User not found'));
+            }
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, new Exception('Could not get user'));
         }
@@ -566,5 +598,6 @@ class UserController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'User found', $user->toArray());
     }
+
 
 }
