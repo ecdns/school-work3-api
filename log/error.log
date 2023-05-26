@@ -121,3 +121,15 @@
 2023-05-26 11:38:02 - /api/v1/user/all - GET - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/113.0 - 185.228.228.209 - No users found
 2023-05-26 11:38:29 - /favicon.ico - GET - http://cyber-dodo.fr:8080/doc/v1 - Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 - 195.25.86.165 - Not found
 2023-05-26 11:38:29 - /favicon.ico - GET - http://cyber-dodo.fr:8080/doc/v1 - Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 - 195.25.86.165 - Not found
+2023-05-26 11:49:59 - /favicon.ico - GET - http://cyber-dodo.fr:8080/doc/v1 - Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 - 37.170.80.150 - Not found
+2023-05-26 11:51:17 - /api/v1/authenticate - OPTIONS - http://localhost:9000/ - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 - 195.25.86.165 - Not found
+2023-05-26 11:52:29 - /api/v1/authenticate - OPTIONS - http://localhost:9000/ - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 - 195.25.86.165 - Not found
+2023-05-26 11:54:32 - /api/v1/user/login - OPTIONS - http://localhost:9000/ - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 - 195.25.86.165 - Method not allowed. Allowed methods: POST
+2023-05-26 11:54:42 - /api/v1/user/login - GET - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 - 195.25.86.165 - Method not allowed. Allowed methods: POST
+2023-05-26 11:55:00 - /api/v1/user/login - GET - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 - 195.25.86.165 - Method not allowed. Allowed methods: POST
+2023-05-26 11:56:54 - cn.bing.com:443 - CONNECT - Go-http-client/1.1 - 198.144.159.126 - Not found
+2023-05-26 12:03:47 - /api/v1/user/login - GET - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 - 195.25.86.165 - Method not allowed. Allowed methods: POST
+2023-05-26 12:46:47 - / - GET - 218.159.23.59 - Not found
+2023-05-26 13:05:09 - /api/v1/user/login - OPTIONS - http://localhost:9000/ - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 - 195.25.86.165 - Method not allowed. Allowed methods: POST
+2023-05-26 13:05:25 - /api/v1/user/login - GET - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 - 195.25.86.165 - Method not allowed. Allowed methods: POST
+2023-05-26 13:18:39 - /api/v1/user/login - OPTIONS - http://localhost:9000/ - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 - 195.25.86.165 - Method not allowed. Allowed methods: POST
