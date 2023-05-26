@@ -12,19 +12,18 @@ use Service\Request;
 /**
  * @OA\Schema (
  *     schema="MessageRequest",
- *     required={"name", "rate", "description"},
- *     @OA\Property(property="name", type="string", example="20%"),
- *     @OA\Property(property="rate", type="integer", example=20),
- *     @OA\Property(property="description", type="string", example="20% VAT")
+ *     required={"sender", "project", "message"},
+ *     @OA\Property(property="sender", type="integer", example=1),
+ *     @OA\Property(property="project", type="integer", example=1),
+ *     @OA\Property(property="message", type="string", example="Hello world"),
  * )
  *
  * @OA\Schema (
  *     schema="MessageResponse",
- *     required={"id", "name", "rate", "description"},
  *     @OA\Property(property="id", type="integer", example=1),
- *     @OA\Property(property="name", type="string", example="20%"),
- *     @OA\Property(property="rate", type="integer", example=20),
- *     @OA\Property(property="description", type="string", example="20% VAT"),
+ *     @OA\Property(property="sender", type="integer", example=1),
+ *     @OA\Property(property="project", type="integer", example=1),
+ *     @OA\Property(property="message", type="string", example="Hello world"),
  *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
  *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00")
  * )

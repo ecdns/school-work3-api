@@ -1183,6 +1183,129 @@ paths:
           description: 'License not found'
         '500':
           description: 'Internal server error'
+  /message:
+    post:
+      tags:
+        - Message
+      summary: 'Add a new message'
+      description: 'Add a new message'
+      operationId: ddc64af8f993dcd8e7c37c8ac4029f50
+      requestBody:
+        description: 'Message object that needs to be added'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageRequest'
+      responses:
+        '201':
+          description: 'Message created'
+        '400':
+          description: 'Invalid request data'
+        '409':
+          description: 'Message already exists'
+        '500':
+          description: 'Internal server error'
+  /message/all:
+    get:
+      tags:
+        - Message
+      summary: 'Get all messages'
+      description: 'Get all messages'
+      operationId: 8dcbe7de108be7f31d4c09a5e08f650f
+      responses:
+        '200':
+          description: 'Messages found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MessageResponse'
+        '500':
+          description: 'Internal server error'
+  '/message/{id}':
+    get:
+      tags:
+        - Message
+      summary: 'Get a message by id'
+      description: 'Get a message by id'
+      operationId: 534b93ecd16446baa3cc9f509f0a5a7d
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the message to get'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Message found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '404':
+          description: 'Message not found'
+        '500':
+          description: 'Internal server error'
+    put:
+      tags:
+        - Message
+      summary: 'Update a message by id'
+      description: 'Update a message by id'
+      operationId: 667ce3f51d74153d0f2397893afef32c
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the message to update'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: 'Message object that needs to be updated'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageRequest'
+      responses:
+        '200':
+          description: 'Message updated'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'Message not found'
+        '409':
+          description: 'Message already exists'
+        '500':
+          description: 'Internal server error'
+    delete:
+      tags:
+        - Message
+      summary: 'Delete a message by id'
+      description: 'Delete a message by id'
+      operationId: 11eddb8ef37c481aa259c8e55201c359
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the message to delete'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Message deleted'
+        '404':
+          description: 'Message not found'
+        '500':
+          description: 'Internal server error'
   /order-form:
     get:
       tags:
@@ -3453,6 +3576,45 @@ components:
           type: string
           format: date-time
           example: '2021-09-30 12:00:00'
+      type: object
+    MessageRequest:
+      required:
+        - sender
+        - project
+        - message
+      properties:
+        sender:
+          type: integer
+          example: 1
+        project:
+          type: integer
+          example: 1
+        message:
+          type: string
+          example: 'Hello world'
+      type: object
+    MessageResponse:
+      properties:
+        id:
+          type: integer
+          example: 1
+        sender:
+          type: integer
+          example: 1
+        project:
+          type: integer
+          example: 1
+        message:
+          type: string
+          example: 'Hello world'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
       type: object
     OrderFormRequest:
       required:
