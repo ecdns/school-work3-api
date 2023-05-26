@@ -22,10 +22,12 @@ class Log
             mkdir(self::LOG_DIR);
         }
         if (!file_exists(self::SUCCESS_LOG)) {
-            touch(self::SUCCESS_LOG);
+            $fichier = fopen(self::SUCCESS_LOG, 'w');
+            fclose($fichier);
         }
         if (!file_exists(self::ERROR_LOG)) {
-            touch(self::ERROR_LOG);
+            $fichier = fopen(self::ERROR_LOG, 'w');
+            fclose($fichier);
         }
     }
 
