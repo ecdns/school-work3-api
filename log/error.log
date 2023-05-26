@@ -118,3 +118,6 @@
 2023-05-26 10:51:28 - /api/v1/invoice/1/add/1 - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Method not allowed. Allowed methods: POST
 2023-05-26 11:15:18 - /api/v1/productFamilly/all - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Not found
 2023-05-26 11:15:23 - /api/v1/productFamily/all - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Method not allowed. Allowed methods: GET
+2023-05-26 11:38:02 - /api/v1/user/all - GET - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/113.0 - 185.228.228.209 - No users found
+2023-05-26 11:38:29 - /favicon.ico - GET - http://cyber-dodo.fr:8080/doc/v1 - Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 - 195.25.86.165 - Not found
+2023-05-26 11:38:29 - /favicon.ico - GET - http://cyber-dodo.fr:8080/doc/v1 - Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 - 195.25.86.165 - Not found
