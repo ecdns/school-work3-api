@@ -20,8 +20,10 @@ class Http
         echo json_encode($data);
     }
 
-    public function getAuthHeaderValue(array $headers): string|false
+    public function getAuthHeaderValue(): string|false
     {
+        $headers = getallheaders();
+
         if (isset($headers['Authorization'])) {
             $bearerToken = $headers['Authorization'];
             return explode(' ', $bearerToken)[1];

@@ -581,18 +581,20 @@ class UserController extends AbstractController
     public function getMe(): void
     {
 
-        // get the request headers using pure php
-        $headers = getallheaders();
-        $token = $this->http->getAuthHeaderValue($headers);
+        $token = $this->http->getAuthHeaderValue();
+
+        if (!$token) {
+            $this->request->handleErrorAndQuit(401, new Exception('Unauthorized'));
+        }
 
         try {
             $user = $this->dao->getOneBy(User::class, ['jwt' => $token]);
-
-            if (!$user) {
-                $this->request->handleErrorAndQuit(404, new Exception('User not found'));
-            }
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, new Exception('Could not get user'));
+        }
+
+        if (!$user) {
+            $this->request->handleErrorAndQuit(404, new Exception('User not found'));
         }
 
         // handle the response
