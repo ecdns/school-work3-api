@@ -78,6 +78,10 @@ class Company implements EntityInterface
     #[ORM\OneToOne(mappedBy: 'company', targetEntity: CompanySettings::class, cascade: ['persist', 'remove'])]
     private CompanySettings|null $companySettings;
 
+    // product families
+    #[ORM\OneToMany(mappedBy: 'company', targetEntity: ProductFamily::class)]
+    private Collection $productFamilies;
+
     public function __construct(
         string $name,
         string $address,

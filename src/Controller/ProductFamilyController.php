@@ -4,6 +4,7 @@ namespace Controller;
 
 // controller for entity ProductFamily
 use Doctrine\ORM\EntityManager;
+use Entity\Company;
 use Entity\ProductFamily;
 use Exception;
 use Service\DAO;
@@ -31,7 +32,7 @@ class ProductFamilyController extends AbstractController
 
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['name', 'description'];
+    private const REQUIRED_FIELDS = ['name', 'description', 'company'];
     
     public function __construct(DAO $dao, Request $request)
     {
@@ -77,6 +78,7 @@ class ProductFamilyController extends AbstractController
 //         {
 //             "name": "Salle de Bain",
 //             "description": "Catégorie regroupant tous les produits pour la salle de bain"
+//                    "company": 1
 //          }
 
         // decode the json
@@ -90,9 +92,22 @@ class ProductFamilyController extends AbstractController
         // get the ProductFamily data from the request body
         $name = $requestBody['name'];
         $description = $requestBody['description'];
+        $company = $requestBody['company'];
+
+        //get the company from the database
+        try {
+            $company = $this->dao->getOneBy(Company::class, ['id' => $company]);
+
+            if (!$company) {
+                $this->request->handleErrorAndQuit(404, new Exception('Company not found'));
+            }
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
 
         // create a new productFamily
-        $productFamily = new ProductFamily($name, $description);
+        $productFamily = new ProductFamily($name, $description, $company);
 
         // persist the productFamily
         try {
@@ -279,10 +294,22 @@ class ProductFamilyController extends AbstractController
         // get the ProductFamily data from the request body
         $name = $requestBody['name'] ?? $productFamily->getName();
         $description = $requestBody['description'] ?? $productFamily->getDescription();
+        $company = $requestBody['company'] ?? $productFamily->getCompany();
+
+        try {
+            $company = $this->dao->getOneBy(Company::class, ['id' => $company]);
+
+            if (!$company) {
+                $this->request->handleErrorAndQuit(404, new Exception('Company not found'));
+            }
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
 
         // update the productFamily
         $productFamily->setName($name);
         $productFamily->setDescription($description);
+        $productFamily->setCompany($company);
 
         // persist the productFamily
         try {

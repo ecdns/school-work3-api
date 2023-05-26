@@ -116,3 +116,5 @@
 2023-05-26 10:20:49 - /api/v1/estimate - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Method not allowed. Allowed methods: POST
 2023-05-26 10:49:32 - /api/v1/orderForm/1 - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Method not allowed. Allowed methods: GET, PUT, DELETE
 2023-05-26 10:51:28 - /api/v1/invoice/1/add/1 - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Method not allowed. Allowed methods: POST
+2023-05-26 11:15:18 - /api/v1/productFamilly/all - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Not found
+2023-05-26 11:15:23 - /api/v1/productFamily/all - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Method not allowed. Allowed methods: GET

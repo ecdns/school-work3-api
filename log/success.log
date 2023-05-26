@@ -289,3 +289,5 @@
 2023-05-26 10:49:25 - /api/v1/orderForm/1/add/1 - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Product added to OrderForm
 2023-05-26 10:49:38 - /api/v1/orderForm/1 - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - OrderForm found
 2023-05-26 10:51:33 - /api/v1/invoice/1/add/1 - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Product added to Invoice
+2023-05-26 11:15:27 - /api/v1/productFamily/all - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - ProductFamily found
+2023-05-26 11:17:31 - /api/v1/productFamily - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - ProductFamily created

@@ -23,6 +23,11 @@ class ProductFamily implements EntityInterface
     #[ORM\Column(type: 'string')]
     private string $description;
 
+    //company
+    #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'productFamilies')]
+    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private Company $company;
+
     #[ORM\Column(type: 'datetime', nullable: false)]
     private DateTime $createdAt;
 
@@ -32,10 +37,11 @@ class ProductFamily implements EntityInterface
     #[ORM\OneToMany(mappedBy: 'productFamily', targetEntity: Product::class)]
     private Collection $products;
 
-    public function __construct(string $name, string $description)
+    public function __construct(string $name, string $description, Company $company)
     {
         $this->name = $name;
         $this->description = $description;
+        $this->company =  $company;
     }
 
     public function getId(): int
@@ -71,6 +77,16 @@ class ProductFamily implements EntityInterface
     public function setDescription(string $description): void
     {
         $this->description = $description;
+    }
+
+    public function getCompany(): Company
+    {
+        return $this->company;
+    }
+
+    public function setCompany(Company $company): void
+    {
+        $this->company = $company;
     }
 
 
@@ -117,6 +133,7 @@ class ProductFamily implements EntityInterface
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
+            'company' => $this->company->toArray(),
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
         ];
@@ -128,6 +145,7 @@ class ProductFamily implements EntityInterface
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
+            'company' => $this->company->toArray(),
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
             'products' => $this->products->map(fn (Product $product) => $product->toArray())->toArray(),
