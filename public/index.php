@@ -13,7 +13,7 @@ $uri = $_SERVER["REQUEST_URI"];
 // allow CORS
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+header("Access-Control-Allow-Headers: *");
 
 // Suppression des paramètres GET dans l'URI si présents (ex: /users/1?name=John => /users/1)
 if (false !== $pos = strpos($uri, '?')) {
