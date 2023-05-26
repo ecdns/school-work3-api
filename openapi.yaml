@@ -2827,6 +2827,12 @@ paths:
       responses:
         '200':
           description: 'User logged in'
+          content:
+            application/json:
+              schema:
+                properties:
+                  token: { type: string, example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9... }
+                type: object
         '401':
           description: 'Incorrect password or company is not active'
         '404':
@@ -3804,6 +3810,9 @@ components:
         description:
           type: string
           example: 'Catégorie regroupant tous les produits pour la salle de bain'
+        company:
+          type: integer
+          example: 1
       type: object
     ProductFamilyResponse:
       properties:
@@ -3816,6 +3825,8 @@ components:
         description:
           type: string
           example: 'Catégorie regroupant tous les produits pour la salle de bain'
+        company:
+          $ref: '#/components/schemas/CompanyResponse'
         createdAt:
           type: string
           format: date-time

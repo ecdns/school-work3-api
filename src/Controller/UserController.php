@@ -118,7 +118,6 @@ class UserController extends AbstractController
         $lastName = $requestBody['lastName'];
         $email = $requestBody['email'];
         $password = $requestBody['password'];
-        $password = $this->auth->hashPassword($password); // hash the password (see Auth.php)
         $job = $requestBody['job'];
         $phone = $requestBody['phone'];
         $role = $requestBody['role'];
@@ -476,7 +475,10 @@ class UserController extends AbstractController
      *     ),
      *     @OA\Response(
      *         response="200",
-     *         description="User logged in"
+     *         description="User logged in",
+     *         @OA\JsonContent(
+     *              @OA\Property(property="token", type="string", example="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...")
+     *        )
      *     ),
      *     @OA\Response(
      *         response="401",
