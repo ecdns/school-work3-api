@@ -49,12 +49,13 @@ $builder->addDefinitions([
     'Service\Router' => DI\autowire()
         ->constructorParameter('request', DI\get('Service\Request'))
         ->constructorParameter('container', DI\get('DI\Container'))
-        ->constructorParameter('auth', DI\get('Service\Auth'))
-        ->constructorParameter('dao', DI\get('Service\DAO'))
-        ->constructorParameter('jwtKey', getenv('JWT_KEY')),
+        ->constructorParameter('auth', DI\get('Service\Auth')),
 
     // Service\Auth
     'Service\Auth' => DI\autowire()
+        ->constructorParameter('request', DI\get('Service\Request'))
+        ->constructorParameter('dao', DI\get('Service\DAO'))
+        ->constructorParameter('jwtKey', getenv('JWT_KEY'))
         ->constructorParameter('passwordKey', getenv('PASSWORD_KEY')),
 
     // Controllers

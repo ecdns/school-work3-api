@@ -43,16 +43,12 @@ class Router
     private Request $request;
     private Container $container;
     private Auth $auth;
-    private DAO $dao;
-    private string $jwtKey;
 
-    public function __construct(Request $request, Container $container, Auth $auth, DAO $dao, string $jwtKey)
+    public function __construct(Request $request, Container $container, Auth $auth)
     {
         $this->request = $request;
         $this->container = $container;
         $this->auth = $auth;
-        $this->dao = $dao;
-        $this->jwtKey = $jwtKey;
         $this->dispatcher = $this->addRoutes();
     }
 
@@ -257,7 +253,7 @@ class Router
                 $allowedMethods = $requestInfo[1];
                 $this->request->handleErrorAndQuit(405, new Exception('Method not allowed. Allowed methods: ' . implode(', ', $allowedMethods)));
             case Dispatcher::FOUND:
-                $this->authentication($requestInfo);
+                $this->auth->authenticateRequest($requestInfo);
                 $controller = $this->container->get($requestInfo[1][0]);
                 $method = $requestInfo[1][1];
                 $params = $requestInfo[2];
@@ -266,40 +262,6 @@ class Router
             default:
                 $this->request->handleErrorAndQuit(500, new Exception('Internal server error'));
         }
-    }
-
-    /**
-     * @return void
-     * @throws Exception
-     */
-    private function authenticate(): void
-    {
-        $headers = getallheaders();
-        $token = $headers['Authorization'] ?? null;
-        // check if token is valid
-        if ($token) {
-            $token = explode(' ', $token)[1];
-            $isTokenValid = $this->auth->authenticateRequestToken($this->jwtKey, $token);
-            if (!$isTokenValid) {
-                $this->request->handleErrorAndQuit(401, new Exception('Unauthorized'));
-            }
-        } else {
-            $this->request->handleErrorAndQuit(401, new Exception('Unauthorized'));
-        }
-
-        $user = $this->dao->getOneBy(User::class, ['jwt' => $token]);
-
-        if (!$user) {
-            $this->request->handleErrorAndQuit(401, new Exception('Unauthorized'));
-        }
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function authentication(array $requestInfo): void
-    {
-        if ($requestInfo[1][1] != 'loginUser' && $requestInfo[1][1] != 'getDocumentation') $this->authenticate();
     }
 
 }

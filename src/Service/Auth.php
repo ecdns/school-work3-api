@@ -4,16 +4,23 @@ declare(strict_types=1);
 
 namespace Service;
 
+use Entity\User;
 use Exception;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
 class Auth
 {
+    private Request $request;
+    private DAO $dao;
+    private string $jwtKey;
     private string $passwordKey;
 
-    public function __construct(string $passwordKey)
+    public function __construct(Request $request, DAO $dao, string $jwtKey, string $passwordKey)
     {
+        $this->request = $request;
+        $this->dao = $dao;
+        $this->jwtKey = $jwtKey;
         $this->passwordKey = $passwordKey;
     }
 
@@ -52,9 +59,6 @@ class Auth
         return $this->decodeJWT($jwtKey, $jwt);
     }
 
-    /**
-     * @throws Exception
-     */
     private function decodeJWT($jwtKey, $jwt): bool
     {
         try {
@@ -64,6 +68,41 @@ class Auth
             return false;
         }
 
+    }
+
+    public function processAuthentication(): void
+    {
+        $headers = getallheaders();
+        $token = $headers['Authorization'] ?? null;
+
+        if ($token) {
+
+            $token = explode(' ', $token)[1];
+
+            $isTokenValid = $this->authenticateRequestToken($this->jwtKey, $token);
+
+            if (!$isTokenValid) {
+                $this->request->handleErrorAndQuit(401, new Exception('Unauthorized'));
+            }
+
+        } else {
+            $this->request->handleErrorAndQuit(401, new Exception('Unauthorized'));
+        }
+
+        try {
+            $user = $this->dao->getOneBy(User::class, ['jwt' => $token]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(401, new Exception('Unauthorized'));
+        }
+
+        if (!$user) {
+            $this->request->handleErrorAndQuit(401, new Exception('Unauthorized'));
+        }
+    }
+
+    public function authenticateRequest(array $requestInfo): void
+    {
+        if ($requestInfo[1][1] != 'loginUser' && $requestInfo[1][1] != 'getDocumentation') $this->processAuthentication();
     }
 
 }
