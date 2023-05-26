@@ -10,6 +10,7 @@ use Entity\User;
 use Exception;
 use Service\Auth;
 use Service\DAO;
+use Service\Http;
 use Service\Request;
 
 /**
@@ -45,14 +46,16 @@ class UserController extends AbstractController
     private DAO $dao;
     private Request $request;
     private Auth $auth;
+    private Http $http;
     private string $jwtKey;
     private const REQUIRED_FIELDS = ['firstName', 'lastName', 'email', 'password', 'job', 'phone', 'role', 'company'];
 
-    public function __construct(DAO $dao, Request $request, Auth $auth, string $jwtKey)
+    public function __construct(DAO $dao, Request $request, Auth $auth, Http $http, string $jwtKey)
     {
         $this->dao = $dao;
         $this->request = $request;
         $this->auth = $auth;
+        $this->http = $http;
         $this->jwtKey = $jwtKey;
     }
 
@@ -545,6 +548,23 @@ class UserController extends AbstractController
 
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'User logged in', $response);
+    }
+
+    public function getMe(): void
+    {
+
+        // get the request headers using pure php
+        $headers = getallheaders();
+        $token = $this->http->getAuthHeaderValue($headers);
+
+        try {
+            $user = $this->dao->getOneBy(User::class, ['jwt' => $token]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, new Exception('Could not get user'));
+        }
+
+        // handle the response
+        $this->request->handleSuccessAndQuit(200, 'User found', $user->toArray());
     }
 
 }

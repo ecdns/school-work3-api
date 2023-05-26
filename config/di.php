@@ -86,6 +86,7 @@ $builder->addDefinitions([
         ->constructorParameter('dao', DI\get('Service\DAO'))
         ->constructorParameter('request', DI\get('Service\Request'))
         ->constructorParameter('auth', DI\get('Service\Auth'))
+        ->constructorParameter('http', DI\get('Service\Http'))
         ->constructorParameter('jwtKey', getenv('JWT_KEY')),
     'Controller\UserSettingsController' => DI\autowire()
         ->constructorParameter('dao', DI\get('Service\DAO'))

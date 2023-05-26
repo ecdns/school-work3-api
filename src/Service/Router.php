@@ -67,6 +67,7 @@ class Router
                 $r->addRoute('GET', '/user/{id:\d+}', [UserController::class, 'getUserById']);
                 $r->addRoute('PUT', '/user/{id:\d+}', [UserController::class, 'updateUser']);
                 $r->addRoute('DELETE', '/user/{id:\d+}', [UserController::class, 'deleteUser']);
+                $r->addRoute('GET', '/user/me', [UserController::class, 'getMe']);
 
                 // user settings routes
                 $r->addRoute('POST', '/userSettings', [UserSettingsController::class, 'addUserSettings']);
