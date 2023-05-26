@@ -6,7 +6,7 @@ info:
   version: 1.0.0
 servers:
   -
-    url: 'http://cyber-dodo.fr/api/v1'
+    url: 'http://cyber-dodo.fr:8080/api/v1'
     description: 'Cube-3 API'
 paths:
   /company:
@@ -2827,6 +2827,12 @@ paths:
       responses:
         '200':
           description: 'User logged in'
+          content:
+            application/json:
+              schema:
+                properties:
+                  token: { type: string, example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9... }
+                type: object
         '401':
           description: 'Incorrect password or company is not active'
         '404':
@@ -3169,7 +3175,7 @@ components:
           type: string
           example: '#000000'
         company:
-          type: id
+          type: integer
           example: 1
       type: object
     CompanySettingsResponse:
@@ -3804,6 +3810,9 @@ components:
         description:
           type: string
           example: 'Catégorie regroupant tous les produits pour la salle de bain'
+        company:
+          type: integer
+          example: 1
       type: object
     ProductFamilyResponse:
       properties:
@@ -3816,6 +3825,8 @@ components:
         description:
           type: string
           example: 'Catégorie regroupant tous les produits pour la salle de bain'
+        company:
+          $ref: '#/components/schemas/CompanyResponse'
         createdAt:
           type: string
           format: date-time
@@ -4332,3 +4343,7 @@ components:
       description: 'ProjectStatus not found'
     '500':
       description: 'Internal Server Error'
+  securitySchemes:
+    bearer:
+      type: http
+      bearerFormat: JWT

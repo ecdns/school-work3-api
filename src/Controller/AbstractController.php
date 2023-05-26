@@ -5,6 +5,11 @@ declare(strict_types=1);
 namespace Controller;
 
 /**
+ * @OA\SecurityScheme(
+ *     type="http",
+ *     securityScheme="bearer",
+ *     bearerFormat="JWT"
+ * )
  * @OA\Info(
  *     title="Cube-3 API",
  *     version="1.0.0",
@@ -14,7 +19,7 @@ namespace Controller;
  * )
  * @OA\Server(
  *     description="Cube-3 API",
- *     url="http://cyber-dodo.fr/api/v1"
+ *     url="http://cyber-dodo.fr:8080/api/v1"
  * )
  */
 abstract class AbstractController

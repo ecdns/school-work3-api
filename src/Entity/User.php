@@ -72,6 +72,9 @@ class User implements EntityInterface
     #[ORM\Column(type: 'boolean')]
     private bool $isEnabled;
 
+    #[ORM\Column(type: 'string', nullable: true)]
+    private string|null $jwt;
+
     public function __construct(string $firstName, string $lastName, string $email, string $password, Role $role, string $job, string $phone, Company $company)
     {
         $this->firstName = $firstName;
@@ -266,6 +269,26 @@ class User implements EntityInterface
     public function setMessages(Collection $messages): void
     {
         $this->messages = $messages;
+    }
+
+    public function getProjectsOwned(): Collection
+    {
+        return $this->projectsOwned;
+    }
+
+    public function setProjectsOwned(Collection $projectsOwned): void
+    {
+        $this->projectsOwned = $projectsOwned;
+    }
+
+    public function getJwt(): string|null
+    {
+        return $this->jwt;
+    }
+
+    public function setJwt(string $jwt): void
+    {
+        $this->jwt = $jwt;
     }
 
     public function toArray(): array
