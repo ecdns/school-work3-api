@@ -7,9 +7,9 @@ namespace Service;
 class Log
 {
 
-    private const LOG_DIR = __DIR__ . '/../../log/';
-    private const SUCCESS_LOG = self::LOG_DIR . 'success.log';
-    private const ERROR_LOG = self::LOG_DIR . 'error.log';
+    private const LOG_DIR = __DIR__ . '/../../log';
+    private const SUCCESS_LOG = self::LOG_DIR . '/success.log';
+    private const ERROR_LOG = self::LOG_DIR . '/error.log';
 
     public function __construct()
     {
