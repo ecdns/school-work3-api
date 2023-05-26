@@ -291,3 +291,11 @@
 2023-05-26 10:51:33 - /api/v1/invoice/1/add/1 - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Product added to Invoice
 2023-05-26 11:15:27 - /api/v1/productFamily/all - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - ProductFamily found
 2023-05-26 11:17:31 - /api/v1/productFamily - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - ProductFamily created
+2023-05-26 13:16:22 - /api/v1/user/login - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - User logged in
+2023-05-26 13:19:30 - /api/v1/estimate/all - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Estimates found
+2023-05-26 13:22:38 - /api/v1/estimate/all - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Estimates found
+2023-05-26 13:24:08 - /api/v1/estimate/all - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Estimates found
+2023-05-26 13:24:35 - /api/v1/user/login - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - User logged in
+2023-05-26 13:24:38 - /api/v1/user/login - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - User logged in
+2023-05-26 13:24:38 - /api/v1/user/login - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - User logged in
+2023-05-26 13:24:39 - /api/v1/user/login - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - User logged in
