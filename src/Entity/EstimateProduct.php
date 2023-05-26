@@ -79,7 +79,7 @@ class EstimateProduct implements EntityInterface
     public function toArray(): array
     {
         return [
-            'estimate' => $this->getEstimate()->toArray(),
+            'estimate' => $this->getEstimate()->getId(),
             'product' => $this->getProduct()->toArray(),
             'quantity' => $this->getQuantity()
         ];

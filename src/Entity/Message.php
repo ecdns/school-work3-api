@@ -28,21 +28,17 @@ class Message implements EntityInterface
     #[ORM\Column(type: 'string')]
     public string $message;
 
-    #[ORM\Column(type: 'boolean')]
-    public bool $isRead;
-
     #[ORM\Column(type: 'datetime', nullable: false)]
     public DateTime $createdAt;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     public DateTime|null $updatedAt = null;
 
-    public function __construct(User $sender, Project $project, string $message, bool $isRead, bool $isLiked)
+    public function __construct(User $sender, Project $project, string $message)
     {
         $this->sender = $sender;
         $this->project = $project;
         $this->message = $message;
-        $this->isRead = $isRead;
     }
 
     public function getId(): int
@@ -65,10 +61,6 @@ class Message implements EntityInterface
         return $this->message;
     }
 
-    public function getIsRead(): bool
-    {
-        return $this->isRead;
-    }
 
     public function getCreatedAt(): DateTime
     {
@@ -95,11 +87,6 @@ class Message implements EntityInterface
         $this->message = $message;
     }
 
-    public function setIsRead(bool $isRead): void
-    {
-        $this->isRead = $isRead;
-    }
-
     #[ORM\PrePersist]
     public function setCreatedAt(): void
     {
@@ -119,7 +106,6 @@ class Message implements EntityInterface
             'sender' => $this->sender->toArray(),
             'project' => $this->project->toArray(),
             'message' => $this->message,
-            'isRead' => $this->isRead,
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
         ];

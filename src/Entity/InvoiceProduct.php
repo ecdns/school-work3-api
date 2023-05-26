@@ -77,7 +77,7 @@ class InvoiceProduct implements EntityInterface
     public function toArray(): array
     {
         return [
-            'invoice' => $this->getInvoice()->toArray(),
+            'invoice' => $this->getInvoice()->getId(),
             'product' => $this->getProduct()->toArray(),
             'quantity' => $this->getQuantity()
         ];

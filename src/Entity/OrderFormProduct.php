@@ -77,7 +77,7 @@ class OrderFormProduct implements EntityInterface
     public function toArray(): array
     {
         return [
-            'orderForm' => $this->getOrderForm()->toArray(),
+            'orderForm' => $this->getOrderForm()->getId(),
             'product' => $this->getProduct()->toArray(),
             'quantity' => $this->getQuantity()
         ];

@@ -101,3 +101,18 @@
 2023-05-26 00:22:59 - /api/v1/invoice - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Method not allowed. Allowed methods: POST
 2023-05-26 00:23:08 - /api/v1/invoice/1/add/1 - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Method not allowed. Allowed methods: POST
 2023-05-26 00:35:15 - /api/v1/orderForm/1/add/1 - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Method not allowed. Allowed methods: POST
+2023-05-26 09:42:57 - /api/v1/message - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Not found
+2023-05-26 09:48:58 - /api/v1/message - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Method not allowed. Allowed methods: POST
+2023-05-26 09:49:02 - /api/v1/message - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - An exception occurred while executing a query: SQLSTATE[HY000]: General error: 1364 Field 'isRead' doesn't have a default value
+2023-05-26 09:51:11 - /api/v1/estimate - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Method not allowed. Allowed methods: POST
+2023-05-26 09:58:04 - /api/v1/user/all - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - An exception occurred in the driver: SQLSTATE[HY000] [2002] Connection refused
+2023-05-26 09:58:15 - /api/v1/user/all - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - No users found
+2023-05-26 10:00:20 - /api/v1/license - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Method not allowed. Allowed methods: POST
+2023-05-26 10:00:52 - /api/v1/company - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - License not found
+2023-05-26 10:01:28 - /api/v1/role - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Invalid request data
+2023-05-26 10:02:07 - /api/v1/companySettings - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Company not found
+2023-05-26 10:19:46 - /api/v1/estimate - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - EstimateStatus, Project, ExpiredDate not found
+2023-05-26 10:20:35 - /api/v1/estimate/1 - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Method not allowed. Allowed methods: GET, PUT, DELETE
+2023-05-26 10:20:49 - /api/v1/estimate - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Method not allowed. Allowed methods: POST
+2023-05-26 10:49:32 - /api/v1/orderForm/1 - POST - PostmanRuntime/7.32.2 - 172.18.0.1 - Method not allowed. Allowed methods: GET, PUT, DELETE
+2023-05-26 10:51:28 - /api/v1/invoice/1/add/1 - GET - PostmanRuntime/7.32.2 - 172.18.0.1 - Method not allowed. Allowed methods: POST

@@ -13,6 +13,7 @@ use Controller\EstimateController;
 use Controller\EstimateStatusController;
 use Controller\InvoiceController;
 use Controller\LicenseController;
+use Controller\MessageController;
 use Controller\OrderFormController;
 use Controller\ProductController;
 use Controller\ProductFamilyController;
@@ -210,6 +211,15 @@ class Router
                 $r->addRoute('GET', '/orderForm/project/{id:\d+}', [OrderFormController::class, 'getOrderFormsByProject']);
                 $r->addRoute('PUT', '/orderForm/{id:\d+}', [OrderFormController::class, 'updateOrderForm']);
                 $r->addRoute('DELETE', '/orderForm/{id:\d+}', [OrderFormController::class, 'deleteOrderForm']);
+
+                //Message routes
+                $r->addRoute('POST', '/message', [MessageController::class, 'addMessage']);
+                $r->addRoute('GET', '/message/all', [MessageController::class, 'getMessages']);
+                $r->addRoute('GET', '/message/{id:\d+}', [MessageController::class, 'getMessageById']);
+                $r->addRoute('GET', '/message/project/{id:\d+}', [MessageController::class, 'getMessagesByProject']);
+                $r->addRoute('PUT', '/message/{id:\d+}', [MessageController::class, 'updateMessage']);
+                $r->addRoute('DELETE', '/message/{id:\d+}', [MessageController::class, 'deleteMessage']);
+
             });
             // add a groupe for documentation
             $r->addGroup('/doc', function (RouteCollector $r) {

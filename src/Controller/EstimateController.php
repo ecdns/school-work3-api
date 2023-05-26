@@ -110,13 +110,13 @@ class EstimateController extends AbstractController
         $requestBody = file_get_contents('php://input');
 
         // it will look like this:
-        // {
-        //     "name": "Estimate 1",
-        //     "description": "This is the first estimate",
-        //     "project": 1,
-        //     "expiredAt": "2021-09-30",
-        //     "estimateStatus": 1
-        // }
+//         {
+//             "name": "Estimate 1",
+//             "description": "This is the first estimate",
+//             "project": 1,
+//             "expiredAt": "2021-09-30",
+//             "estimateStatus": 1
+//         }
 
 
         // decode the json
