@@ -256,7 +256,9 @@ class Router
                 $allowedMethods = $requestInfo[1];
                 $this->request->handleErrorAndQuit(405, new Exception('Method not allowed. Allowed methods: ' . implode(', ', $allowedMethods)));
             case Dispatcher::FOUND:
-                $this->authenticate();
+                if ($requestInfo[1][0] !== UserController::class || $requestInfo[1][1] !== 'loginUser') {
+                    $this->authenticate();
+                }
                 $controller = $this->container->get($requestInfo[1][0]);
                 $method = $requestInfo[1][1];
                 $params = $requestInfo[2];
@@ -282,6 +284,8 @@ class Router
             if (!$isTokenValid) {
                 $this->request->handleErrorAndQuit(401, new Exception('Unauthorized'));
             }
+        } else {
+            $this->request->handleErrorAndQuit(401, new Exception('Unauthorized'));
         }
 
         $user = $this->dao->getOneBy(User::class, ['jwt' => $token]);
