@@ -18,9 +18,9 @@ class Log
 
     private function init(): void
     {
-        if (!file_exists(self::LOG_DIR)) {
+        /*if (!file_exists(self::LOG_DIR)) {
             mkdir(self::LOG_DIR);
-        }
+        }*/
         if (!file_exists(self::SUCCESS_LOG)) {
             $fichier = fopen(self::SUCCESS_LOG, 'w');
             fclose($fichier);
