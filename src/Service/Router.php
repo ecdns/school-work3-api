@@ -256,9 +256,7 @@ class Router
                 $allowedMethods = $requestInfo[1];
                 $this->request->handleErrorAndQuit(405, new Exception('Method not allowed. Allowed methods: ' . implode(', ', $allowedMethods)));
             case Dispatcher::FOUND:
-                if ($requestInfo[1][0] !== UserController::class || $requestInfo[1][1] !== 'loginUser') {
-                    $this->authenticate();
-                }
+                $this->authentication($requestInfo);
                 $controller = $this->container->get($requestInfo[1][0]);
                 $method = $requestInfo[1][1];
                 $params = $requestInfo[2];
@@ -273,7 +271,7 @@ class Router
      * @return void
      * @throws Exception
      */
-    public function authenticate(): void
+    private function authenticate(): void
     {
         $headers = getallheaders();
         $token = $headers['Authorization'] ?? null;
@@ -294,4 +292,13 @@ class Router
             $this->request->handleErrorAndQuit(401, new Exception('Unauthorized'));
         }
     }
+
+    /**
+     * @throws Exception
+     */
+    private function authentication(array $requestInfo): void
+    {
+        if ($requestInfo[1][0] !== UserController::class || $requestInfo[1][1] !== 'loginUser' || $requestInfo[1][0] !== DocumentationController::class) $this->authenticate();
+    }
+
 }
