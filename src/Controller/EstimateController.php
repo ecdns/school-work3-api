@@ -14,6 +14,49 @@ use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="EstimateRequest",
+ *     required={"name", "description", "project", "expiredAt", "estimateStatus"},
+ *     @OA\Property(property="name", type="string", example="Estimate name"),
+ *     @OA\Property(property="description", type="string", example="Estimate description"),
+ *     @OA\Property(property="project", type="integer", example="1"),
+ *     @OA\Property(property="expiredAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="estimateStatus", type="integer", example="1")
+ * )
+ *
+ * @OA\Schema (
+ *     schema="EstimateProductRequest",
+ *     required={"estimate", "product", "quantity"},
+ *     @OA\Property(property="estimate", type="integer", example="1"),
+ *     @OA\Property(property="product", type="integer", example="1"),
+ *     @OA\Property(property="quantity", type="integer", example="1")
+ * )
+ *
+ * @OA\Schema (
+ *     schema="EstimateResponse",
+ *     @OA\Property(property="id", type="integer", example="1"),
+ *     @OA\Property(property="name", type="string", example="Estimate name"),
+ *     @OA\Property(property="description", type="string", example="Estimate description"),
+ *     @OA\Property(property="project", type="object", ref="#/components/schemas/ProjectResponse"),
+ *     @OA\Property(property="expiredAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="estimateStatus", type="integer", example="1"),
+ *     @OA\Property(property="estimateProducts", type="array", @OA\Items(ref="#/components/schemas/EstimateProductResponse")),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00")
+ * )
+ *
+ * @OA\Schema (
+ *     schema="EstimateProductResponse",
+ *     @OA\Property(property="id", type="integer", example="1"),
+ *     @OA\Property(property="estimate", type="object", ref="#/components/schemas/EstimateResponse"),
+ *     @OA\Property(property="product", type="object", ref="#/components/schemas/ProductResponse"),
+ *     @OA\Property(property="quantity", type="integer", example="1"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00")
+ * )
+ *
+ */
 class EstimateController extends AbstractController
 {
     
@@ -28,6 +71,39 @@ class EstimateController extends AbstractController
     }
 
 
+    /**
+     * @OA\Post(
+     *     path="/estimate",
+     *     tags={"Estimate"},
+     *     summary="Add a new estimate",
+     *     description="Add a new estimate to the database",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Estimate object that needs to be added to the database",
+     *         @OA\JsonContent(ref="#/components/schemas/EstimateRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Estimate created"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="EstimateStatus, Project, ExpiredDate not found"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Estimate already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function addEstimate(): void
     {
         // get the request body
@@ -94,7 +170,26 @@ class EstimateController extends AbstractController
         $this->request->handleSuccessAndQuit(201, 'Estimate created');
     }
 
-
+    /**
+     * @OA\Get(
+     *     path="/estimate",
+     *     tags={"Estimate"},
+     *     summary="Get all estimates",
+     *     description="Returns all estimates",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Estimates found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/EstimateResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getEstimates(): void
     {
         // get all roles
@@ -115,6 +210,36 @@ class EstimateController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Estimates found', $response);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/estimates/project/{id}",
+     *     tags={"Estimate"},
+     *     summary="Get all estimates by project",
+     *     description="Returns all estimates by project",
+     *     @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="Project id",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int64"
+ *              )
+     *     ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="Estimates found",
+     *          @OA\JsonContent(
+     *              type="array",
+     *              @OA\Items(ref="#/components/schemas/EstimateResponse")
+     *     )
+     * ),
+     *     @OA\Response(
+     *          response=500,
+     *          description="Internal server error"
+     *      )
+     * )
+     */
     public function getEstimatesByProject(int $id): void
     {
         // get all roles
@@ -135,6 +260,38 @@ class EstimateController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Estimates found', $response);
     }
 
+
+    /**
+     * @OA\Get(
+     *     path="/estimate/{id}",
+     *     tags={"Estimate"},
+     *     summary="Get estimate by id",
+     *     description="Returns an estimate by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the estimate to return",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Estimate found",
+     *         @OA\JsonContent(ref="#/components/schemas/EstimateResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Estimate not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getEstimateById(int $id): void
     {
         // get the role by id
@@ -156,6 +313,50 @@ class EstimateController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Estimate found', $response);
     }
 
+
+    /**
+     * @OA\Put(
+     *     path="/estimate/{id}",
+     *     tags={"Estimate"},
+     *     summary="Update estimate by id",
+     *     description="Updates an estimate by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the estimate to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Estimate object that needs to be updated",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/EstimateRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Estimate updated"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Estimate not found"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Estimate already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function updateEstimate(int $id): void
     {
         // get the request body
@@ -182,13 +383,13 @@ class EstimateController extends AbstractController
         }
 
         // it will look like this:
-//         {
-//             "name": "Estimate 1",
-//             "description": "This is the first estimate",
-//             "project": 1,
-//             "expiredAt": "2021-09-30",
-//             "estimateStatus": 1
-//         }
+        //         {
+        //             "name": "Estimate 1",
+        //             "description": "This is the first estimate",
+        //             "project": 1,
+        //             "expiredAt": "2021-09-30",
+        //             "estimateStatus": 1
+        //         }
 
 
         // get the estimate data from the request body
@@ -241,17 +442,48 @@ class EstimateController extends AbstractController
 
     }
 
-    //add Prducts To Estimate
+    /**
+     * @OA\Post(
+     *     path="/estimate/{estimateId}/product/{productId}",
+     *     tags={"EstimateProduct"},
+     *     summary="Add product to estimate",
+     *     description="Add product to estimate",
+     *     @OA\Parameter(
+     *         name="estimateId",
+     *         in="path",
+     *         description="ID of estimate",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="productId",
+     *         in="path",
+     *         description="ID of product",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Product added to Estimate"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Estimate or Product not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function addProductsToEstimate(int $estimateId, int $productId): void
     {
-        // get the request body
-        $requestBody = file_get_contents('php://input');
-
-        // decode the json
-        $requestBody = json_decode($requestBody, true);
-
-
-
 
         // get the estimate by id
         try {
@@ -288,14 +520,49 @@ class EstimateController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Product added to Estimate');
     }
 
-    //remove Prducts From Estimate
+
+    /**
+     * @OA\Delete(
+     *     path="/estimate/{estimateId}/product/{productId}",
+     *     tags={"EstimateProduct"},
+     *     summary="Remove product from estimate",
+     *     description="Remove product from estimate",
+     *     @OA\Parameter(
+     *         name="estimateId",
+     *         in="path",
+     *         description="ID of estimate",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="productId",
+     *         in="path",
+     *         description="ID of product",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Product removed from Estimate"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Estimate, Product or EstimateProduct not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function removeProductsFromEstimate(int $estimateId, int $productId): void
     {
-        // get the request body
-        $requestBody = file_get_contents('php://input');
-
-        // decode the json
-        $requestBody = json_decode($requestBody, true);
 
         // get the estimate by id
         try {
@@ -333,6 +600,37 @@ class EstimateController extends AbstractController
     }
 
 
+
+    /**
+     * @OA\Delete(
+     *     path="/estimate/{id}",
+     *     tags={"Estimate"},
+     *     summary="Delete an estimate",
+     *     description="Delete an estimate by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of estimate",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Estimate deleted"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Estimate not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function deleteEstimate(int $id): void
     {
         // get the estimate by id
@@ -357,4 +655,5 @@ class EstimateController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'Estimate deleted');
     }
+
 }

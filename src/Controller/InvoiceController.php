@@ -13,6 +13,46 @@ use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="InvoiceRequest",
+ *     required={"name", "description", "project"},
+ *     @OA\Property(property="name", type="string", example="Invoice 1"),
+ *     @OA\Property(property="description", type="string", example="This is the first invoice"),
+ *     @OA\Property(property="project", type="integer", example=1)
+ * )
+ *
+ * @OA\Schema (
+ *     schema="InvoiceResponse",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="Invoice 1"),
+ *     @OA\Property(property="description", type="string", example="This is the first invoice"),
+ *     @OA\Property(property="project", type="object", ref="#/components/schemas/ProjectResponse"),
+ *     @OA\Property(property="products", type="array", @OA\Items(ref="#/components/schemas/InvoiceProductResponse")),
+ *     @OA\Property(property="createdAt", type="string", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", example="2021-01-01 00:00:00")
+ * )
+ *
+ * @OA\Schema (
+ *     schema="InvoiceProductRequest",
+ *     required={"invoice", "product", "quantity"},
+ *     @OA\Property(property="invoice", type="integer", example=1),
+ *     @OA\Property(property="product", type="integer", example=1),
+ *     @OA\Property(property="quantity", type="integer", example=1)
+ * )
+ *
+ * @OA\Schema (
+ *     schema="InvoiceProductResponse",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="invoice", type="object", ref="#/components/schemas/InvoiceResponse"),
+ *     @OA\Property(property="product", type="object", ref="#/components/schemas/ProductResponse"),
+ *     @OA\Property(property="quantity", type="integer", example=1),
+ *     @OA\Property(property="createdAt", type="string", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", example="2021-01-01 00:00:00")
+ * )
+ *
+ *
+ */
 class InvoiceController extends AbstractController
 {
     
@@ -27,17 +67,49 @@ class InvoiceController extends AbstractController
     }
 
 
+    /**
+     * @OA\Post(
+     *     path="/invoice",
+     *     tags={"Invoice"},
+     *     summary="Create a new invoice",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Invoice data",
+     *         @OA\JsonContent(ref="#/components/schemas/InvoiceRequest")
+     *     ),
+     *     @OA\Response(
+     *         response="201",
+     *         description="Invoice created"
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Project not found"
+     *     ),
+     *     @OA\Response(
+     *         response="409",
+     *         description="Invoice already exists"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function addInvoice(): void
     {
         // get the request body
         $requestBody = file_get_contents('php://input');
 
         // it will look like this:
-//         {
-//             "name": "Invoice 1",
-//             "description": "This is the first invoice",
-//             "project": 1
-//         }
+        //         {
+        //             "name": "Invoice 1",
+        //             "description": "This is the first invoice",
+        //             "project": 1
+        //         }
 
 
         // decode the json
@@ -88,6 +160,26 @@ class InvoiceController extends AbstractController
     }
 
 
+
+    /**
+     * @OA\Get(
+     *     path="/invoice",
+     *     tags={"Invoice"},
+     *     summary="Get all invoices",
+     *     @OA\Response(
+     *         response="200",
+     *         description="Invoices found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/InvoiceResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getInvoices(): void
     {
         // get all roles
@@ -108,6 +200,35 @@ class InvoiceController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Invoices found', $response);
     }
 
+
+    /**
+     * @OA\Get(
+     *     path="/invoice/project/{id}",
+     *     tags={"Invoice"},
+     *     summary="Get all invoices by project",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Project ID",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Invoices found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/InvoiceResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getInvoicesByProject(int $id): void
     {
         // get all roles
@@ -128,6 +249,36 @@ class InvoiceController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Invoices found', $response);
     }
 
+
+    /**
+     * @OA\Get(
+     *     path="/invoice/{id}",
+     *     tags={"Invoice"},
+     *     summary="Get invoice by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Invoice ID",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Invoice found",
+     *         @OA\JsonContent(ref="#/components/schemas/InvoiceResponse")
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Invoice not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function getInvoiceById(int $id): void
     {
         // get the role by id
@@ -149,6 +300,47 @@ class InvoiceController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Invoice found', $response);
     }
 
+
+    /**
+     * @OA\Put(
+     *     path="/invoice/{id}",
+     *     tags={"Invoice"},
+     *     summary="Update invoice by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Invoice ID",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/InvoiceRequest")
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Invoice updated"
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Invoice not found"
+     *     ),
+     *     @OA\Response(
+     *         response="409",
+     *         description="Invoice already exists"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function updateInvoice(int $id): void
     {
         // get the request body
@@ -175,13 +367,13 @@ class InvoiceController extends AbstractController
         }
 
         // it will look like this:
-//         {
-//             "name": "Invoice 1",
-//             "description": "This is the first invoice",
-//             "project": 1,
-//             "expiredAt": "2021-09-30",
-//             "invoiceStatus": 1
-//         }
+        //         {
+        //             "name": "Invoice 1",
+        //             "description": "This is the first invoice",
+        //             "project": 1,
+        //             "expiredAt": "2021-09-30",
+        //             "invoiceStatus": 1
+        //         }
 
 
         // get the invoice data from the request body
@@ -224,17 +416,49 @@ class InvoiceController extends AbstractController
 
     }
 
-    //add Prducts To Invoice
+
+    /**
+     * @OA\Post(
+     *     path="/invoice/{id}/product/{productId}",
+     *     tags={"InvoiceProduct"},
+     *     summary="Add products to an invoice",
+     *     description="Add products to an invoice",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the invoice to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="productId",
+     *         in="path",
+     *         description="ID of the product to add",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Product added to Invoice"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Invoice or Product not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function addProductsToInvoice(int $invoiceId, int $productId): void
     {
-        // get the request body
-        $requestBody = file_get_contents('php://input');
-
-        // decode the json
-        $requestBody = json_decode($requestBody, true);
-
-
-
 
         // get the invoice by id
         try {
@@ -271,14 +495,49 @@ class InvoiceController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Product added to Invoice');
     }
 
-    //remove Prducts From Invoice
+
+    /**
+     * @OA\Delete(
+     *     path="/invoice/{id}/product/{productId}",
+     *     tags={"InvoiceProduct"},
+     *     summary="Remove products from an invoice",
+     *     description="Remove products from an invoice",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the invoice to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="productId",
+     *         in="path",
+     *         description="ID of the product to remove",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Product removed from Invoice"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Invoice, Product or InvoiceProduct not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function removeProductsFromInvoice(int $invoiceId, int $productId): void
     {
-        // get the request body
-        $requestBody = file_get_contents('php://input');
-
-        // decode the json
-        $requestBody = json_decode($requestBody, true);
 
         // get the invoice by id
         try {
@@ -316,6 +575,37 @@ class InvoiceController extends AbstractController
     }
 
 
+
+    /**
+     * @OA\Delete(
+     *     path="/invoice/{id}",
+     *     tags={"Invoice"},
+     *     summary="Delete an invoice",
+     *     description="Delete an invoice",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the invoice to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Invoice deleted"
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Invoice not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
     public function deleteInvoice(int $id): void
     {
         // get the invoice by id
@@ -340,4 +630,5 @@ class InvoiceController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'Invoice deleted');
     }
+
 }

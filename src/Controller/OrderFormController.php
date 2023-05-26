@@ -12,6 +12,44 @@ use Exception;
 use Service\DAO;
 use Service\Request;
 
+/**
+ * @OA\Schema (
+ *     schema="OrderFormRequest",
+ *     required={"name", "description", "project"},
+ *     @OA\Property(property="name", type="string", example="OrderForm 1"),
+ *     @OA\Property(property="description", type="string", example="This is the first orderForm"),
+ *     @OA\Property(property="project", type="integer", example=1)
+ * )
+ *
+ * @OA\Schema (
+ *     schema="OrderFormResponse",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="OrderForm 1"),
+ *     @OA\Property(property="description", type="string", example="This is the first orderForm"),
+ *     @OA\Property(property="project", type="object", ref="#/components/schemas/ProjectResponse"),
+ *     @OA\Property(property="orderFormProducts", type="array", @OA\Items(ref="#/components/schemas/OrderFormProductResponse")),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00")
+ * )
+ *
+ * @OA\Schema (
+ *     schema="OrderFormProductResponse",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="orderForm", type="object", ref="#/components/schemas/OrderFormResponse"),
+ *     @OA\Property(property="product", type="object", ref="#/components/schemas/ProductResponse"),
+ *     @OA\Property(property="quantity", type="integer", example=1),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00")
+ * )
+ *
+ * @OA\Schema (
+ *     schema="OrderFormProductRequest",
+ *     required={"orderForm", "product", "quantity"},
+ *     @OA\Property(property="orderForm", type="integer", example=1),
+ *     @OA\Property(property="product", type="integer", example=1),
+ *     @OA\Property(property="quantity", type="integer", example=1)
+ * )
+ */
 class OrderFormController extends AbstractController
 {
     
@@ -26,6 +64,39 @@ class OrderFormController extends AbstractController
     }
 
 
+    /**
+     * @OA\Post(
+     *     path="/order-form",
+     *     tags={"OrderForm"},
+     *     summary="Create a new OrderForm",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="OrderForm object that needs to be created",
+     *         @OA\JsonContent(ref="#/components/schemas/OrderFormRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="OrderForm created",
+     *         @OA\JsonContent(ref="#/components/schemas/OrderFormResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Project not found"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="OrderForm already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function addOrderForm(): void
     {
         // get the request body
@@ -87,6 +158,26 @@ class OrderFormController extends AbstractController
     }
 
 
+
+    /**
+     * @OA\Get(
+     *     path="/order-form",
+     *     tags={"OrderForm"},
+     *     summary="Get all OrderForms",
+     *     @OA\Response(
+     *         response=200,
+     *         description="OrderForms found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/OrderFormResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function getOrderForms(): void
     {
         // get all roles
@@ -107,6 +198,35 @@ class OrderFormController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'OrderForms found', $response);
     }
 
+
+    /**
+     * @OA\Get(
+     *     path="/order-form/{id}",
+     *     tags={"OrderForm"},
+     *     summary="Get all OrderForms by project",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Project ID",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="OrderForms found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/OrderFormResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function getOrderFormsByProject(int $id): void
     {
         // get all roles
@@ -127,6 +247,38 @@ class OrderFormController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'OrderForms found', $response);
     }
 
+
+    /**
+     * @OA\Get(
+     *     path="/order-form/{id}",
+     *     tags={"OrderForm"},
+     *     summary="Get OrderForm by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the OrderForm",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="OrderForm found",
+     *         @OA\JsonContent(
+     *             ref="#/components/schemas/OrderFormResponse"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="OrderForm not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function getOrderFormById(int $id): void
     {
         // get the role by id
@@ -148,6 +300,48 @@ class OrderFormController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'OrderForm found', $response);
     }
 
+
+    /**
+     * @OA\Put(
+     *     path="/order-form/{id}",
+     *     tags={"OrderForm"},
+     *     summary="Update OrderForm by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the OrderForm",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="OrderForm object that needs to be updated",
+     *         @OA\JsonContent(ref="#/components/schemas/OrderFormRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="OrderForm updated"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request data"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="OrderForm not found"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="OrderForm already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function updateOrderForm(int $id): void
     {
         // get the request body
@@ -174,13 +368,13 @@ class OrderFormController extends AbstractController
         }
 
         // it will look like this:
-//         {
-//             "name": "OrderForm 1",
-//             "description": "This is the first orderForm",
-//             "project": 1,
-//             "expiredAt": "2021-09-30",
-//             "orderFormStatus": 1
-//         }
+        //         {
+        //             "name": "OrderForm 1",
+        //             "description": "This is the first orderForm",
+        //             "project": 1,
+        //             "expiredAt": "2021-09-30",
+        //             "orderFormStatus": 1
+        //         }
 
 
         // get the orderForm data from the request body
@@ -223,17 +417,47 @@ class OrderFormController extends AbstractController
 
     }
 
-    //add Prducts To OrderForm
+
+    /**
+     * @OA\Post(
+     *     path="/order-form/{orderFormId}/product/{productId}",
+     *     tags={"OrderFormProduct"},
+     *     summary="Add products to an order form",
+     *     description="Add products to an order form",
+     *     @OA\Parameter(
+     *         name="orderFormId",
+     *         in="path",
+     *         description="ID of the order form",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="productId",
+     *         in="path",
+     *         description="ID of the product",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Product added to OrderForm"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="OrderForm or Product not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function addProductsToOrderForm(int $orderFormId, int $productId): void
     {
-        // get the request body
-        $requestBody = file_get_contents('php://input');
-
-        // decode the json
-        $requestBody = json_decode($requestBody, true);
-
-
-
 
         // get the orderForm by id
         try {
@@ -270,7 +494,45 @@ class OrderFormController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Product added to OrderForm');
     }
 
-    //remove Prducts From OrderForm
+
+    /**
+     * @OA\Delete(
+     *     path="/order-form/{orderFormId}/product/{productId}",
+     *     tags={"OrderForm"},
+     *     summary="Remove products from an order form",
+     *     description="Remove products from an order form",
+     *     @OA\Parameter(
+     *         name="orderFormId",
+     *         in="path",
+     *         description="ID of the order form",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="productId",
+     *         in="path",
+     *         description="ID of the product",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Product removed from OrderForm"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="OrderForm, Product or OrderFormProduct not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function removeProductsFromOrderForm(int $orderFormId, int $productId): void
     {
         // get the request body
@@ -315,6 +577,36 @@ class OrderFormController extends AbstractController
     }
 
 
+
+    /**
+     * @OA\Delete(
+     *     path="/order-form/{id}",
+     *     tags={"OrderForm"},
+     *     summary="Delete an order form",
+     *     description="Delete an order form",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the order form",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="OrderForm deleted"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="OrderForm not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function deleteOrderForm(int $id): void
     {
         // get the orderForm by id
@@ -339,4 +631,5 @@ class OrderFormController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'OrderForm deleted');
     }
+
 }

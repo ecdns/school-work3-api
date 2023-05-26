@@ -199,6 +199,7 @@ class Router
                 $r->addRoute('GET', '/invoice/{id:\d+}', [InvoiceController::class, 'getInvoiceById']);
                 $r->addRoute('GET', '/invoice/project/{id:\d+}', [InvoiceController::class, 'getInvoicesByProject']);
                 $r->addRoute('PUT', '/invoice/{id:\d+}', [InvoiceController::class, 'updateInvoice']);
+                $r->addRoute('DELETE', '/invoice/{id:\d+}', [InvoiceController::class, 'deleteInvoice']);
 
                 //OrderForm routes
                 $r->addRoute('POST', '/orderForm', [OrderFormController::class, 'addOrderForm']);
