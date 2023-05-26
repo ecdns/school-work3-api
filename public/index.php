@@ -14,6 +14,10 @@ $uri = $_SERVER["REQUEST_URI"];
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: *");
+header("Content-Security-Policy: default-src '*'");
+header("X-Content-Security-Policy: default-src '*'");
+header("X-WebKit-CSP: default-src '*'");
+header("X-XSS-Protection: 1; mode=block");
 
 // Suppression des paramètres GET dans l'URI si présents (ex: /users/1?name=John => /users/1)
 if (false !== $pos = strpos($uri, '?')) {
