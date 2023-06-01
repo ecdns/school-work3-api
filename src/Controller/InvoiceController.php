@@ -104,11 +104,11 @@ class InvoiceController extends AbstractController
         $requestBody = file_get_contents('php://input');
 
         // it will look like this:
-        //         {
-        //             "name": "Invoice 1",
-        //             "description": "This is the first invoice",
-        //             "project": 1
-        //         }
+//                 {
+//                     "name": "Invoice 1",
+//                     "description": "This is the first invoice",
+//                     "project": 1
+//                 }
 
 
         // decode the json

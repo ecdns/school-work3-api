@@ -31,12 +31,9 @@ class Auth
 
     public function isValidPassword(string $password, string $hashedPassword): bool
     {
-        if (openssl_decrypt($hashedPassword, 'AES-128-ECB', $this->passwordKey) === $password) {
-            return true;
-        } else {
-            return false;
-        }
+        return $password === $hashedPassword;
     }
+
 
     public function encodeJWT($email, $jwtKey): string
     {
@@ -74,7 +71,6 @@ class Auth
     {
         $headers = getallheaders();
         $token = $headers['Authorization'] ?? null;
-
         if ($token) {
 
             $token = explode(' ', $token)[1];

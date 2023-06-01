@@ -265,11 +265,11 @@ class MessageController extends AbstractController
         $requestBody = file_get_contents('php://input');
 
         // it will look like this:
-        // {
-        //     "sender" : 1,
-        //     "project" : 1,
-        //     "message" : "Hello world"
-        // }
+//         {
+//             "sender" : 1,
+//             "project" : 1,
+//             "message" : "Hello world"
+//         }
 
         // decode the json
         $requestBody = json_decode($requestBody, true);

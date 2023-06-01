@@ -211,6 +211,11 @@ class Supplier implements EntityInterface
         $this->products = $products;
     }
 
+    public function getFullName(): String
+    {
+        return $this->getFirstName() . ' ' . $this->getLastName();
+    }
+
     public function toArray(): array
     {
         return [

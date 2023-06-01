@@ -97,16 +97,16 @@ class UserController extends AbstractController
         $requestBody = file_get_contents('php://input');
 
         // it will look like this:
-        // {
-        //     "firstName": "John",
-        //     "lastName": "Doe",
-        //     "email": "john.doe@gmail",
-        //     "password": "password",
-        //     "job": "Developer",
-        //     "phone": "0123456789",
-        //     "role": "Admin",
-        //     "company": "Cube 3"
-        // }
+//         {
+//             "firstName": "John",
+//             "lastName": "Doe",
+//             "email": "john.doe@gmail",
+//             "password": "password",
+//             "job": "Developer",
+//             "phone": "0123456789",
+//             "role": "Admin",
+//             "company": "Cube 3"
+//         }
 
         // decode the json
         $requestBody = json_decode($requestBody, true);
@@ -224,7 +224,7 @@ class UserController extends AbstractController
      *     summary="Get user by ID",
      *     description="Returns a user by ID",
      *     @OA\Parameter(
-     *         name="id",
+     *         name="id",$hashedPassword = $this->hashPassword($password);
      *         in="path",
      *         description="ID of the user to return",
      *         required=true,
@@ -522,7 +522,7 @@ class UserController extends AbstractController
         }
 
         // if the password is incorrect
-        if ($this->auth->isValidPassword($password, $user->getPassword())) {
+        if (!$this->auth->isValidPassword($password, $user->getPassword())) {
             $this->request->handleErrorAndQuit(401, new Exception('Incorrect password'));
         }
 

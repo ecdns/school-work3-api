@@ -225,6 +225,12 @@ class Customer implements EntityInterface
         $this->projects = $projects;
     }
 
+    //get full name
+    public function getFullName(): String
+    {
+        return $this->getFirstName() . ' ' . $this->getLastName();
+    }
+
 
 
     public function __toString(): string
