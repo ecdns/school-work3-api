@@ -8,6 +8,8 @@ use Entity\User;
 use Exception;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use phpseclib3\Crypt\AES;
+
 
 class Auth
 {

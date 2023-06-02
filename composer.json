@@ -11,7 +11,8 @@
         "doctrine/migrations": "^3.6",
         "php-di/php-di": "^7.0",
         "ext-openssl": "*",
-        "zircote/swagger-php": "^4.7"
+        "zircote/swagger-php": "^4.7",
+        "phpseclib/phpseclib": "^3.0"
     },
     "autoload": {
         "psr-4": {
