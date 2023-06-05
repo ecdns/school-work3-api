@@ -50,9 +50,6 @@ class Customer implements EntityInterface
     #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id',onDelete: 'CASCADE')]
     private Company $company;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'customers')]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private User $user;
 
     #[ORM\ManyToOne(targetEntity: CustomerStatus::class, inversedBy: 'customers')]
     #[ORM\JoinColumn(name: 'status_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
@@ -62,7 +59,7 @@ class Customer implements EntityInterface
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Project::class)]
     private Collection $projects;
 
-    public function __construct(string $firstName, string $lastName, string $email, string $address, string $city, string $country, string $zipCode, string $phone, Company $company, User $user, CustomerStatus $status)
+    public function __construct(string $firstName, string $lastName, string $email, string $address, string $city, string $country, string $zipCode, string $phone, Company $company, CustomerStatus $status)
     {
         $this->firstName = $firstName;
         $this->lastName = $lastName;
@@ -73,7 +70,6 @@ class Customer implements EntityInterface
         $this->zipCode = $zipCode;
         $this->phone = $phone;
         $this->company = $company;
-        $this->user = $user;
         $this->status = $status;
     }
 
@@ -253,7 +249,6 @@ class Customer implements EntityInterface
             'createdAt' => $this->getCreatedAt(),
             'updatedAt' => $this->getUpdatedAt(),
             'company' => $this->getCompany(),
-            'user' => $this->getUser(),
             'status' => $this->getStatus(),
             'projects' => $this->getProjects(),
         ];

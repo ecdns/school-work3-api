@@ -12,14 +12,16 @@
         "php-di/php-di": "^7.0",
         "ext-openssl": "*",
         "zircote/swagger-php": "^4.7",
-        "phpseclib/phpseclib": "^3.0"
+        "phpseclib/phpseclib": "^3.0",
+        "doctrine/data-fixtures": "^1.6"
     },
     "autoload": {
         "psr-4": {
             "Entity\\": "src/Entity",
             "Service\\": "src/Service",
             "Controller\\": "src/Controller",
-            "Migration\\": "src/Migration"
+            "Migration\\": "src/Migration",
+            "DataFixtures\\": "src/DataFixtures"
         }
     }
 }

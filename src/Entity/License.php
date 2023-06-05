@@ -40,6 +40,8 @@ class License implements EntityInterface
     #[ORM\OneToMany(mappedBy: 'license', targetEntity: Company::class)]
     private Collection $companies;
 
+
+
     public function __construct(string $name, string $description, float $price, int $maxUsers, int $validityPeriod)
     {
         $this->name = $name;

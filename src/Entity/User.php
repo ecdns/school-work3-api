@@ -55,8 +55,6 @@ class User implements EntityInterface
     #[ORM\OneToOne(mappedBy: 'user', targetEntity: UserSettings::class, cascade: ['persist', 'remove'])]
     private UserSettings|null $userSettings;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Customer::class)]
-    private Collection $customers;
 
     #[ORM\OneToMany(mappedBy: 'users', targetEntity: Task::class)]
     private Collection $tasks;
@@ -326,7 +324,6 @@ class User implements EntityInterface
             'passwordConfirmedAt' => $this->getPasswordConfirmedAt()?->format('Y-m-d H:i:s'),
             'isEnabled' => $this->getIsEnabled(),
             'userSettings' => $this->getUserSettings()->toArray(),
-            'customers' => $this->getCustomers()->map(fn(Customer $customer) => $customer->toArray())->toArray(),
             'tasks' => $this->getTasks()->toArray(),
             'projects' => $this->getProjects()->map(fn(Project $project) => $project->toArray())->toArray(),
             'messages' => $this->getMessages()->map(fn(Message $message) => $message->toArray())->toArray(),

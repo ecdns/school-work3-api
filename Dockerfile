@@ -32,8 +32,6 @@ RUN apt-get update && \
 # Install the PDO MySQL extension for PHP
 RUN docker-php-ext-install pdo_mysql
 
-# Install openssl extension for PHP
-RUN docker-php-ext-install openssl
 
 # Install Composer and project dependencies
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
