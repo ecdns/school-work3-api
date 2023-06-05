@@ -224,7 +224,7 @@ class UserController extends AbstractController
      *     summary="Get user by ID",
      *     description="Returns a user by ID",
      *     @OA\Parameter(
-     *         name="id",$hashedPassword = $this->hashPassword($password);
+     *         name="id",
      *         in="path",
      *         description="ID of the user to return",
      *         required=true,
@@ -495,7 +495,7 @@ class UserController extends AbstractController
      *         response="500",
      *         description="Internal server error"
      *     )
-     * )
+     * )0.0.0.0
      */
     public function loginUser(): void
     {
