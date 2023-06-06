@@ -261,7 +261,7 @@ class Router
      * @throws NotFoundException
      * @throws Exception
      */
-    public function trigRequest(array $requestInfo): void
+    public function trigResponse(array $requestInfo): void
     {
         switch ($requestInfo[0]) {
             case Dispatcher::NOT_FOUND:
