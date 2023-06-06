@@ -55,8 +55,7 @@ $builder->addDefinitions([
     'Service\Auth' => DI\autowire()
         ->constructorParameter('request', DI\get('Service\Request'))
         ->constructorParameter('dao', DI\get('Service\DAO'))
-        ->constructorParameter('jwtKey', getenv('JWT_KEY'))
-        ->constructorParameter('passwordKey', getenv('PASSWORD_KEY')),
+        ->constructorParameter('jwtKey', getenv('JWT_KEY')),
 
     // Controllers
     'Controller\CompanyController' => DI\autowire()

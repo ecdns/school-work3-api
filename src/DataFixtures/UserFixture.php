@@ -5,8 +5,8 @@ namespace DataFixtures;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use Entity\License;
 use Entity\User;
+use Service\Auth;
 
 class UserFixture extends AbstractFixture implements OrderedFixtureInterface
 {
@@ -26,9 +26,10 @@ class UserFixture extends AbstractFixture implements OrderedFixtureInterface
         $role = $manager->getRepository('Entity\Role')->findOneBy(['name' => 'Administrateur']);
         //get Company
         $company = $manager->getRepository('Entity\Company')->findOneBy(['name' => 'Aubade']);
+        $password = Auth::hashPassword('123456');
 
         //generate user
-        $user = new User('Dorian', 'Breuillard', 'dorian.breuillard@gmail.com', '123456', $role, 'Développeur', '0606060606', $company, true);
+        $user = new User('Dorian', 'Breuillard', 'dorian.breuillard@gmail.com', $password, $role, 'Développeur', '0606060606', $company, true);
 
         $manager->persist($user);
     }
@@ -40,9 +41,10 @@ class UserFixture extends AbstractFixture implements OrderedFixtureInterface
         $role = $manager->getRepository('Entity\Role')->findOneBy(['name' => 'Administrateur']);
         //get Company
         $company = $manager->getRepository('Entity\Company')->findOneBy(['name' => 'Cocorico']);
+        $password = Auth::hashPassword('123456');
 
         //generate user
-        $user = new User('John', 'Doe', 'jhondoe@gmail.com', '123456', $role, 'Développeur', '0606060606', $company, true);
+        $user = new User('John', 'Doe', 'jhondoe@gmail.com', $password, $role, 'Développeur', '0606060606', $company, true);
 
         $manager->persist($user);
     }
@@ -54,9 +56,10 @@ class UserFixture extends AbstractFixture implements OrderedFixtureInterface
         $role = $manager->getRepository('Entity\Role')->findOneBy(['name' => 'Utilisateur']);
         //get Company
         $company = $manager->getRepository('Entity\Company')->findOneBy(['name' => 'Bubulle']);
+        $password = Auth::hashPassword('123456');
 
         //generate user
-        $user = new User('Jane', 'Doe', 'janedoe@gmail.com', '123456', $role, 'Développeur', '0606060606', $company, true);
+        $user = new User('Jane', 'Doe', 'janedoe@gmail.com', $password, $role, 'Développeur', '0606060606', $company, true);
 
         $manager->persist($user);
 
@@ -69,9 +72,10 @@ class UserFixture extends AbstractFixture implements OrderedFixtureInterface
         $role = $manager->getRepository('Entity\Role')->findOneBy(['name' => 'Administrateur']);
         //get Company
         $company = $manager->getRepository('Entity\Company')->findOneBy(['name' => 'Aubade']);
+        $password = Auth::hashPassword('123456');
 
         //generate user
-        $user = new User('Macky', 'Tall', 'tallmacky001@gmail.com', '123456', $role, 'Développeur', '0606060606', $company, true);
+        $user = new User('Macky', 'Tall', 'tallmacky001@gmail.com', $password, $role, 'Développeur', '0606060606', $company, true);
 
         $manager->persist($user);
     }
@@ -82,9 +86,10 @@ class UserFixture extends AbstractFixture implements OrderedFixtureInterface
         $role = $manager->getRepository('Entity\Role')->findOneBy(['name' => 'Administrateur']);
         //get Company
         $company = $manager->getRepository('Entity\Company')->findOneBy(['name' => 'Aubade']);
+        $password = Auth::hashPassword('123456');
 
         //generate user
-        $user = new User('Clément', 'Pavot', 'clement@getinov.com', '123456', $role, 'Développeur', '0606060606', $company, true);
+        $user = new User('Clément', 'Pavot', 'clement@getinov.com', $password, $role, 'Développeur', '0606060606', $company, true);
 
         $manager->persist($user);
     }

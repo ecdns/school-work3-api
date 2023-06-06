@@ -8,25 +8,21 @@ use Entity\User;
 use Exception;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use phpseclib3\Crypt\AES;
-
 
 class Auth
 {
     private Request $request;
     private DAO $dao;
     private string $jwtKey;
-    private string $passwordKey;
 
-    public function __construct(Request $request, DAO $dao, string $jwtKey, string $passwordKey)
+    public function __construct(Request $request, DAO $dao, string $jwtKey)
     {
         $this->request = $request;
         $this->dao = $dao;
         $this->jwtKey = $jwtKey;
-        $this->passwordKey = $passwordKey;
     }
 
-    public function hashPassword(string $password): string
+    public static function hashPassword(string $password): string
     {
         return password_hash($password, PASSWORD_DEFAULT);
     }
