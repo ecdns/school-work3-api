@@ -120,7 +120,7 @@ class UserController extends AbstractController
         $firstName = $requestBody['firstName'];
         $lastName = $requestBody['lastName'];
         $email = $requestBody['email'];
-        $password = $requestBody['password'];
+        $password = $this->auth->hashPassword($requestBody['password']);
         $job = $requestBody['job'];
         $phone = $requestBody['phone'];
         $role = $requestBody['role'];

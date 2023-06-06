@@ -28,12 +28,12 @@ class Auth
 
     public function hashPassword(string $password): string
     {
-        return openssl_encrypt($password, 'AES-128-ECB', $this->passwordKey);
+        return password_hash($password, PASSWORD_DEFAULT);
     }
 
     public function isValidPassword(string $password, string $hashedPassword): bool
     {
-        return $password === $hashedPassword;
+        return password_verify($password, $hashedPassword);
     }
 
 
