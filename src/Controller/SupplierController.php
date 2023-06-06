@@ -46,10 +46,9 @@ use Service\Request;
 class SupplierController extends AbstractController
 {
 
+    private const REQUIRED_FIELDS = ['name', 'firstName', 'lastName', 'email', 'address', 'city', 'country', 'zipCode', 'phone', 'company'];
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['name', 'firstName', 'lastName', 'email', 'address', 'city', 'country', 'zipCode', 'phone', 'company'];
-
 
     public function __construct(DAO $dao, Request $request)
     {
@@ -189,7 +188,6 @@ class SupplierController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'Supplier found', $response);
     }
-
 
 
     /**
@@ -431,7 +429,6 @@ class SupplierController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'Supplier deleted');
     }
-
 
 
 }

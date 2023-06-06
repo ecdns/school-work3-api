@@ -54,10 +54,10 @@ use Service\Request;
  */
 class ProductController extends AbstractController
 {
-    
+
+    private const REQUIRED_FIELDS = ['name', 'description', 'buyPrice', 'sellPrice', 'quantity', 'discount', 'isDiscount', 'productFamily', 'vat', 'company', 'quantityUnit', 'supplier'];
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['name', 'description', 'buyPrice', 'sellPrice', 'quantity', 'discount', 'isDiscount', 'productFamily', 'vat', 'company', 'quantityUnit', 'supplier'];
 
     public function __construct(DAO $dao, Request $request)
     {
@@ -232,7 +232,6 @@ class ProductController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'Products found', $response);
     }
-
 
 
     /**

@@ -7,6 +7,7 @@ namespace Controller;
 use Entity\Project;
 use Entity\Task;
 use Entity\TaskStatus;
+use Entity\TaskType;
 use Entity\User;
 use Exception;
 use Service\DAO;
@@ -22,7 +23,8 @@ use Service\Request;
  *     @OA\Property(property="dueDate", type="string", example="2021-01-01"),
  *     @OA\Property(property="project", type="integer", example=1),
  *     @OA\Property(property="user", type="integer", example=1),
- *     @OA\Property(property="taskStatus", type="integer", example=1)
+ *     @OA\Property(property="taskStatus", type="integer", example=1),
+ *     @OA\Property(property="taskType", type="integer", example=1)
  * )
  *
  * @OA\Schema (
@@ -35,18 +37,18 @@ use Service\Request;
  *     @OA\Property(property="project", type="object", ref="#/components/schemas/ProjectResponse"),
  *     @OA\Property(property="user", type="object", ref="#/components/schemas/UserResponse"),
  *     @OA\Property(property="taskStatus", type="object", ref="#/components/schemas/TaskStatusResponse"),
+ *     @OA\Property(property="taskType", type="object", ref="#/components/schemas/TaskTypeResponse"),
  *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
- *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00")
+ *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
  * )
  *
  */
 class TaskController extends AbstractController
 {
-    
+
+    private const REQUIRED_FIELDS = ['title', 'description', 'location', 'dueDate', 'project', 'user', 'taskStatus', 'taskType'];
     private DAO $dao;
     private Request $request;
-
-    private const REQUIRED_FIELDS = ['title', 'description', 'location', 'dueDate', 'project', 'user', 'taskStatus'];
 
     public function __construct(DAO $dao, Request $request)
     {
@@ -100,7 +102,8 @@ class TaskController extends AbstractController
 //             "dueDate": "2021-01-01",
 //             "project": 1,
 //             "user": 1,
-//             "taskStatus": 1
+//             "taskStatus": 1,
+//             "taskType": 1
 //         }
 
 
@@ -121,6 +124,7 @@ class TaskController extends AbstractController
         $project = $requestBody['project'];
         $user = $requestBody['user'];
         $taskStatus = $requestBody['taskStatus'];
+        $taskType = $requestBody['taskType'];
 
 
         // get the task FK from the database by its id
@@ -128,9 +132,10 @@ class TaskController extends AbstractController
             $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project]);
             $userObject = $this->dao->getOneBy(User::class, ['id' => $user]);
             $taskStatusObject = $this->dao->getOneBy(TaskStatus::class, ['id' => $taskStatus]);
+            $taskTypeObject = $this->dao->getOneBy(TaskType::class, ['id' => $taskType]);
 
-            if (!$projectObject || !$userObject || !$taskStatusObject) {
-                $this->request->handleErrorAndQuit(404, new Exception('User, Project or TaskStatus not found'));
+            if (!$projectObject || !$userObject || !$taskStatusObject || !$taskTypeObject) {
+                $this->request->handleErrorAndQuit(404, new Exception('User, Project, TaskStatus or TaskType not found'));
             }
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
@@ -138,7 +143,7 @@ class TaskController extends AbstractController
 
 
         // create a new task
-        $task = new Task($name, $description, $location, $dueDate, $projectObject, $userObject, $taskStatusObject);
+        $task = new Task($name, $description, $location, $dueDate, $projectObject, $userObject, $taskStatusObject, $taskTypeObject);
 
         // add the Task to the database
         try {
@@ -154,7 +159,6 @@ class TaskController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(201, 'Task created');
     }
-
 
 
     /**
@@ -198,8 +202,6 @@ class TaskController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'Tasks found', $response);
     }
-
-
 
 
     /**
@@ -259,7 +261,6 @@ class TaskController extends AbstractController
     }
 
 
-
     /**
      * Get all tasks by project
      *
@@ -313,7 +314,6 @@ class TaskController extends AbstractController
     }
 
 
-
     /**
      * Get task by id
      *
@@ -351,7 +351,7 @@ class TaskController extends AbstractController
     {
         // get the task by id
         try {
-            $task= $this->dao->getOneBy(Task::class, ['id' => $id]);
+            $task = $this->dao->getOneBy(Task::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -458,15 +458,17 @@ class TaskController extends AbstractController
         $project = $requestBody['project'] ?? $task->getProject();
         $user = $requestBody['user'] ?? $task->getUser();
         $taskStatus = $requestBody['taskStatus'] ?? $task->getTaskStatus();
+        $taskType = $requestBody['taskType'] ?? $task->getTaskType();
 
 
         try {
             $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project]);
             $userObject = $this->dao->getOneBy(User::class, ['id' => $user]);
             $taskStatusObject = $this->dao->getOneBy(TaskStatus::class, ['id' => $taskStatus]);
+            $taskTypeObject = $this->dao->getOneBy(TaskType::class, ['id' => $taskType]);
 
             if (!$projectObject || !$userObject || !$taskStatusObject) {
-                $this->request->handleErrorAndQuit(404, new Exception('User, Project or TaskStatus not found'));
+                $this->request->handleErrorAndQuit(404, new Exception('User, Project, TaskStatus or TaskType not found'));
             }
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
@@ -481,6 +483,7 @@ class TaskController extends AbstractController
         $task->setProject($projectObject);
         $task->setUser($userObject);
         $task->setTaskStatus($taskStatusObject);
+        $task->setTaskType($taskTypeObject);
 
         // update the task in the database
         try {

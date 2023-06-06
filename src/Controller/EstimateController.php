@@ -59,10 +59,10 @@ use Service\Request;
  */
 class EstimateController extends AbstractController
 {
-    
+
+    private const REQUIRED_FIELDS = ['name', 'description', 'project', 'expiredAt', 'estimateStatus'];
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['name', 'description', 'project', 'expiredAt', 'estimateStatus'];
 
     public function __construct(DAO $dao, Request $request)
     {
@@ -151,7 +151,6 @@ class EstimateController extends AbstractController
         }
 
 
-
         // create a new estimate
         $estimate = new Estimate($name, $description, $projectObject, $expiredAt, $estimateStatusObject);
 
@@ -224,7 +223,7 @@ class EstimateController extends AbstractController
      *          @OA\Schema(
      *              type="integer",
      *              format="int64"
- *              )
+     *              )
      *     ),
      *     @OA\Response(
      *          response=200,
@@ -502,13 +501,13 @@ class EstimateController extends AbstractController
         //get EstimateProduct by estimate and product
         try {
             $estimateProduct = $this->dao->getOneBy(EstimateProduct::class, ['estimate' => $estimate, 'product' => $product]);
-            if ($estimateProduct==null) {
+            if ($estimateProduct == null) {
                 $estimateProduct = new EstimateProduct($estimate, $product, 1);
                 $this->dao->add($estimateProduct);
                 $estimate->addEstimateProduct($estimateProduct);
                 $this->dao->update($estimate);
-            }else{
-                $estimateProduct->setQuantity($estimateProduct->getQuantity()+1);
+            } else {
+                $estimateProduct->setQuantity($estimateProduct->getQuantity() + 1);
                 $this->dao->update($estimateProduct);
             }
 
@@ -581,13 +580,13 @@ class EstimateController extends AbstractController
         //get EstimateProduct by estimate and product
         try {
             $estimateProduct = $this->dao->getOneBy(EstimateProduct::class, ['estimate' => $estimate, 'product' => $product]);
-            if ($estimateProduct==null) {
+            if ($estimateProduct == null) {
                 $this->request->handleErrorAndQuit(404, new Exception('EstimateProduct not found'));
-            }else{
-                if ($estimateProduct->getQuantity()>1) {
-                    $estimateProduct->setQuantity($estimateProduct->getQuantity()-1);
+            } else {
+                if ($estimateProduct->getQuantity() > 1) {
+                    $estimateProduct->setQuantity($estimateProduct->getQuantity() - 1);
                     $this->dao->update($estimateProduct);
-                }else{
+                } else {
                     $this->dao->delete($estimateProduct);
                 }
             }
@@ -598,7 +597,6 @@ class EstimateController extends AbstractController
 
         $this->request->handleSuccessAndQuit(200, 'Product removed from Estimate');
     }
-
 
 
     /**

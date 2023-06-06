@@ -29,10 +29,10 @@ use Service\Request;
 class ProjectStatusController extends AbstractController
 {
 
+    private const REQUIRED_FIELDS = ['name', 'description'];
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['name', 'description'];
-    
+
     public function __construct(DAO $dao, Request $request)
     {
         $this->dao = $dao;
@@ -150,7 +150,6 @@ class ProjectStatusController extends AbstractController
     }
 
 
-
     /**
      * @OA\Get(
      *     path="/project-status/{id}",
@@ -205,6 +204,7 @@ class ProjectStatusController extends AbstractController
 
 
     //function for updating a projectStatus
+
     /**
      * @OA\Put(
      *     path="/project-status/{id}",
@@ -324,11 +324,11 @@ class ProjectStatusController extends AbstractController
      *         description="ProjectStatus deleted"
      *         )
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=404,
      *         description="ProjectStatus not found"
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=500,
      *         description="Internal Server Error"
      *     )

@@ -29,10 +29,10 @@ use Service\Request;
 class EstimateStatusController extends AbstractController
 {
 
+    private const REQUIRED_FIELDS = ['name', 'description'];
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['name', 'description'];
-    
+
     public function __construct(DAO $dao, Request $request)
     {
         $this->dao = $dao;

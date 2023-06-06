@@ -54,10 +54,10 @@ use Service\Request;
  */
 class InvoiceController extends AbstractController
 {
-    
+
+    private const REQUIRED_FIELDS = ['name', 'description', 'project'];
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['name', 'description', 'project'];
 
     public function __construct(DAO $dao, Request $request)
     {
@@ -139,7 +139,6 @@ class InvoiceController extends AbstractController
         }
 
 
-
         // create a new invoice
         $invoice = new Invoice($name, $description, $projectObject);
 
@@ -157,7 +156,6 @@ class InvoiceController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(201, 'Invoice created');
     }
-
 
 
     /**
@@ -476,13 +474,13 @@ class InvoiceController extends AbstractController
         //get InvoiceProduct by invoice and product
         try {
             $invoiceProduct = $this->dao->getOneBy(InvoiceProduct::class, ['invoice' => $invoice, 'product' => $product]);
-            if ($invoiceProduct==null) {
+            if ($invoiceProduct == null) {
                 $invoiceProduct = new InvoiceProduct($invoice, $product, 1);
                 $this->dao->add($invoiceProduct);
                 $invoice->addInvoiceProduct($invoiceProduct);
                 $this->dao->update($invoice);
-            }else{
-                $invoiceProduct->setQuantity($invoiceProduct->getQuantity()+1);
+            } else {
+                $invoiceProduct->setQuantity($invoiceProduct->getQuantity() + 1);
                 $this->dao->update($invoiceProduct);
             }
 
@@ -555,13 +553,13 @@ class InvoiceController extends AbstractController
         //get InvoiceProduct by invoice and product
         try {
             $invoiceProduct = $this->dao->getOneBy(InvoiceProduct::class, ['invoice' => $invoice, 'product' => $product]);
-            if ($invoiceProduct==null) {
+            if ($invoiceProduct == null) {
                 $this->request->handleErrorAndQuit(404, new Exception('InvoiceProduct not found'));
-            }else{
-                if ($invoiceProduct->getQuantity()>1) {
-                    $invoiceProduct->setQuantity($invoiceProduct->getQuantity()-1);
+            } else {
+                if ($invoiceProduct->getQuantity() > 1) {
+                    $invoiceProduct->setQuantity($invoiceProduct->getQuantity() - 1);
                     $this->dao->update($invoiceProduct);
-                }else{
+                } else {
                     $this->dao->delete($invoiceProduct);
                 }
             }
@@ -572,7 +570,6 @@ class InvoiceController extends AbstractController
 
         $this->request->handleSuccessAndQuit(200, 'Product removed from Invoice');
     }
-
 
 
     /**

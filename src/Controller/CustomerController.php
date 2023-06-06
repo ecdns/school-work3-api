@@ -49,9 +49,9 @@ use Service\Request;
 class CustomerController extends AbstractController
 {
 
+    private const REQUIRED_FIELDS = ['name', 'firstName', 'lastName', 'email', 'job', 'address', 'city', 'country', 'zipCode', 'phone', 'company', 'user', 'status'];
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['name','firstName', 'lastName', 'email', 'job', 'address', 'city', 'country', 'zipCode', 'phone', 'company', 'user', 'status'];
 
     public function __construct(DAO $dao, Request $request)
     {

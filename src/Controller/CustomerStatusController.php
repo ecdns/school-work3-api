@@ -27,10 +27,10 @@ use Service\Request;
 class CustomerStatusController extends AbstractController
 {
 
+    private const REQUIRED_FIELDS = ['name', 'description'];
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['name', 'description'];
-    
+
     public function __construct(DAO $dao, Request $request)
     {
         $this->dao = $dao;
@@ -72,10 +72,10 @@ class CustomerStatusController extends AbstractController
         $requestBody = file_get_contents('php://input');
 
         // it will look like this:
-/*         {
-             "name": "CustomerStatus 1",
-             "description": "This is the first customerStatus"
-         }*/
+        /*         {
+                     "name": "CustomerStatus 1",
+                     "description": "This is the first customerStatus"
+                 }*/
 
         // decode the json
         $requestBody = json_decode($requestBody, true);
@@ -147,7 +147,6 @@ class CustomerStatusController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'CustomerStatus found', $response);
     }
-
 
 
     /**

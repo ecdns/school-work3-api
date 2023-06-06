@@ -34,9 +34,9 @@ use Service\Request;
  */
 class LicenseController extends AbstractController
 {
+    private const REQUIRED_FIELDS = ['name', 'description', 'price', 'maxUsers', 'validityPeriod'];
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['name', 'description', 'price', 'maxUsers', 'validityPeriod'];
 
     public function __construct(DAO $dao, Request $request)
     {
@@ -118,7 +118,6 @@ class LicenseController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(201, 'License created');
     }
-
 
 
     /**

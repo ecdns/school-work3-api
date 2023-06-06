@@ -30,9 +30,9 @@ use Service\Request;
 class VatController extends AbstractController
 {
 
+    private const REQUIRED_FIELDS = ['name', 'rate', 'description'];
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['name', 'rate', 'description'];
 
     public function __construct(DAO $dao, Request $request)
     {
@@ -151,7 +151,6 @@ class VatController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'Vats found', $response);
     }
-
 
 
     /**

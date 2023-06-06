@@ -3,7 +3,6 @@
 namespace Controller;
 
 // controller for entity TaskStatus
-use Entity\TaskStatus;
 use Entity\TaskType;
 use Exception;
 use Service\DAO;
@@ -11,14 +10,14 @@ use Service\Request;
 
 /**
  * @OA\Schema (
- *     schema="TaskStatusRequest",
+ *     schema="TaskTypeRequest",
  *     required={"name", "description"},
  *     @OA\Property(property="name", type="string", example="TaskStatus 1"),
  *     @OA\Property(property="description", type="string", example="This is the first taskStatus")
  * )
  *
  * @OA\Schema (
- *     schema="TaskStatusResponse",
+ *     schema="TaskTypeResponse",
  *     @OA\Property(property="id", type="integer", example=1),
  *     @OA\Property(property="name", type="string", example="TaskStatus 1"),
  *     @OA\Property(property="description", type="string", example="This is the first taskStatus"),
@@ -30,10 +29,10 @@ use Service\Request;
 class TaskTypeController extends AbstractController
 {
 
+    private const REQUIRED_FIELDS = ['name', 'description'];
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['name', 'description'];
-    
+
     public function __construct(DAO $dao, Request $request)
     {
         $this->dao = $dao;
@@ -42,7 +41,7 @@ class TaskTypeController extends AbstractController
 
     /**
      * @OA\Post(
-     *     path="/task-status",
+     *     path="/taskType",
      *     tags={"TaskType"},
      *     summary="Add a new TaskType",
      *     description="Add a new TaskType",
@@ -113,7 +112,7 @@ class TaskTypeController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/task-status/all",
+     *     path="/taskType/all",
      *     tags={"TaskType"},
      *     summary="Get all TaskTypees",
      *     description="Get all TaskTypees",
@@ -152,7 +151,7 @@ class TaskTypeController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/task-status/{id}",
+     *     path="/taskType/{id}",
      *     tags={"TaskType"},
      *     summary="Get TaskType by ID",
      *     description="Get TaskType by ID",
@@ -206,7 +205,7 @@ class TaskTypeController extends AbstractController
 
     /**
      * @OA\Put(
-     *     path="/task-status/{id}",
+     *     path="/taskType/{id}",
      *     tags={"TaskType"},
      *     summary="Update TaskType by ID",
      *     description="Update TaskType by ID",
@@ -305,7 +304,7 @@ class TaskTypeController extends AbstractController
 
     /**
      * @OA\Delete(
-     *     path="/task-status/{id}",
+     *     path="/taskType/{id}",
      *     tags={"TaskType"},
      *     summary="Delete TaskType by ID",
      *     description="Delete TaskType by ID",

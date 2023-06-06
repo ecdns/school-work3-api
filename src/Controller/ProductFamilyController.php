@@ -31,10 +31,10 @@ use Service\Request;
 class ProductFamilyController extends AbstractController
 {
 
+    private const REQUIRED_FIELDS = ['name', 'description', 'company'];
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['name', 'description', 'company'];
-    
+
     public function __construct(DAO $dao, Request $request)
     {
         $this->dao = $dao;

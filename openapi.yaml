@@ -1306,12 +1306,12 @@ paths:
           description: 'Message not found'
         '500':
           description: 'Internal server error'
-  /order-form:
+  /orderForm:
     get:
       tags:
         - OrderForm
       summary: 'Get all OrderForms'
-      operationId: 4774149724a8a5fa80f21879e6cc16a1
+      operationId: 5f3f8774f3ba2f83fa855bfdb514bd9e
       responses:
         '200':
           description: 'OrderForms found'
@@ -1327,7 +1327,7 @@ paths:
       tags:
         - OrderForm
       summary: 'Create a new OrderForm'
-      operationId: d1e4e74140f326097093c36799e8153c
+      operationId: 105ab836ac05d77987d32cbb03839696
       requestBody:
         description: 'OrderForm object that needs to be created'
         required: true
@@ -1350,12 +1350,12 @@ paths:
           description: 'OrderForm already exists'
         '500':
           description: 'Internal Server Error'
-  '/order-form/{id}':
+  '/orderForm/{id}':
     get:
       tags:
         - OrderForm
       summary: 'Get all OrderForms by project'
-      operationId: 4ffcf52dce587c2ef2e7d1eb1a45ea57
+      operationId: 2bf0f0a3a9a2645c5c3b6037cf2c2867
       parameters:
         -
           name: id
@@ -1379,7 +1379,7 @@ paths:
       tags:
         - OrderForm
       summary: 'Update OrderForm by ID'
-      operationId: d54fa2bc7772734aa0ee4b66e1a30097
+      operationId: 6063b48ed698b7aaff66704272ba5281
       parameters:
         -
           name: id
@@ -1411,7 +1411,7 @@ paths:
         - OrderForm
       summary: 'Delete an order form'
       description: 'Delete an order form'
-      operationId: 8bba7b264286e0861eae0ebce1d12e4a
+      operationId: 6cf7961455ec2c3d6ef0a110dbb0dd07
       parameters:
         -
           name: id
@@ -1427,13 +1427,13 @@ paths:
           description: 'OrderForm not found'
         '500':
           description: 'Internal Server Error'
-  '/order-form/{orderFormId}/product/{productId}':
+  '/orderForm/{orderFormId}/product/{productId}':
     post:
       tags:
         - OrderFormProduct
       summary: 'Add products to an order form'
       description: 'Add products to an order form'
-      operationId: 72b54c7ef70bef5f983188a61d264933
+      operationId: e641a6b735f9977e74d81e6f1d3053e9
       parameters:
         -
           name: orderFormId
@@ -1461,7 +1461,7 @@ paths:
         - OrderForm
       summary: 'Remove products from an order form'
       description: 'Remove products from an order form'
-      operationId: c0a5b26981a37ac191968d05b3e3b36f
+      operationId: 820e392fb460e6924492c769c5ee5bfd
       parameters:
         -
           name: orderFormId
@@ -1876,6 +1876,68 @@ paths:
           description: 'Successful operation'
         '404':
           description: 'Project not found'
+        '500':
+          description: 'Internal server error'
+  '/project/{projectId}/addUser/{userId}':
+    put:
+      tags:
+        - Project
+      summary: 'Add user to project'
+      description: 'Adds a user to a project'
+      operationId: 5f05c12c90874026502f8b993c347825
+      parameters:
+        -
+          name: projectId
+          in: path
+          description: 'ID of the project'
+          required: true
+          schema:
+            type: integer
+            format: int64
+        -
+          name: userId
+          in: path
+          description: 'ID of the user'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Successful operation'
+        '404':
+          description: 'Project or User not found'
+        '500':
+          description: 'Internal server error'
+  '/project/{projectId}/removeUser/{userId}':
+    put:
+      tags:
+        - Project
+      summary: 'Remove user from project'
+      description: 'Removes a user from a project'
+      operationId: f0f239c0b000f5e90355815a8d626cfb
+      parameters:
+        -
+          name: projectId
+          in: path
+          description: 'ID of the project'
+          required: true
+          schema:
+            type: integer
+            format: int64
+        -
+          name: userId
+          in: path
+          description: 'ID of the user'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Successful operation'
+        '404':
+          description: 'Project or User not found'
         '500':
           description: 'Internal server error'
   /project-status:
@@ -2671,6 +2733,129 @@ paths:
           description: 'TaskStatus deleted'
         '404':
           description: 'TaskStatus not found'
+        '500':
+          description: 'Internal server error'
+  /taskType:
+    post:
+      tags:
+        - TaskType
+      summary: 'Add a new TaskType'
+      description: 'Add a new TaskType'
+      operationId: 3c26fbc12bdd72545745b224c0932233
+      requestBody:
+        description: 'TaskType object that needs to be added'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskTypeRequest'
+      responses:
+        '201':
+          description: 'TaskType created'
+        '400':
+          description: 'Invalid request data'
+        '409':
+          description: 'TaskType already exists'
+        '500':
+          description: 'Internal server error'
+  /taskType/all:
+    get:
+      tags:
+        - TaskType
+      summary: 'Get all TaskTypees'
+      description: 'Get all TaskTypees'
+      operationId: 97b529f2901a23f6e7b457ada75caa12
+      responses:
+        '200':
+          description: 'TaskTypees found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskTypeResponse'
+        '500':
+          description: 'Internal server error'
+  '/taskType/{id}':
+    get:
+      tags:
+        - TaskType
+      summary: 'Get TaskType by ID'
+      description: 'Get TaskType by ID'
+      operationId: 09c2e7f8bb31febde8a95e69746eb531
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the TaskType to get'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'TaskType found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskTypeResponse'
+        '404':
+          description: 'TaskType not found'
+        '500':
+          description: 'Internal server error'
+    put:
+      tags:
+        - TaskType
+      summary: 'Update TaskType by ID'
+      description: 'Update TaskType by ID'
+      operationId: 0ff09ce3d214c81ad32264ed8741ed10
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the TaskType to update'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: 'TaskType object that needs to be updated'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskTypeRequest'
+      responses:
+        '200':
+          description: 'TaskType updated'
+        '400':
+          description: 'Invalid request data'
+        '404':
+          description: 'TaskType not found'
+        '409':
+          description: 'TaskType already exists'
+        '500':
+          description: 'Internal server error'
+    delete:
+      tags:
+        - TaskType
+      summary: 'Delete TaskType by ID'
+      description: 'Delete TaskType by ID'
+      operationId: 60f7155f79e2b216d78de7ebad727c61
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the TaskType to delete'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'TaskType deleted'
+        '404':
+          description: 'TaskType not found'
         '500':
           description: 'Internal server error'
   /user:
@@ -4136,6 +4321,9 @@ components:
         taskStatus:
           type: integer
           example: 1
+        taskType:
+          type: integer
+          example: 1
       type: object
     TaskResponse:
       properties:
@@ -4160,6 +4348,8 @@ components:
           $ref: '#/components/schemas/UserResponse'
         taskStatus:
           $ref: '#/components/schemas/TaskStatusResponse'
+        taskType:
+          $ref: '#/components/schemas/TaskTypeResponse'
         createdAt:
           type: string
           format: date-time
@@ -4182,6 +4372,38 @@ components:
           example: 'This is the first taskStatus'
       type: object
     TaskStatusResponse:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'TaskStatus 1'
+        description:
+          type: string
+          example: 'This is the first taskStatus'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2021-01-01 00:00:00'
+      type: object
+    TaskTypeRequest:
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+          example: 'TaskStatus 1'
+        description:
+          type: string
+          example: 'This is the first taskStatus'
+      type: object
+    TaskTypeResponse:
       properties:
         id:
           type: integer
@@ -4261,7 +4483,8 @@ components:
         role:
           $ref: '#/components/schemas/RoleResponse'
         company:
-          $ref: '#/components/schemas/CompanyResponse'
+          type: integer
+          example: '1'
         createdAt:
           type: string
           format: date-time

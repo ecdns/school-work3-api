@@ -12,7 +12,7 @@ use Service\Request;
 
 /**
  * @OA\Schema(
-*    schema="CompanySettingsRequest",
+ *    schema="CompanySettingsRequest",
  *   required={"primaryColor", "secondaryColor", "tertiaryColor", "company"},
  *   @OA\Property(property="primaryColor", type="string", example="#000000"),
  *   @OA\Property(property="secondaryColor", type="string", example="#000000"),
@@ -32,9 +32,9 @@ use Service\Request;
  */
 class CompanySettingsController extends AbstractController
 {
+    private const REQUIRED_FIELDS = ['primaryColor', 'secondaryColor', 'tertiaryColor', 'company'];
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['primaryColor', 'secondaryColor', 'tertiaryColor', 'company'];
 
     public function __construct(DAO $dao, Request $request)
     {

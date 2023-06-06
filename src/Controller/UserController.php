@@ -36,19 +36,19 @@ use Service\Request;
  *     @OA\Property(property="job", type="string", example="Developer"),
  *     @OA\Property(property="phone", type="string", example="0123456789"),
  *     @OA\Property(property="role", type="object", ref="#/components/schemas/RoleResponse"),
- *     @OA\Property(property="company", type="object", ref="#/components/schemas/CompanyResponse"),
+ *     @OA\Property(property="company", type="integer", example="1"),
  *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-03-01 00:00:00"),
  *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-03-01 00:00:00")
  * )
  */
 class UserController extends AbstractController
 {
+    private const REQUIRED_FIELDS = ['firstName', 'lastName', 'email', 'password', 'job', 'phone', 'role', 'company'];
     private DAO $dao;
     private Request $request;
     private Auth $auth;
     private Http $http;
     private string $jwtKey;
-    private const REQUIRED_FIELDS = ['firstName', 'lastName', 'email', 'password', 'job', 'phone', 'role', 'company'];
 
     public function __construct(DAO $dao, Request $request, Auth $auth, Http $http, string $jwtKey)
     {
@@ -124,7 +124,7 @@ class UserController extends AbstractController
         $job = $requestBody['job'];
         $phone = $requestBody['phone'];
         $role = $requestBody['role'];
-        $company= $requestBody['company'];
+        $company = $requestBody['company'];
 
 
         // get the company and role from the database
@@ -268,7 +268,6 @@ class UserController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'User found', $userData);
     }
-
 
 
     /**

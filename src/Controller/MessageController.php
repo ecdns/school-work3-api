@@ -31,9 +31,9 @@ use Service\Request;
 class MessageController extends AbstractController
 {
 
+    private const REQUIRED_FIELDS = ['sender', 'project', 'message'];
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['sender', 'project', 'message'];
 
     public function __construct(DAO $dao, Request $request)
     {
@@ -161,7 +161,6 @@ class MessageController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'Messages found', $response);
     }
-
 
 
     /**
