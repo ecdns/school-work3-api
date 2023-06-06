@@ -255,23 +255,10 @@ class Project implements EntityInterface
             'description' => $this->description,
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
-            'company' => $this->company->toArray()
-        ];
-    }
-
-    public function toFullArray(): array
-    {
-        return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'description' => $this->description,
-            'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
-            'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
             'company' => $this->company->toArray(),
             'creator' => $this->creator->toArray(),
-            'users' => $this->users->map(fn (User $user) => $user->toArray())->toArray(),
             'customer' => $this->customer->toArray(),
-            'tasks' => $this->tasks->map(fn (Task $task) => $task->toArray())->toArray(),
+            'users' => $this->users->map(fn (User $user) => $user->toArray())->toArray(),
             'projectStatus' => $this->projectStatus->toArray(),
         ];
     }

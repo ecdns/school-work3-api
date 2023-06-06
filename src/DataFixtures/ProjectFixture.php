@@ -38,10 +38,10 @@ class ProjectFixture extends AbstractFixture implements OrderedFixtureInterface
         $customer = $manager->getRepository(Customer::class)->findOneBy(['firstName' => 'Jean']);
 
         //generate customer
-        $customer = new Project('Jean', 'Dupont', $company, $user, $customer, $projectStatus);
+        $project = new Project('Amandanas - Construction', 'Le projet conciste à construire le batiment pour Amandanas', $company, $user, $customer, $projectStatus);
 
         //persist customer
-        $manager->persist($customer);
+        $manager->persist($project);
 
     }
 
@@ -60,10 +60,10 @@ class ProjectFixture extends AbstractFixture implements OrderedFixtureInterface
         $customer = $manager->getRepository(Customer::class)->findOneBy(['firstName' => 'Jean']);
 
         //generate customer
-        $customer = new Project('Jean', 'Dupont', $company, $user, $customer, $projectStatus);
+        $project = new Project('Redook - SDB', 'Le projet conciste à construire la salle de bain pour Redook', $company, $user, $customer, $projectStatus);
 
         //persist customer
-        $manager->persist($customer);
+        $manager->persist($project);
 
     }
 
@@ -76,16 +76,16 @@ class ProjectFixture extends AbstractFixture implements OrderedFixtureInterface
         $user = $manager->getRepository(User::class)->findOneBy(['email' => 'dorian.breuillard@gmail.com']);
 
         //get Project Status
-        $projectStatus = $manager->getRepository(ProjectStatus::class)->findOneBy(['name' => 'En attente']);
+        $projectStatus = $manager->getRepository(ProjectStatus::class)->findOneBy(['name' => 'En cours']);
 
         //get Customer
         $customer = $manager->getRepository(Customer::class)->findOneBy(['firstName' => 'Jean']);
 
         //generate customer
-        $customer = new Project('Jean', 'Dupont', $company, $user, $customer, $projectStatus);
+        $project = new Project('Redook - Cuisine', 'Le projet conciste à construire la cuisine pour Redook', $company, $user, $customer, $projectStatus);
 
         //persist customer
-        $manager->persist($customer);
+        $manager->persist($project);
 
     }
 

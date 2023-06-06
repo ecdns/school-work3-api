@@ -15,15 +15,17 @@ class UserFixture extends AbstractFixture implements OrderedFixtureInterface
         $this->addUser1($manager);
         $this->addUser2($manager);
         $this->addUser3($manager);
+        $this->addUser4($manager);
+        $this->addUser5($manager);
         $manager->flush();
     }
 
     public function addUser1(ObjectManager $manager): void
     {
         //get role
-        $role = $manager->getRepository('Entity\Role')->findOneBy(['name' => 'Visiteur']);
+        $role = $manager->getRepository('Entity\Role')->findOneBy(['name' => 'Administrateur']);
         //get Company
-        $company = $manager->getRepository('Entity\Company')->findOneBy(['name' => 'Cocorico']);
+        $company = $manager->getRepository('Entity\Company')->findOneBy(['name' => 'Aubade']);
 
         //generate user
         $user = new User('Dorian', 'Breuillard', 'dorian.breuillard@gmail.com', '123456', $role, 'Développeur', '0606060606', $company, true);
@@ -37,7 +39,7 @@ class UserFixture extends AbstractFixture implements OrderedFixtureInterface
         //get role
         $role = $manager->getRepository('Entity\Role')->findOneBy(['name' => 'Administrateur']);
         //get Company
-        $company = $manager->getRepository('Entity\Company')->findOneBy(['name' => 'Aubade']);
+        $company = $manager->getRepository('Entity\Company')->findOneBy(['name' => 'Cocorico']);
 
         //generate user
         $user = new User('John', 'Doe', 'jhondoe@gmail.com', '123456', $role, 'Développeur', '0606060606', $company, true);
@@ -58,6 +60,33 @@ class UserFixture extends AbstractFixture implements OrderedFixtureInterface
 
         $manager->persist($user);
 
+    }
+
+
+    public function addUser4(ObjectManager $manager): void
+    {
+        //get role
+        $role = $manager->getRepository('Entity\Role')->findOneBy(['name' => 'Administrateur']);
+        //get Company
+        $company = $manager->getRepository('Entity\Company')->findOneBy(['name' => 'Aubade']);
+
+        //generate user
+        $user = new User('Macky', 'Tall', 'tallmacky001@gmail.com', '123456', $role, 'Développeur', '0606060606', $company, true);
+
+        $manager->persist($user);
+    }
+
+    public function addUser5(ObjectManager $manager): void
+    {
+        //get role
+        $role = $manager->getRepository('Entity\Role')->findOneBy(['name' => 'Administrateur']);
+        //get Company
+        $company = $manager->getRepository('Entity\Company')->findOneBy(['name' => 'Aubade']);
+
+        //generate user
+        $user = new User('Clément', 'Pavot', 'clement@getinov.com', '123456', $role, 'Développeur', '0606060606', $company, true);
+
+        $manager->persist($user);
     }
 
     public function getOrder(): int

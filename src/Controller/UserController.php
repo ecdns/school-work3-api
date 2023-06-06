@@ -495,7 +495,7 @@ class UserController extends AbstractController
      *         response="500",
      *         description="Internal server error"
      *     )
-     * )0.0.0.0
+     * )
      */
     public function loginUser(): void
     {
