@@ -5,9 +5,7 @@ namespace DataFixtures;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use Entity\Company;
 use Entity\CustomerStatus;
-use Entity\License;
 
 class CustomerStatusFixture extends AbstractFixture implements OrderedFixtureInterface
 {
@@ -21,8 +19,6 @@ class CustomerStatusFixture extends AbstractFixture implements OrderedFixtureInt
 
     public function addCustomerStatus1(ObjectManager $manager): void
     {
-        $license = $manager->getRepository(License::class)->findOneBy(['name' => 'premium']);
-
         $company = new CustomerStatus('Prospect', 'Client potetiel');
 
         $manager->persist($company);
@@ -30,8 +26,6 @@ class CustomerStatusFixture extends AbstractFixture implements OrderedFixtureInt
 
     public function addCustomerStatus2(ObjectManager $manager): void
     {
-        $license = $manager->getRepository(License::class)->findOneBy(['name' => 'premium']);
-
         $company = new CustomerStatus('Client', 'Client');
 
         $manager->persist($company);
@@ -39,8 +33,6 @@ class CustomerStatusFixture extends AbstractFixture implements OrderedFixtureInt
 
     public function addCustomerStatus3(ObjectManager $manager): void
     {
-        $license = $manager->getRepository(License::class)->findOneBy(['name' => 'premium']);
-
         $company = new CustomerStatus('Ancien client', 'Ancien client');
 
         $manager->persist($company);

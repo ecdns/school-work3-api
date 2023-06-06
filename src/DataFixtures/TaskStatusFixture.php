@@ -21,7 +21,6 @@ class TaskStatusFixture extends AbstractFixture implements OrderedFixtureInterfa
 
     public function addTaskStatus1(ObjectManager $manager): void
     {
-        //generate user
         $user = new TaskStatus('Terminé', 'La tâche est terminée');
 
         $manager->persist($user);
@@ -29,7 +28,6 @@ class TaskStatusFixture extends AbstractFixture implements OrderedFixtureInterfa
 
     public function addTaskStatus2(ObjectManager $manager): void
     {
-        //generate user
         $user = new TaskStatus('En cours', 'La tâche est en cours');
 
         $manager->persist($user);
@@ -37,7 +35,6 @@ class TaskStatusFixture extends AbstractFixture implements OrderedFixtureInterfa
 
     public function addTaskStatus3(ObjectManager $manager): void
     {
-        //generate user
         $user = new TaskStatus('A faire', 'La tâche est à faire');
 
         $manager->persist($user);
@@ -45,7 +42,6 @@ class TaskStatusFixture extends AbstractFixture implements OrderedFixtureInterfa
 
     public function addTaskStatus4(ObjectManager $manager): void
     {
-        //generate user
         $user = new TaskStatus('En attente', 'La tâche est en attente');
 
         $manager->persist($user);
@@ -53,7 +49,6 @@ class TaskStatusFixture extends AbstractFixture implements OrderedFixtureInterfa
 
     public function addTaskStatus5(ObjectManager $manager): void
     {
-        //generate user
         $user = new TaskStatus('Annulé', 'La tâche est annulée');
 
         $manager->persist($user);

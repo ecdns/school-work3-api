@@ -22,7 +22,6 @@ class EstimateStatusFixture extends AbstractFixture implements OrderedFixtureInt
 
     public function addEstimateStatus1(ObjectManager $manager): void
     {
-
         $company = new EstimateStatus('Brouillon', 'Le devis est en cours de rédaction');
 
         $manager->persist($company);
@@ -30,7 +29,6 @@ class EstimateStatusFixture extends AbstractFixture implements OrderedFixtureInt
 
     public function addEstimateStatus2(ObjectManager $manager): void
     {
-
         $company = new EstimateStatus('Envoyé', 'Le devis a été envoyé au client');
 
         $manager->persist($company);
@@ -38,7 +36,6 @@ class EstimateStatusFixture extends AbstractFixture implements OrderedFixtureInt
 
     public function addEstimateStatus3(ObjectManager $manager): void
     {
-
         $company = new EstimateStatus('Validé', 'Le devis a été validé par le client');
 
         $manager->persist($company);
@@ -46,7 +43,6 @@ class EstimateStatusFixture extends AbstractFixture implements OrderedFixtureInt
 
     public function addEstimateStatus4(ObjectManager $manager): void
     {
-
         $company = new EstimateStatus('Refusé', 'Le devis a été refusé par le client');
 
         $manager->persist($company);
@@ -54,7 +50,6 @@ class EstimateStatusFixture extends AbstractFixture implements OrderedFixtureInt
 
     public function addEstimateStatus5(ObjectManager $manager): void
     {
-
         $company = new EstimateStatus('Annulé', 'Le devis a été annulé');
 
         $manager->persist($company);

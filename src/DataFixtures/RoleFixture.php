@@ -21,30 +21,24 @@ class RoleFixture extends AbstractFixture implements OrderedFixtureInterface
 
     public function addRole1(ObjectManager $manager): void
     {
-
         $company = new Role('Administrateur', 'Role administrateur');
 
         $manager->persist($company);
     }
 
-    //add second role
     public function addRole2(ObjectManager $manager): void
     {
-
         $company = new Role('Utilisateur', 'Role utilisateur');
 
         $manager->persist($company);
     }
 
-    //add third role
     public function addRole3(ObjectManager $manager): void
     {
-
         $company = new Role('Visiteur', 'Role visiteur');
 
         $manager->persist($company);
     }
-
 
     public function getOrder(): int
     {

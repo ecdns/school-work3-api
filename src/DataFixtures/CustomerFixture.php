@@ -23,49 +23,31 @@ class CustomerFixture extends AbstractFixture implements OrderedFixtureInterface
 
     public function addCustomer1(ObjectManager $manager): void
     {
-        //get company
         $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Aubade']);
-
-        //get CustomerStatus
         $customerStatus = $manager->getRepository(CustomerStatus::class)->findOneBy(['name' => 'Prospect']);
 
-        //generate customer
         $customer = new Customer('La company Canadienne de Jean','Jean', 'Dupont', 'jean.dupont@wanadoo.fr', 'PDG','1 rue de la paix', 'Paris', 'France', '75000', '0606060606', $company, $customerStatus);
 
-        //persist customer
         $manager->persist($customer);
-
     }
 
-    //add second customer
     public function addCustomer2(ObjectManager $manager): void
     {
-        //get company
         $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Bubulle']);
-
-        //get CustomerStatus
         $customerStatus = $manager->getRepository(CustomerStatus::class)->findOneBy(['name' => 'Client']);
 
-        //generate customer
         $customer = new Customer('DodoCompany','Paul', 'Martin', 'paul.martin@martinville.fr', 'Commercial','1 rue de la paix', 'Paris', 'France', '75000', '0606060606', $company, $customerStatus);
 
-        //persist customer
         $manager->persist($customer);
     }
 
-    //add third customer
     public function addCustomer3(ObjectManager $manager): void
     {
-        //get company
         $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Cocorico']);
-
-        //get CustomerStatus
         $customerStatus = $manager->getRepository(CustomerStatus::class)->findOneBy(['name' => 'Ancien client']);
 
-        //generate customer
         $customer = new Customer('Le logobi de toulouse','Jacques', 'Durand', 'jacques.durand@gmail.com', 'Danseur','1 rue de la paix', 'Paris', 'France', '75000', '0606060606', $company, $customerStatus);
 
-        //persist customer
         $manager->persist($customer);
     }
 

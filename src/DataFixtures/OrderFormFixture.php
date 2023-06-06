@@ -5,8 +5,6 @@ namespace DataFixtures;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use Entity\Invoice;
-use Entity\InvoiceProduct;
 use Entity\OrderForm;
 use Entity\OrderFormProduct;
 use Entity\Product;
@@ -28,7 +26,6 @@ class OrderFormFixture extends AbstractFixture implements OrderedFixtureInterfac
 
     public function addOrderForm1(ObjectManager $manager): void
     {
-        //get the projectStatus
         $project = $manager->getRepository(Project::class)->findOneBy(['name' =>  'Amandanas - Construction']);
 
         $orderFrom = new OrderForm('Bon de Commande pour Amandanas', 'Le bon de commande conciste à construire le batiment pour Amandanas', $project);
@@ -38,7 +35,6 @@ class OrderFormFixture extends AbstractFixture implements OrderedFixtureInterfac
 
     public function addOrderForm2(ObjectManager $manager): void
     {
-        //get the projectStatus
         $project = $manager->getRepository(Project::class)->findOneBy(['name' =>  'Redook - SDB']);
 
         $orderFrom = new OrderForm('Bon de Commande pour Redook - SDB', 'Le bon de commande conciste à construire la salle de bain pour Redook', $project);
@@ -48,52 +44,44 @@ class OrderFormFixture extends AbstractFixture implements OrderedFixtureInterfac
 
     public function addOrderForm3(ObjectManager $manager): void
     {
-        //get the projectStatus
-        $project = $manager->getRepository(Project::class)->findOneBy(['name' =>  'Redook - Cuisine']);
+        $project = $manager->getRepository(Project::class)->findOneBy(['name' => 'Redook - Cuisine']);
 
         $orderFrom = new OrderForm('Bon de Commande pour Redook - Cuisine', 'Le bon de commande conciste à construire la cuisine pour Redook', $project);
 
         $manager->persist($orderFrom);
     }
 
-    //add Product to OrderForm
- public function addProductToOrderForm1(ObjectManager $manager): void
- {
-        //get OrderFormStatus
+    public function addProductToOrderForm1(ObjectManager $manager): void
+    {
         $estimate = $manager->getRepository(OrderForm::class)->findOneBy(['name' => 'Bon de Commande pour Amandanas']);
 
-        //get the projectStatus
-        $product = $manager->getRepository(Product::class)->findOneBy(['name' =>  'Douche']);
+        $product = $manager->getRepository(Product::class)->findOneBy(['name' => 'Douche']);
 
         $estimateProduct = new OrderFormProduct($estimate, $product, 100);
 
         $manager->persist($estimateProduct);
- }
+    }
 
     public function addProductToOrderForm2(ObjectManager $manager): void
     {
-           //get OrderFormStatus
-           $estimate = $manager->getRepository(OrderForm::class)->findOneBy(['name' => 'Bon de Commande pour Redook - SDB']);
+       $estimate = $manager->getRepository(OrderForm::class)->findOneBy(['name' => 'Bon de Commande pour Redook - SDB']);
 
-           //get the projectStatus
-           $product = $manager->getRepository(Product::class)->findOneBy(['name' =>  'Baignoire']);
+       $product = $manager->getRepository(Product::class)->findOneBy(['name' =>  'Baignoire']);
 
-           $estimateProduct = new OrderFormProduct($estimate, $product, 100);
+       $estimateProduct = new OrderFormProduct($estimate, $product, 100);
 
-           $manager->persist($estimateProduct);
+       $manager->persist($estimateProduct);
     }
 
     public function addProductToOrderForm3(ObjectManager $manager): void
     {
-           //get OrderFormStatus
-           $estimate = $manager->getRepository(OrderForm::class)->findOneBy(['name' => 'Bon de Commande pour Redook - Cuisine']);
+       $estimate = $manager->getRepository(OrderForm::class)->findOneBy(['name' => 'Bon de Commande pour Redook - Cuisine']);
 
-           //get the projectStatus
-           $product = $manager->getRepository(Product::class)->findOneBy(['name' =>  'Lavabo']);
+       $product = $manager->getRepository(Product::class)->findOneBy(['name' =>  'Lavabo']);
 
-           $estimateProduct = new OrderFormProduct($estimate, $product, 100);
+       $estimateProduct = new OrderFormProduct($estimate, $product, 100);
 
-           $manager->persist($estimateProduct);
+       $manager->persist($estimateProduct);
     }
 
 
