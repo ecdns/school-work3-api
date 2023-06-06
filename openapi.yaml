@@ -565,13 +565,13 @@ paths:
           description: 'Estimate already exists'
         '500':
           description: 'Internal server error'
-  '/estimates/project/{id}':
+  '/estimates/project/{projectId}':
     get:
       tags:
         - Estimate
       summary: 'Get all estimates by project'
       description: 'Returns all estimates by project'
-      operationId: 358e40a97c0a44eb976d0dd2330c0db1
+      operationId: efa4215e1566b22a61ba2f185e60e615
       parameters:
         -
           name: id
@@ -674,6 +674,33 @@ paths:
           description: 'Estimate not found'
         '500':
           description: 'Internal Server Error'
+  '/estimate/company/{companyId}':
+    get:
+      tags:
+        - Estimate
+      summary: 'Get all estimates by company'
+      description: 'Returns all estimates by company'
+      operationId: ac55c51da68f325589ffb5792bf72524
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Company id'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Estimates found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EstimateResponse'
+        '500':
+          description: 'Internal server error'
   '/estimate/{estimateId}/product/{productId}':
     post:
       tags:
@@ -999,6 +1026,31 @@ paths:
           description: 'Invoice not found'
         '500':
           description: 'Internal server error'
+  '/invoice/company/{companyId}':
+    get:
+      tags:
+        - Invoice
+      summary: 'Get all invoices by company'
+      operationId: 578191917260d9c3149c8403fc51fe63
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Company ID'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Invoices found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InvoiceResponse'
+        '500':
+          description: 'Internal server error'
   '/invoice/{id}/product/{productId}':
     post:
       tags:
@@ -1306,6 +1358,35 @@ paths:
           description: 'Message not found'
         '500':
           description: 'Internal server error'
+  '/message/project/{messageId}':
+    get:
+      tags:
+        - Message
+      summary: 'Get a message by project id'
+      description: 'Get a message by project id'
+      operationId: 2dfb44514f17b7c86c8cc625a73660ce
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the project to get messages from'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Messages found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MessageResponse'
+        '404':
+          description: 'Messages not found'
+        '500':
+          description: 'Internal server error'
   /orderForm:
     get:
       tags:
@@ -1350,12 +1431,12 @@ paths:
           description: 'OrderForm already exists'
         '500':
           description: 'Internal Server Error'
-  '/orderForm/{id}':
+  '/orderForm/project/{projectId}':
     get:
       tags:
         - OrderForm
       summary: 'Get all OrderForms by project'
-      operationId: 2bf0f0a3a9a2645c5c3b6037cf2c2867
+      operationId: 1b11175a652e40acd93c59f6a970b4c9
       parameters:
         -
           name: id
@@ -1373,6 +1454,56 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/OrderFormResponse'
+        '500':
+          description: 'Internal Server Error'
+  '/orderForm/company/{id}':
+    get:
+      tags:
+        - OrderForm
+      summary: 'Get all OrderForms by company'
+      operationId: 9b08921cef85bf643a328b69e2073dc8
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Company ID'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'OrderForms found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderFormResponse'
+        '500':
+          description: 'Internal Server Error'
+  '/orderForm/{id}':
+    get:
+      tags:
+        - OrderForm
+      summary: 'Get OrderForm by ID'
+      operationId: 0012d418adc60faa9f9e62bc77777f1a
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the OrderForm'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'OrderForm found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderFormResponse'
+        '404':
+          description: 'OrderForm not found'
         '500':
           description: 'Internal Server Error'
     put:
@@ -1603,13 +1734,40 @@ paths:
           description: 'Product not found'
         '500':
           description: 'Internal server error'
-  /product-family:
+  '/product/productFamily/{productFamilyId}':
+    get:
+      tags:
+        - Product
+      summary: 'Get a product by id'
+      description: 'Returns a product by id'
+      operationId: 78a132f7f9a90428fdcc764f96352df1
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the product family to get products'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '404':
+          description: 'Product not found'
+        '500':
+          description: 'Internal server error'
+  /productFamily:
     post:
       tags:
         - ProductFamily
       summary: 'Add a new ProductFamily'
       description: 'Add a new ProductFamily'
-      operationId: 805e69377c4445a6e50535764dcccad2
+      operationId: ce2f074dbde444ae1acce67ce2431dac
       requestBody:
         description: 'ProductFamily object that needs to be added'
         required: true
@@ -1626,13 +1784,13 @@ paths:
           description: 'ProductFamily already exists'
         '500':
           description: 'Internal Server Error'
-  /product-family/all:
+  /productFamily/all:
     get:
       tags:
         - ProductFamily
       summary: 'Get all ProductFamilies'
       description: 'Get all ProductFamilies'
-      operationId: 9eacd5aab7f6357d8e11e73b7803dfe1
+      operationId: 3c895a3c21387db5f420919a38a43fee
       responses:
         '200':
           description: 'ProductFamilies found'
@@ -1644,13 +1802,13 @@ paths:
                   $ref: '#/components/schemas/ProductFamilyResponse'
         '500':
           description: 'Internal Server Error'
-  '/product-family/{id}':
+  '/productFamily/{id}':
     get:
       tags:
         - ProductFamily
       summary: 'Get a ProductFamily by ID'
       description: 'Get a ProductFamily by ID'
-      operationId: ac066a8a31e43a13ee06298191b3b875
+      operationId: 659418bda197e17acb40b5ba4ddf4521
       parameters:
         -
           name: id
@@ -1676,7 +1834,7 @@ paths:
         - ProductFamily
       summary: 'Update a ProductFamily by ID'
       description: 'Update a ProductFamily by ID'
-      operationId: d149cafd78ca79c7ba520177620a0094
+      operationId: f6df1b2a7e13bf533c28be97f055d4b8
       parameters:
         -
           name: id
@@ -1709,7 +1867,7 @@ paths:
         - ProductFamily
       summary: 'Delete a ProductFamily by ID'
       description: 'Delete a ProductFamily by ID'
-      operationId: efa22d4f0b56c46c54ddee9723c94f87
+      operationId: d21f301592f0e9881f8ba113d3718a9a
       parameters:
         -
           name: id
@@ -1724,6 +1882,35 @@ paths:
           description: 'ProductFamily deleted'
         '404':
           description: 'ProductFamily not found'
+        '500':
+          description: 'Internal Server Error'
+  '/productFamily/company/{companyId}':
+    get:
+      tags:
+        - ProductFamily
+      summary: 'Get all ProductFamilies by Company'
+      description: 'Get all ProductFamilies by Company'
+      operationId: d182cfc6eb622d94c8724f171143fa78
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the Company to get ProductFamilies from'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'ProductFamilies found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductFamilyResponse'
+        '404':
+          description: 'ProductFamilies not found'
         '500':
           description: 'Internal Server Error'
   /project:
@@ -2431,6 +2618,33 @@ paths:
           description: 'Supplier not found'
         '500':
           description: 'Internal server error'
+  '/supplier/company/{companyId}':
+    get:
+      tags:
+        - Supplier
+      summary: 'Get a supplier by company ID'
+      description: 'Returns a supplier from the database by its company ID'
+      operationId: eea54985153ca79655f0bb0c1aff8360
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the company to retrieve suppliers'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Supplier found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupplierResponse'
+        '404':
+          description: 'Supplier not found'
+        '500':
+          description: 'Internal server error'
   /task:
     post:
       tags:
@@ -2983,6 +3197,60 @@ paths:
           description: 'User not found'
         '500':
           description: 'Internal server error'
+  '/user/project/{projectId}':
+    get:
+      tags:
+        - User
+      summary: 'Get user by ID'
+      description: 'Returns a user by ID'
+      operationId: f09a02fce3e535986ca003cf46aedcf2
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the user to return'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'User found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '404':
+          description: 'User not found'
+        '500':
+          description: 'Internal server error'
+  '/user/company/{companyId}':
+    get:
+      tags:
+        - User
+      summary: 'Get user by ID'
+      description: 'Returns a user by ID'
+      operationId: f4e0d307df580a19e3fad5bf42b98997
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the user to return'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'User found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '404':
+          description: 'User not found'
+        '500':
+          description: 'Internal server error'
   /user/login:
     post:
       tags:
@@ -3380,7 +3648,7 @@ components:
           type: string
           example: '#000000'
         company:
-          type: id
+          type: integer
           example: 1
       type: object
     CompanySettingsResponse:

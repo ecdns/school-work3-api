@@ -215,6 +215,60 @@ class MessageController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Message found', $response);
     }
 
+    //getMessageByProjectId
+    /**
+     * @OA\Get(
+     *     path="/message/project/{messageId}",
+     *     tags={"Message"},
+     *     summary="Get a message by project id",
+     *     description="Get a message by project id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the project to get messages from",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Messages found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/MessageResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Messages not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+    public function getMessageByProject(int $messageId): void
+    {
+        // get the license from the database by its id
+        try {
+            $messages = $this->dao->getBy(Message::class, ['project' => $messageId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // set the response
+        $response = [];
+        foreach ($messages as $message) {
+            $response[] = $message->toArray();
+        }
+
+        // handle the response
+        $this->request->handleSuccessAndQuit(200, 'Messages found', $response);
+    }
+
     /**
      * @OA\Put(
      *     path="/message/{id}",

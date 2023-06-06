@@ -199,7 +199,7 @@ class OrderFormController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/orderForm/{id}",
+     *     path="/orderForm/project/{projectId}",
      *     tags={"OrderForm"},
      *     summary="Get all OrderForms by project",
      *     @OA\Parameter(
@@ -225,12 +225,12 @@ class OrderFormController extends AbstractController
      *     )
      * )
      */
-    public function getOrderFormsByProject(int $id): void
+    public function getOrderFormsByProject(int $projectId): void
     {
         // get all roles
         try {
             //get all orderForms by company
-            $orderForms = $this->dao->getBy(OrderForm::class, ['project' => $id]);
+            $orderForms = $this->dao->getBy(OrderForm::class, ['project' => $projectId]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -244,6 +244,56 @@ class OrderFormController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'OrderForms found', $response);
     }
+
+    // getOrderFormsByCompanyId
+    /**
+     * @OA\Get(
+     *     path="/orderForm/company/{id}",
+     *     tags={"OrderForm"},
+     *     summary="Get all OrderForms by company",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Company ID",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="OrderForms found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/OrderFormResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
+    public function getOrderFormsByCompanyId(int $companyId): void
+    {
+        // get all roles
+        try {
+            //get all orderForms by company
+            $orderForms = $this->dao->getBy(OrderForm::class, ['company' => $companyId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // set the response
+        $response = [];
+        foreach ($orderForms as $orderForm) {
+            $response[] = $orderForm->toArray();
+        }
+
+        // handle the response
+        $this->request->handleSuccessAndQuit(200, 'OrderForms found', $response);
+    }
+
 
 
     /**

@@ -269,6 +269,111 @@ class UserController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'User found', $userData);
     }
 
+    /**
+     * Get user by ID
+     *
+     * @OA\Get(
+     *     path="/user/project/{projectId}",
+     *     tags={"User"},
+     *     summary="Get user by ID",
+     *     description="Returns a user by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the user to return",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="User found",
+     *         @OA\JsonContent(ref="#/components/schemas/UserResponse")
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="User not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+    public function getUsersByProjectId(int $projectId): void
+    {
+        // get the user from the database by its id
+        try {
+            $users = $this->dao->getBy(User::class, ['project' => $projectId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // get the user data
+        $usersData = [];
+        foreach ($users as $user) {
+            $usersData[] = $user->toArray();
+        }
+
+        // handle the response
+        $this->request->handleSuccessAndQuit(200, 'User found', $usersData);
+    }
+
+    //getUsersByCompany
+    /**
+     * Get user by ID
+     *
+     * @OA\Get(
+     *     path="/user/company/{companyId}",
+     *     tags={"User"},
+     *     summary="Get user by ID",
+     *     description="Returns a user by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the user to return",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="User found",
+     *         @OA\JsonContent(ref="#/components/schemas/UserResponse")
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="User not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+
+    public function getUsersByCompany(int $companyId): void
+    {
+        // get the user from the database by its id
+        try {
+            $users = $this->dao->getBy(User::class, ['company' => $companyId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // get the user data
+        $usersData = [];
+        foreach ($users as $user) {
+            $usersData[] = $user->toArray();
+        }
+
+        // handle the response
+        $this->request->handleSuccessAndQuit(200, 'User found', $usersData);
+    }
 
     /**
      * Update user by ID

@@ -211,7 +211,7 @@ class EstimateController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/estimates/project/{id}",
+     *     path="/estimates/project/{projectId}",
      *     tags={"Estimate"},
      *     summary="Get all estimates by project",
      *     description="Returns all estimates by project",
@@ -239,12 +239,12 @@ class EstimateController extends AbstractController
      *      )
      * )
      */
-    public function getEstimatesByProject(int $id): void
+    public function getEstimatesByProject(int $projectId): void
     {
         // get all roles
         try {
             //get all estimates by company
-            $estimates = $this->dao->getBy(Estimate::class, ['project' => $id]);
+            $estimates = $this->dao->getBy(Estimate::class, ['project' => $projectId]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -310,6 +310,57 @@ class EstimateController extends AbstractController
 
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'Estimate found', $response);
+    }
+
+    //getEstimatesByCompany
+    /**
+     * @OA\Get(
+     *     path="/estimate/company/{companyId}",
+     *     tags={"Estimate"},
+     *     summary="Get all estimates by company",
+     *     description="Returns all estimates by company",
+     *     @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="Company id",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int64"
+     *              )
+     *     ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="Estimates found",
+     *          @OA\JsonContent(
+     *              type="array",
+     *              @OA\Items(ref="#/components/schemas/EstimateResponse")
+     *     )
+     * ),
+     *     @OA\Response(
+     *          response=500,
+     *          description="Internal server error"
+     *      )
+     * )
+     */
+    public function getEstimatesByCompany(int $companyId): void
+    {
+        // get all roles
+        try {
+            //get all estimates by company
+            $estimates = $this->dao->getBy(Estimate::class, ['company' => $companyId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // set the response
+        $response = [];
+        foreach ($estimates as $estimate) {
+            $response[] = $estimate->toArray();
+        }
+
+        // handle the response
+        $this->request->handleSuccessAndQuit(200, 'Estimates found', $response);
     }
 
 

@@ -185,7 +185,6 @@ class CompanySettingsController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Company settings found', $response);
     }
 
-
     /**
      * @OA\Put(
      *     path="/company-settings/{id}",

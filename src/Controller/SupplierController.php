@@ -243,6 +243,56 @@ class SupplierController extends AbstractController
     }
 
     /**
+     * @OA\Get(
+     *     path="/supplier/company/{companyId}",
+     *     tags={"Supplier"},
+     *     summary="Get a supplier by company ID",
+     *     description="Returns a supplier from the database by its company ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the company to retrieve suppliers",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Supplier found",
+     *         @OA\JsonContent(ref="#/components/schemas/SupplierResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Supplier not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+    public function getSuppliersByCompany(int $companyId): void
+    {
+        // get the supplier from the database by its id
+        try {
+            $suppliers = $this->dao->getBy(Supplier::class, ['company' => $companyId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // set the response
+        $response = [];
+        foreach ($suppliers as $supplier) {
+            $response[] = $supplier->toArray();
+        }
+
+        // handle the response
+        $this->request->handleSuccessAndQuit(200, 'Supplier found', $response);
+    }
+
+    /**
      * @OA\Put(
      *     path="/supplier/{id}",
      *     tags={"Supplier"},

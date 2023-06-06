@@ -338,6 +338,59 @@ class ProductController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Product found', $response);
     }
 
+    //getProductsByProductFamily
+    /**
+     * @OA\Get(
+     *     path="/product/productFamily/{productFamilyId}",
+     *     tags={"Product"},
+     *     summary="Get a product by id",
+     *     description="Returns a product by id",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the product family to get products",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/ProductResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Product not found",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *     )
+     * )
+     */
+    public function getProductsByProductFamily(int $productFamilyId): void
+    {
+        // get all roles
+        try {
+            //get all products by company
+            $products = $this->dao->getBy(Product::class, ['productFamily' => $productFamilyId]);
+
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // set the response
+        $response = [];
+        foreach ($products as $product) {
+            $response[] = $product->toArray();
+        }
+
+        // handle the response
+        $this->request->handleSuccessAndQuit(200, 'Products found', $response);
+    }
+
     /**
      * @OA\Put(
      *     path="/product/{id}",
