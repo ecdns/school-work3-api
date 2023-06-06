@@ -16,6 +16,9 @@ COPY . /var/www/back
 # Set the working directory to the application directory
 WORKDIR /var/www/back
 
+# create log folder
+RUN mkdir /var/www/back/log
+
 # give permission to the log folder to write logs
 RUN chmod -R 777 /var/www/back/log
 
@@ -31,9 +34,6 @@ RUN apt-get update && \
 
 # Install the PDO MySQL extension for PHP
 RUN docker-php-ext-install pdo_mysql
-
-# Install openssl extension for PHP
-RUN docker-php-ext-install openssl
 
 # Install Composer and project dependencies
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
