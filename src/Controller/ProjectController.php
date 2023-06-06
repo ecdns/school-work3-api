@@ -424,6 +424,64 @@ class ProjectController extends AbstractController
 
     }
 
+    //add user to project
+    public function addUserToProject(int $projectId, int $userId) : void {
+        // get the Project by id
+        try {
+            $project = $this->dao->getOneBy(Project::class, ['id' => $projectId]);
+            $user = $this->dao->getOneBy(User::class, ['id' => $userId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // if the Project is not found
+        if (!$project || !$user) {
+            $this->request->handleErrorAndQuit(404, new Exception('Project or User not found'));
+        }
+
+        // add user to project
+        $project->addUser($user);
+
+        // update the project in the database
+        try {
+            $this->dao->update($project);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // handle the response
+        $this->request->handleSuccessAndQuit(200, 'User added to project');
+    }
+
+    //remove user from project
+    public function removeUserFromProject(int $projectId, int $userId) : void {
+        // get the Project by id
+        try {
+            $project = $this->dao->getOneBy(Project::class, ['id' => $projectId]);
+            $user = $this->dao->getOneBy(User::class, ['id' => $userId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // if the Project is not found
+        if (!$project || !$user) {
+            $this->request->handleErrorAndQuit(404, new Exception('Project or User not found'));
+        }
+
+        // remove user from project
+        $project->removeUser($user);
+
+        // update the project in the database
+        try {
+            $this->dao->update($project);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // handle the response
+        $this->request->handleSuccessAndQuit(200, 'User removed from project');
+    }
+
 
     /**
      * @OA\Delete(

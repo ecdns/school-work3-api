@@ -30,7 +30,7 @@ class CustomerFixture extends AbstractFixture implements OrderedFixtureInterface
         $customerStatus = $manager->getRepository(CustomerStatus::class)->findOneBy(['name' => 'Prospect']);
 
         //generate customer
-        $customer = new Customer('Jean', 'Dupont', 'jean.dupont@wanadoo.fr', '1 rue de la paix', 'Paris', 'France', '75000', '0606060606', $company, $customerStatus);
+        $customer = new Customer('La company Canadienne de Jean','Jean', 'Dupont', 'jean.dupont@wanadoo.fr', 'PDG','1 rue de la paix', 'Paris', 'France', '75000', '0606060606', $company, $customerStatus);
 
         //persist customer
         $manager->persist($customer);
@@ -47,7 +47,7 @@ class CustomerFixture extends AbstractFixture implements OrderedFixtureInterface
         $customerStatus = $manager->getRepository(CustomerStatus::class)->findOneBy(['name' => 'Client']);
 
         //generate customer
-        $customer = new Customer('Paul', 'Martin', 'paul.martin@martinville.fr', '1 rue de la paix', 'Paris', 'France', '75000', '0606060606', $company, $customerStatus);
+        $customer = new Customer('DodoCompany','Paul', 'Martin', 'paul.martin@martinville.fr', 'Commercial','1 rue de la paix', 'Paris', 'France', '75000', '0606060606', $company, $customerStatus);
 
         //persist customer
         $manager->persist($customer);
@@ -63,7 +63,7 @@ class CustomerFixture extends AbstractFixture implements OrderedFixtureInterface
         $customerStatus = $manager->getRepository(CustomerStatus::class)->findOneBy(['name' => 'Ancien client']);
 
         //generate customer
-        $customer = new Customer('Jacques', 'Durand', 'jacques.durand@gmail.com', '1 rue de la paix', 'Paris', 'France', '75000', '0606060606', $company, $customerStatus);
+        $customer = new Customer('Le logobi de toulouse','Jacques', 'Durand', 'jacques.durand@gmail.com', 'Danseur','1 rue de la paix', 'Paris', 'France', '75000', '0606060606', $company, $customerStatus);
 
         //persist customer
         $manager->persist($customer);

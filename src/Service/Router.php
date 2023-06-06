@@ -24,6 +24,7 @@ use Controller\RoleController;
 use Controller\SupplierController;
 use Controller\TaskController;
 use Controller\TaskStatusController;
+use Controller\TaskTypeController;
 use Controller\UserController;
 use Controller\UserSettingsController;
 use Controller\VatController;
@@ -141,6 +142,8 @@ class Router
                 $r->addRoute('GET', '/project/{id:\d+}', [ProjectController::class, 'getProjectById']);
                 $r->addRoute('GET', '/project/company/{id:\d+}', [ProjectController::class, 'getProjectsByCompany']);
                 $r->addRoute('PUT', '/project/{id:\d+}', [ProjectController::class, 'updateProject']);
+                $r->addRoute('PUT', '/project/{projectId:\d+}/addUser/{userId:\d+}', [ProjectController::class, 'addUserToProject']);
+                $r->addRoute('PUT', '/project/{projectId:\d+}/removeUser/{userId:\d+}', [ProjectController::class, 'removeUserFromProject']);
                 $r->addRoute('DELETE', '/project/{id:\d+}', [ProjectController::class, 'deleteProject']);
 
                 // ProjectStatus routes
@@ -225,6 +228,13 @@ class Router
                 $r->addRoute('GET', '/message/project/{id:\d+}', [MessageController::class, 'getMessagesByProject']);
                 $r->addRoute('PUT', '/message/{id:\d+}', [MessageController::class, 'updateMessage']);
                 $r->addRoute('DELETE', '/message/{id:\d+}', [MessageController::class, 'deleteMessage']);
+
+                //TaskType routes
+                $r->addRoute('POST', '/taskType', [TaskTypeController::class, 'addTaskType']);
+                $r->addRoute('GET', '/taskType/all', [TaskTypeController::class, 'getTaskTypes']);
+                $r->addRoute('GET', '/taskType/{id:\d+}', [TaskTypeController::class, 'getTaskTypeById']);
+                $r->addRoute('PUT', '/taskType/{id:\d+}', [TaskTypeController::class, 'updateTaskType']);
+                $r->addRoute('DELETE', '/taskType/{id:\d+}', [TaskTypeController::class, 'deleteTaskType']);
 
             });
             // add a groupe for documentation

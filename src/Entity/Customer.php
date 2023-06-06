@@ -17,6 +17,9 @@ class Customer implements EntityInterface
     private int $id;
 
     #[ORM\Column(type: 'string')]
+    private string $name;
+
+    #[ORM\Column(type: 'string')]
     private string $firstName;
 
     #[ORM\Column(type: 'string')]
@@ -24,6 +27,9 @@ class Customer implements EntityInterface
 
     #[ORM\Column(type: 'string', unique: true)]
     private string $email;
+
+    #[ORM\Column(type: 'string')]
+    private string $job;
 
     #[ORM\Column(type: 'string')]
     private string $address;
@@ -59,11 +65,13 @@ class Customer implements EntityInterface
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Project::class)]
     private Collection $projects;
 
-    public function __construct(string $firstName, string $lastName, string $email, string $address, string $city, string $country, string $zipCode, string $phone, Company $company, CustomerStatus $status)
+    public function __construct(string $name, string $firstName, string $lastName, string $email, string $job, string $address, string $city, string $country, string $zipCode, string $phone, Company $company, CustomerStatus $status)
     {
+        $this->name = $name;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->email = $email;
+        $this->job = $job;
         $this->address = $address;
         $this->city = $city;
         $this->country = $country;
@@ -76,6 +84,17 @@ class Customer implements EntityInterface
     public function getId(): int
     {
         return $this->id;
+    }
+
+    //getters and setters for name
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): void
+    {
+        $this->name = $name;
     }
 
     public function getFirstName(): string
@@ -199,6 +218,16 @@ class Customer implements EntityInterface
     public function setUser(User $user): void
     {
         $this->user = $user;
+    }
+
+    public function getJob(): string
+    {
+        return $this->job;
+    }
+
+    public function setJob(string $job): void
+    {
+        $this->job = $job;
     }
 
     public function getStatus(): CustomerStatus

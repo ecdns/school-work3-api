@@ -7,7 +7,6 @@ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Entity\Company;
 use Entity\Customer;
-use Entity\CustomerStatus;
 use Entity\Project;
 use Entity\ProjectStatus;
 use Entity\User;

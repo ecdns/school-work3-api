@@ -51,7 +51,7 @@ class CustomerController extends AbstractController
 
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['firstName', 'lastName', 'email', 'address', 'city', 'country', 'zipCode', 'phone', 'company', 'user', 'status'];
+    private const REQUIRED_FIELDS = ['name','firstName', 'lastName', 'email', 'job', 'address', 'city', 'country', 'zipCode', 'phone', 'company', 'user', 'status'];
 
     public function __construct(DAO $dao, Request $request)
     {
@@ -120,9 +120,11 @@ class CustomerController extends AbstractController
         }
 
         // get the user data from the request body
+        $name = $requestBody['name'];
         $firstName = $requestBody['firstName'];
         $lastName = $requestBody['lastName'];
         $email = $requestBody['email'];
+        $job = $requestBody['job'];
         $address = $requestBody['address'];
         $city = $requestBody['city'];
         $country = $requestBody['country'];
@@ -148,7 +150,7 @@ class CustomerController extends AbstractController
 
 
         // create a new Customer
-        $customer = new Customer( $firstName, $lastName, $email, $address, $city, $country, $zipCode, $phone, $companyObject, $userObject, $customerStatusObject);
+        $customer = new Customer($name, $firstName, $lastName, $email, $job, $address, $city, $country, $zipCode, $phone, $companyObject, $userObject, $customerStatusObject);
 
         // add the customer to the database
         try {
@@ -397,8 +399,11 @@ class CustomerController extends AbstractController
         }
 
         // get the controller data from the request body
+        $name = $requestBody['name'] ?? $customer->getName();
         $firstName = $requestBody['firstName'] ?? $customer->getFirstName();
         $lastName = $requestBody['lastName'] ?? $customer->getLastName();
+        $email = $requestBody['email'] ?? $customer->getEmail();
+        $job = $requestBody['job'] ?? $customer->getJob();
         $address = $requestBody['address'] ?? $customer->getAddress();
         $city = $requestBody['city'] ?? $customer->getCity();
         $country = $requestBody['country'] ?? $customer->getCountry();
@@ -423,8 +428,11 @@ class CustomerController extends AbstractController
         }
 
         // update the customer data checking if the data has been changed
+        $customer->setName($name);
         $customer->setFirstName($firstName);
         $customer->setLastName($lastName);
+        $customer->setEmail($email);
+        $customer->setJob($job);
         $customer->setAddress($address);
         $customer->setCity($city);
         $customer->setCountry($country);

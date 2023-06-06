@@ -299,7 +299,7 @@ class User implements EntityInterface
             'role' => $this->getRole()->getName(),
             'job' => $this->getJob(),
             'phone' => $this->getPhone(),
-            'company' => $this->getCompany()->getName(),
+            'company' => $this->getCompany()->getId(),
             'createdAt' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
             'updatedAt' => $this->getUpdatedAt()?->format('Y-m-d H:i:s'),
             'passwordConfirmedAt' => $this->getPasswordConfirmedAt()?->format('Y-m-d H:i:s'),

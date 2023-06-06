@@ -122,8 +122,12 @@ $builder->addDefinitions([
     'Controller\EstimateController' => DI\autowire()
         ->constructorParameter('dao', DI\get('Service\DAO'))
         ->constructorParameter('request', DI\get('Service\Request')),
+    'Controller\TaskTypeController' => DI\autowire()
+        ->constructorParameter('dao', DI\get('Service\DAO'))
+        ->constructorParameter('request', DI\get('Service\Request')),
     'Controller\DocumentationController' => DI\autowire()
         ->constructorParameter('request', DI\get('Service\Request')),
+
 
 ]);
 

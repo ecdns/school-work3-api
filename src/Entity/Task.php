@@ -38,6 +38,10 @@ class Task implements EntityInterface
     #[ORM\JoinColumn(name: 'task_status_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     public TaskStatus $taskStatus;
 
+    #[ORM\ManyToOne(targetEntity: TaskType::class, inversedBy: 'tasks')]
+    #[ORM\JoinColumn(name: 'task_type_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    public TaskType $taskType;
+
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'tasks')]
     private User $users;
 
@@ -45,7 +49,7 @@ class Task implements EntityInterface
     #[ORM\JoinColumn(name: 'project_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     public Project $project;
 
-    public function __construct(string $title, string $description, string $location, string $dueDate, Project $project, User $users, TaskStatus $taskStatus)
+    public function __construct(string $title, string $description, string $location, string $dueDate, Project $project, User $users, TaskStatus $taskStatus, TaskType $taskType)
     {
         $this->title = $title;
         $this->description = $description;
@@ -54,6 +58,7 @@ class Task implements EntityInterface
         $this->project = $project;
         $this->users = $users;
         $this->taskStatus = $taskStatus;
+        $this->taskType = $taskType;
     }
 
     public function getId(): int
@@ -126,6 +131,17 @@ class Task implements EntityInterface
     public function getTaskStatus(): TaskStatus
     {
         return $this->taskStatus;
+    }
+
+    //getter setter for TaskType
+    public function getTaskType(): TaskType
+    {
+        return $this->taskType;
+    }
+
+    public function setTaskType(TaskType $taskType): void
+    {
+        $this->taskType = $taskType;
     }
 
     public function getUsers(): User
