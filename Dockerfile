@@ -16,8 +16,8 @@ COPY . /var/www/back
 # Set the working directory to the application directory
 WORKDIR /var/www/back
 
-# create log folder
-RUN mkdir /var/www/back/log
+# create log folder only if it doesn't exist
+RUN mkdir -p /var/www/back/log
 
 # give permission to the log folder to write logs
 RUN chmod -R 777 /var/www/back/log
