@@ -279,9 +279,9 @@ class Customer implements EntityInterface
             'phone' => $this->getPhone(),
             'createdAt' => $this->getCreatedAt(),
             'updatedAt' => $this->getUpdatedAt(),
-            'company' => $this->getCompany()->toArray(),
+            'company' => $this->getCompany()->getId(),
             'status' => $this->getStatus()->toArray(),
-            'projects' => $this->getProjects()->map(fn(Project $project) => $project->toArray())->toArray(),
+            'projects' => $this->getProjects()->map(fn(Project $project) => $project->getId())->toArray()
         ];
     }
 
