@@ -144,7 +144,9 @@ class Router
                 $r->addRoute('POST', '/project', [ProjectController::class, 'addProject']);
                 $r->addRoute('GET', '/project/all', [ProjectController::class, 'getProjects']);
                 $r->addRoute('GET', '/project/{id:\d+}', [ProjectController::class, 'getProjectById']);
-                $r->addRoute('GET', '/project/company/{id:\d+}', [ProjectController::class, 'getProjectsByCompany']);
+                $r->addRoute('GET', '/project/company/{companyId:\d+}', [ProjectController::class, 'getProjectsByCompany']);
+                $r->addRoute('GET', '/project/customer/{customerId:\d+}', [ProjectController::class, 'getProjectsByCustomer']);
+                $r->addRoute('GET', '/project/user/{userId:\d+}', [ProjectController::class, 'getProjectsByUser']);
                 $r->addRoute('PUT', '/project/{id:\d+}', [ProjectController::class, 'updateProject']);
                 $r->addRoute('PUT', '/project/{projectId:\d+}/addUser/{userId:\d+}', [ProjectController::class, 'addUserToProject']);
                 $r->addRoute('PUT', '/project/{projectId:\d+}/removeUser/{userId:\d+}', [ProjectController::class, 'removeUserFromProject']);
@@ -196,6 +198,7 @@ class Router
                 $r->addRoute('GET', '/estimate/{id:\d+}', [EstimateController::class, 'getEstimateById']);
                 $r->addRoute('GET', '/estimate/project/{projectId:\d+}', [EstimateController::class, 'getEstimatesByProject']);
                 $r->addRoute('GET', '/estimate/company/{companyId:\d+}', [EstimateController::class, 'getEstimatesByCompany']);
+                $r->addRoute('GET', '/estimate/customer/{customerId:\d+}', [EstimateController::class, 'getEstimatesByCustomer']);
                 $r->addRoute('PUT', '/estimate/{id:\d+}', [EstimateController::class, 'updateEstimate']);
                 $r->addRoute('DELETE', '/estimate/{id:\d+}', [EstimateController::class, 'deleteEstimate']);
 
@@ -214,6 +217,7 @@ class Router
                 $r->addRoute('GET', '/invoice/{id:\d+}', [InvoiceController::class, 'getInvoiceById']);
                 $r->addRoute('GET', '/invoice/project/{projectId:\d+}', [InvoiceController::class, 'getInvoicesByProject']);
                 $r->addRoute('GET', '/invoice/company/{companyId:\d+}', [InvoiceController::class, 'getInvoicesByCompany']);
+                $r->addRoute('GET', '/invoice/customer/{customerId:\d+}', [InvoiceController::class, 'getInvoicesByCustomer']);
                 $r->addRoute('PUT', '/invoice/{id:\d+}', [InvoiceController::class, 'updateInvoice']);
                 $r->addRoute('DELETE', '/invoice/{id:\d+}', [InvoiceController::class, 'deleteInvoice']);
 
@@ -225,6 +229,7 @@ class Router
                 $r->addRoute('GET', '/orderForm/{id:\d+}', [OrderFormController::class, 'getOrderFormById']);
                 $r->addRoute('GET', '/orderForm/project/{projectId:\d+}', [OrderFormController::class, 'getOrderFormsByProject']);
                 $r->addRoute('GET', '/orderForm/company/{companyId:\d+}', [OrderFormController::class, 'getOrderFormsByCompany']);
+                $r->addRoute('GET', '/orderForm/customer/{customerId:\d+}', [OrderFormController::class, 'getOrderFormsByCustomer']);
                 $r->addRoute('PUT', '/orderForm/{id:\d+}', [OrderFormController::class, 'updateOrderForm']);
                 $r->addRoute('DELETE', '/orderForm/{id:\d+}', [OrderFormController::class, 'deleteOrderForm']);
 
@@ -265,7 +270,7 @@ class Router
     {
         switch ($requestInfo[0]) {
             case Dispatcher::NOT_FOUND:
-                $this->request->handleErrorAndQuit(404, new Exception('Not found'));
+                $this->request->handleErrorAndQuit(404, new Exception('Route not found'));
             case Dispatcher::METHOD_NOT_ALLOWED:
                 $allowedMethods = $requestInfo[1];
                 $this->request->handleErrorAndQuit(405, new Exception('Method not allowed. Allowed methods: ' . implode(', ', $allowedMethods)));

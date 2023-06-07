@@ -3,6 +3,7 @@
 namespace Entity;
 
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -75,6 +76,7 @@ class Project implements EntityInterface
         $this->creator = $creator;
         $this->customer = $customer;
         $this->projectStatus = $projectStatus;
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): int

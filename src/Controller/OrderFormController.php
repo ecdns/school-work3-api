@@ -245,7 +245,6 @@ class OrderFormController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'OrderForms found', $response);
     }
 
-    // getOrderFormsByCompanyId
     /**
      * @OA\Get(
      *     path="/orderForm/company/{id}",
@@ -346,6 +345,51 @@ class OrderFormController extends AbstractController
 
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'OrderForm found', $response);
+    }
+
+    //getOrderFormsByCustomer
+    /**
+     * @OA\Get(
+     *     path="/orderForm/customer/{customerId}",
+     *     tags={"OrderForm"},
+     *     summary="Get all OrderForms by customer",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Customer ID",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="OrderForms found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/OrderFormResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
+    public function getOrderFormsByCustomer(int $customerId): void
+    {
+        try {
+            $orderForms = $this->dao->getBy(OrderForm::class, ['customer' => $customerId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        $response = [];
+        foreach ($orderForms as $orderForm) {
+            $response[] = $orderForm->toArray();
+        }
+
+        $this->request->handleSuccessAndQuit(200, 'OrderForms found', $response);
     }
 
 

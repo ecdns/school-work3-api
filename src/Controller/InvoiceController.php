@@ -342,6 +342,54 @@ class InvoiceController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Invoices found', $response);
     }
 
+    //getInvoicesByCustomer
+    /**
+     * @OA\Get(
+     *     path="/invoice/customer/{customerId}",
+     *     tags={"Invoice"},
+     *     summary="Get all invoices by customer",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Customer ID",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Invoices found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/InvoiceResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+    public function getInvoicesByCustomer(int $customerId): void
+    {
+        // get all invoices by customer
+        try {
+            $invoices = $this->dao->getBy(Invoice::class, ['customer' => $customerId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // set the response
+        $response = [];
+        foreach ($invoices as $invoice) {
+            $response[] = $invoice->toArray();
+        }
+
+        // handle the response
+        $this->request->handleSuccessAndQuit(200, 'Invoices found', $response);
+    }
+
     /**
      * @OA\Put(
      *     path="/invoice/{id}",

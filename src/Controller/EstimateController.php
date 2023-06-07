@@ -312,7 +312,6 @@ class EstimateController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Estimate found', $response);
     }
 
-    //getEstimatesByCompany
     /**
      * @OA\Get(
      *     path="/estimate/company/{companyId}",
@@ -354,6 +353,54 @@ class EstimateController extends AbstractController
         }
 
         // set the response
+        $response = [];
+        foreach ($estimates as $estimate) {
+            $response[] = $estimate->toArray();
+        }
+
+        // handle the response
+        $this->request->handleSuccessAndQuit(200, 'Estimates found', $response);
+    }
+
+    //getEstimatesByCustomer
+    /**
+     * @OA\Get(
+     *     path="/estimate/customer/{customerId}",
+     *     tags={"Estimate"},
+     *     summary="Get all estimates by customer",
+     *     description="Returns all estimates by customer",
+     *     @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="Customer id",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int64"
+     *              )
+     *     ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="Estimates found",
+     *          @OA\JsonContent(
+     *              type="array",
+     *              @OA\Items(ref="#/components/schemas/EstimateResponse")
+     *     )
+     * ),
+     *     @OA\Response(
+     *          response=500,
+     *          description="Internal server error"
+     *      )
+     * )
+     */
+    public function getEstimatesByCustomer(int $customerId): void
+    {
+        try {
+            $estimates = $this->dao->getBy(Estimate::class, ['customer' => $customerId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
         $response = [];
         foreach ($estimates as $estimate) {
             $response[] = $estimate->toArray();

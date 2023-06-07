@@ -195,7 +195,7 @@ class ProjectController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/project/company/{id}",
+     *     path="/project/company/{companyId}",
      *     tags={"Project"},
      *     summary="Get all projects by company",
      *     description="Returns an array of all projects by company",
@@ -223,12 +223,12 @@ class ProjectController extends AbstractController
      *     )
      * )
      */
-    public function getProjectsByCompany(int $id): void
+    public function getProjectsByCompany(int $companyId): void
     {
         // get all roles
         try {
             //get all project by company
-            $projects = $this->dao->getBy(Project::class, ['company' => $id]);
+            $projects = $this->dao->getBy(Project::class, ['company' => $companyId]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -296,6 +296,103 @@ class ProjectController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Project found', $response);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/project/customer/{userId}",
+     *     tags={"Project"},
+     *     summary="Get all projects by user",
+     *     description="Returns an array of all projects by user",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the user",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *              type="array",
+     *              @OA\Items(ref="#/components/schemas/ProjectResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+    public function getProjectsByUser(int $userId): void
+    {
+        try {
+            $user = $this->dao->getOneBy(User::class, ['id' => $userId]);
+            $projects = $user->getProjects();
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // set the response
+        $response = [];
+        foreach ($projects as $project) {
+            $response[] = $project->toArray();
+        }
+
+        // handle the response
+        $this->request->handleSuccessAndQuit(200, 'Projects found', $response);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/project/customer/{customerId}",
+     *     tags={"Project"},
+     *     summary="Get all projects by customer",
+     *     description="Returns an array of all projects by customer",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the customer",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *              type="array",
+     *              @OA\Items(ref="#/components/schemas/ProjectResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+    public function getProjectsByCustomer(int $customerId): void
+    {
+        //get all projects by customer
+        try {
+            $projects = $this->dao->getBy(Project::class, ['customer' => $customerId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // set the response
+        $response = [];
+        foreach ($projects as $project) {
+            $response[] = $project->toArray();
+        }
+
+        // handle the response
+        $this->request->handleSuccessAndQuit(200, 'Projects found', $response);
+    }
 
     /**
      * @OA\Put(
