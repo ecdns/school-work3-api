@@ -148,6 +148,7 @@ class Router
                 $r->addRoute('GET', '/project/company/{companyId:\d+}', [ProjectController::class, 'getProjectsByCompany']);
                 $r->addRoute('GET', '/project/customer/{customerId:\d+}', [ProjectController::class, 'getProjectsByCustomer']);
                 $r->addRoute('GET', '/project/user/{userId:\d+}', [ProjectController::class, 'getProjectsByUser']);
+                $r->addRoute('GET', '/project/projectStatus/{projectStatusId:\d+}', [ProjectController::class, 'getProjectsByProjectStatus']);
                 $r->addRoute('PUT', '/project/{id:\d+}', [ProjectController::class, 'updateProject']);
                 $r->addRoute('PUT', '/project/{projectId:\d+}/addUser/{userId:\d+}', [ProjectController::class, 'addUserToProject']);
                 $r->addRoute('PUT', '/project/{projectId:\d+}/removeUser/{userId:\d+}', [ProjectController::class, 'removeUserFromProject']);

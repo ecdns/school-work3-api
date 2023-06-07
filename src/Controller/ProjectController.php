@@ -399,6 +399,55 @@ class ProjectController extends AbstractController
     }
 
     /**
+     * @OA\Get(
+     *     path="/project/projectStatus/{projectStatusId}",
+     *     tags={"Project"},
+     *     summary="Get all projects by status",
+     *     description="Returns an array of all projects by status",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the status",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *              type="array",
+     *              @OA\Items(ref="#/components/schemas/ProjectResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+    public function getProjectsByProjectStatus(int $projectStatusId): void
+    {
+        //get all projects by status
+        try {
+            $projects = $this->dao->getBy(Project::class, ['projectStatus' => $projectStatusId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // set the response
+        $response = [];
+        foreach ($projects as $project) {
+            $response[] = $project->toArray();
+        }
+
+        // handle the response
+        $this->request->handleSuccessAndQuit(200, 'Projects found', $response);
+    }
+
+    /**
      * @OA\Put(
      *     path="/project/{id}",
      *     tags={"Project"},
