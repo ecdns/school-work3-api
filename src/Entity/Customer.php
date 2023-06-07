@@ -267,9 +267,11 @@ class Customer implements EntityInterface
     {
         return [
             'id' => $this->getId(),
+            'name' => $this->getName(),
             'firstName' => $this->getFirstName(),
             'lastName' => $this->getLastName(),
             'email' => $this->getEmail(),
+            'job' => $this->getJob(),
             'address' => $this->getAddress(),
             'city' => $this->getCity(),
             'country' => $this->getCountry(),
