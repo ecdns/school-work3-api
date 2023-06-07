@@ -654,6 +654,46 @@ class UserController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'User logged in', $response);
     }
 
+    /**
+     * @OA\Get (
+     *     path="/user/token",
+     *     tags={"User"},
+     *     summary="Check if token is valid",
+     *     description="Checks if the token is valid",
+     *     @OA\Response(
+     *         response="200",
+     *         description="Token is valid"
+     *    ),
+     *     @OA\Response(
+     *         response="401",
+     *         description="Unauthorized"
+     *   ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *  )
+     * )
+     */
+    public function isTokenValid(): void
+    {
+        // get the request body
+        $token = $this->http->getAuthHeaderValue();
+
+        // check if a user is associated with the token
+        try {
+            $user = $this->dao->getOneBy(User::class, ['jwt' => $token]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // if the user doesn't exist
+        if (!$user) {
+            $this->request->handleErrorAndQuit(401, new Exception('Unauthorized'));
+        }
+
+        // handle the response
+        $this->request->handleSuccessAndQuit(200, 'Token is valid');
+    }
 
     /**
      * Get current user
@@ -704,6 +744,4 @@ class UserController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'User found', $user->toArray());
     }
-
-
 }
