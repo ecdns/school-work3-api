@@ -47,9 +47,9 @@ use Service\Request;
  */
 class CompanyController extends AbstractController
 {
+    private const REQUIRED_FIELDS = ['name', 'address', 'city', 'country', 'zipCode', 'phone', 'slogan', 'logoPath', 'license', 'language'];
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['name', 'address', 'city', 'country', 'zipCode', 'phone', 'slogan', 'logoPath', 'license', 'language'];
 
     public function __construct(DAO $dao, Request $request)
     {
@@ -219,7 +219,6 @@ class CompanyController extends AbstractController
     }
 
 
-
     /**
      * @OA\Get(
      *     path="/company/{id}",
@@ -272,7 +271,6 @@ class CompanyController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Company found', $response);
 
     }
-
 
 
     /**

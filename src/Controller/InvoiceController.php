@@ -54,10 +54,10 @@ use Service\Request;
  */
 class InvoiceController extends AbstractController
 {
-    
+
+    private const REQUIRED_FIELDS = ['name', 'description', 'project'];
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['name', 'description', 'project'];
 
     public function __construct(DAO $dao, Request $request)
     {
@@ -139,7 +139,6 @@ class InvoiceController extends AbstractController
         }
 
 
-
         // create a new invoice
         $invoice = new Invoice($name, $description, $projectObject);
 
@@ -157,7 +156,6 @@ class InvoiceController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(201, 'Invoice created');
     }
-
 
 
     /**
@@ -228,12 +226,12 @@ class InvoiceController extends AbstractController
      *     )
      * )
      */
-    public function getInvoicesByProject(int $id): void
+    public function getInvoicesByProject(int $projectId): void
     {
         // get all roles
         try {
             //get all invoices by company
-            $invoices = $this->dao->getBy(Invoice::class, ['project' => $id]);
+            $invoices = $this->dao->getBy(Invoice::class, ['project' => $projectId]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -299,6 +297,50 @@ class InvoiceController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Invoice found', $response);
     }
 
+    // getInvoicesByCompany
+    /**
+     * @OA\Get(
+     *     path="/invoice/company/{companyId}",
+     *     tags={"Invoice"},
+     *     summary="Get all invoices by company",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Company ID",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Invoices found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/InvoiceResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+    public function getInvoicesByCompany(int $companyId): void
+    {
+        try {
+            $invoices = $this->dao->getBy(Invoice::class, ['company' => $companyId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        $response = [];
+        foreach ($invoices as $invoice) {
+            $response[] = $invoice->toArray();
+        }
+
+        $this->request->handleSuccessAndQuit(200, 'Invoices found', $response);
+    }
 
     /**
      * @OA\Put(
@@ -476,13 +518,13 @@ class InvoiceController extends AbstractController
         //get InvoiceProduct by invoice and product
         try {
             $invoiceProduct = $this->dao->getOneBy(InvoiceProduct::class, ['invoice' => $invoice, 'product' => $product]);
-            if ($invoiceProduct==null) {
+            if ($invoiceProduct == null) {
                 $invoiceProduct = new InvoiceProduct($invoice, $product, 1);
                 $this->dao->add($invoiceProduct);
                 $invoice->addInvoiceProduct($invoiceProduct);
                 $this->dao->update($invoice);
-            }else{
-                $invoiceProduct->setQuantity($invoiceProduct->getQuantity()+1);
+            } else {
+                $invoiceProduct->setQuantity($invoiceProduct->getQuantity() + 1);
                 $this->dao->update($invoiceProduct);
             }
 
@@ -555,13 +597,13 @@ class InvoiceController extends AbstractController
         //get InvoiceProduct by invoice and product
         try {
             $invoiceProduct = $this->dao->getOneBy(InvoiceProduct::class, ['invoice' => $invoice, 'product' => $product]);
-            if ($invoiceProduct==null) {
+            if ($invoiceProduct == null) {
                 $this->request->handleErrorAndQuit(404, new Exception('InvoiceProduct not found'));
-            }else{
-                if ($invoiceProduct->getQuantity()>1) {
-                    $invoiceProduct->setQuantity($invoiceProduct->getQuantity()-1);
+            } else {
+                if ($invoiceProduct->getQuantity() > 1) {
+                    $invoiceProduct->setQuantity($invoiceProduct->getQuantity() - 1);
                     $this->dao->update($invoiceProduct);
-                }else{
+                } else {
                     $this->dao->delete($invoiceProduct);
                 }
             }
@@ -572,7 +614,6 @@ class InvoiceController extends AbstractController
 
         $this->request->handleSuccessAndQuit(200, 'Product removed from Invoice');
     }
-
 
 
     /**

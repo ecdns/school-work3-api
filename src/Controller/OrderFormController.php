@@ -52,10 +52,10 @@ use Service\Request;
  */
 class OrderFormController extends AbstractController
 {
-    
+
+    private const REQUIRED_FIELDS = ['name', 'description', 'project'];
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['name', 'description', 'project'];
 
     public function __construct(DAO $dao, Request $request)
     {
@@ -66,7 +66,7 @@ class OrderFormController extends AbstractController
 
     /**
      * @OA\Post(
-     *     path="/order-form",
+     *     path="/orderForm",
      *     tags={"OrderForm"},
      *     summary="Create a new OrderForm",
      *     @OA\RequestBody(
@@ -138,7 +138,6 @@ class OrderFormController extends AbstractController
         }
 
 
-
         // create a new orderForm
         $orderForm = new OrderForm($name, $description, $projectObject);
 
@@ -158,10 +157,9 @@ class OrderFormController extends AbstractController
     }
 
 
-
     /**
      * @OA\Get(
-     *     path="/order-form",
+     *     path="/orderForm",
      *     tags={"OrderForm"},
      *     summary="Get all OrderForms",
      *     @OA\Response(
@@ -201,7 +199,7 @@ class OrderFormController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/order-form/{id}",
+     *     path="/orderForm/project/{projectId}",
      *     tags={"OrderForm"},
      *     summary="Get all OrderForms by project",
      *     @OA\Parameter(
@@ -227,12 +225,61 @@ class OrderFormController extends AbstractController
      *     )
      * )
      */
-    public function getOrderFormsByProject(int $id): void
+    public function getOrderFormsByProject(int $projectId): void
     {
         // get all roles
         try {
             //get all orderForms by company
-            $orderForms = $this->dao->getBy(OrderForm::class, ['project' => $id]);
+            $orderForms = $this->dao->getBy(OrderForm::class, ['project' => $projectId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // set the response
+        $response = [];
+        foreach ($orderForms as $orderForm) {
+            $response[] = $orderForm->toArray();
+        }
+
+        // handle the response
+        $this->request->handleSuccessAndQuit(200, 'OrderForms found', $response);
+    }
+
+    // getOrderFormsByCompanyId
+    /**
+     * @OA\Get(
+     *     path="/orderForm/company/{id}",
+     *     tags={"OrderForm"},
+     *     summary="Get all OrderForms by company",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Company ID",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="OrderForms found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/OrderFormResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
+    public function getOrderFormsByCompanyId(int $companyId): void
+    {
+        // get all roles
+        try {
+            //get all orderForms by company
+            $orderForms = $this->dao->getBy(OrderForm::class, ['company' => $companyId]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -248,9 +295,10 @@ class OrderFormController extends AbstractController
     }
 
 
+
     /**
      * @OA\Get(
-     *     path="/order-form/{id}",
+     *     path="/orderForm/{id}",
      *     tags={"OrderForm"},
      *     summary="Get OrderForm by ID",
      *     @OA\Parameter(
@@ -303,7 +351,7 @@ class OrderFormController extends AbstractController
 
     /**
      * @OA\Put(
-     *     path="/order-form/{id}",
+     *     path="/orderForm/{id}",
      *     tags={"OrderForm"},
      *     summary="Update OrderForm by ID",
      *     @OA\Parameter(
@@ -420,7 +468,7 @@ class OrderFormController extends AbstractController
 
     /**
      * @OA\Post(
-     *     path="/order-form/{orderFormId}/product/{productId}",
+     *     path="/orderForm/{orderFormId}/product/{productId}",
      *     tags={"OrderFormProduct"},
      *     summary="Add products to an order form",
      *     description="Add products to an order form",
@@ -476,13 +524,13 @@ class OrderFormController extends AbstractController
         //get OrderFormProduct by orderForm and product
         try {
             $orderFormProduct = $this->dao->getOneBy(OrderFormProduct::class, ['orderForm' => $orderForm, 'product' => $product]);
-            if ($orderFormProduct==null) {
+            if ($orderFormProduct == null) {
                 $orderFormProduct = new OrderFormProduct($orderForm, $product, 1);
                 $this->dao->add($orderFormProduct);
                 $orderForm->addOrderFormProduct($orderFormProduct);
                 $this->dao->update($orderForm);
-            }else{
-                $orderFormProduct->setQuantity($orderFormProduct->getQuantity()+1);
+            } else {
+                $orderFormProduct->setQuantity($orderFormProduct->getQuantity() + 1);
                 $this->dao->update($orderFormProduct);
             }
 
@@ -497,7 +545,7 @@ class OrderFormController extends AbstractController
 
     /**
      * @OA\Delete(
-     *     path="/order-form/{orderFormId}/product/{productId}",
+     *     path="/orderForm/{orderFormId}/product/{productId}",
      *     tags={"OrderForm"},
      *     summary="Remove products from an order form",
      *     description="Remove products from an order form",
@@ -558,13 +606,13 @@ class OrderFormController extends AbstractController
         //get OrderFormProduct by orderForm and product
         try {
             $orderFormProduct = $this->dao->getOneBy(OrderFormProduct::class, ['orderForm' => $orderForm, 'product' => $product]);
-            if ($orderFormProduct==null) {
+            if ($orderFormProduct == null) {
                 $this->request->handleErrorAndQuit(404, new Exception('OrderFormProduct not found'));
-            }else{
-                if ($orderFormProduct->getQuantity()>1) {
-                    $orderFormProduct->setQuantity($orderFormProduct->getQuantity()-1);
+            } else {
+                if ($orderFormProduct->getQuantity() > 1) {
+                    $orderFormProduct->setQuantity($orderFormProduct->getQuantity() - 1);
                     $this->dao->update($orderFormProduct);
-                }else{
+                } else {
                     $this->dao->delete($orderFormProduct);
                 }
             }
@@ -577,10 +625,9 @@ class OrderFormController extends AbstractController
     }
 
 
-
     /**
      * @OA\Delete(
-     *     path="/order-form/{id}",
+     *     path="/orderForm/{id}",
      *     tags={"OrderForm"},
      *     summary="Delete an order form",
      *     description="Delete an order form",

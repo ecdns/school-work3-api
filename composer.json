@@ -12,7 +12,6 @@
         "php-di/php-di": "^7.0",
         "ext-openssl": "*",
         "zircote/swagger-php": "^4.7",
-        "phpseclib/phpseclib": "^3.0",
         "doctrine/data-fixtures": "^1.6"
     },
     "autoload": {

@@ -59,10 +59,10 @@ use Service\Request;
  */
 class EstimateController extends AbstractController
 {
-    
+
+    private const REQUIRED_FIELDS = ['name', 'description', 'project', 'expiredAt', 'estimateStatus'];
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['name', 'description', 'project', 'expiredAt', 'estimateStatus'];
 
     public function __construct(DAO $dao, Request $request)
     {
@@ -151,7 +151,6 @@ class EstimateController extends AbstractController
         }
 
 
-
         // create a new estimate
         $estimate = new Estimate($name, $description, $projectObject, $expiredAt, $estimateStatusObject);
 
@@ -212,7 +211,7 @@ class EstimateController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/estimates/project/{id}",
+     *     path="/estimates/project/{projectId}",
      *     tags={"Estimate"},
      *     summary="Get all estimates by project",
      *     description="Returns all estimates by project",
@@ -224,7 +223,7 @@ class EstimateController extends AbstractController
      *          @OA\Schema(
      *              type="integer",
      *              format="int64"
- *              )
+     *              )
      *     ),
      *     @OA\Response(
      *          response=200,
@@ -240,12 +239,12 @@ class EstimateController extends AbstractController
      *      )
      * )
      */
-    public function getEstimatesByProject(int $id): void
+    public function getEstimatesByProject(int $projectId): void
     {
         // get all roles
         try {
             //get all estimates by company
-            $estimates = $this->dao->getBy(Estimate::class, ['project' => $id]);
+            $estimates = $this->dao->getBy(Estimate::class, ['project' => $projectId]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -311,6 +310,57 @@ class EstimateController extends AbstractController
 
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'Estimate found', $response);
+    }
+
+    //getEstimatesByCompany
+    /**
+     * @OA\Get(
+     *     path="/estimate/company/{companyId}",
+     *     tags={"Estimate"},
+     *     summary="Get all estimates by company",
+     *     description="Returns all estimates by company",
+     *     @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="Company id",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int64"
+     *              )
+     *     ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="Estimates found",
+     *          @OA\JsonContent(
+     *              type="array",
+     *              @OA\Items(ref="#/components/schemas/EstimateResponse")
+     *     )
+     * ),
+     *     @OA\Response(
+     *          response=500,
+     *          description="Internal server error"
+     *      )
+     * )
+     */
+    public function getEstimatesByCompany(int $companyId): void
+    {
+        // get all roles
+        try {
+            //get all estimates by company
+            $estimates = $this->dao->getBy(Estimate::class, ['company' => $companyId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // set the response
+        $response = [];
+        foreach ($estimates as $estimate) {
+            $response[] = $estimate->toArray();
+        }
+
+        // handle the response
+        $this->request->handleSuccessAndQuit(200, 'Estimates found', $response);
     }
 
 
@@ -502,13 +552,13 @@ class EstimateController extends AbstractController
         //get EstimateProduct by estimate and product
         try {
             $estimateProduct = $this->dao->getOneBy(EstimateProduct::class, ['estimate' => $estimate, 'product' => $product]);
-            if ($estimateProduct==null) {
+            if ($estimateProduct == null) {
                 $estimateProduct = new EstimateProduct($estimate, $product, 1);
                 $this->dao->add($estimateProduct);
                 $estimate->addEstimateProduct($estimateProduct);
                 $this->dao->update($estimate);
-            }else{
-                $estimateProduct->setQuantity($estimateProduct->getQuantity()+1);
+            } else {
+                $estimateProduct->setQuantity($estimateProduct->getQuantity() + 1);
                 $this->dao->update($estimateProduct);
             }
 
@@ -581,13 +631,13 @@ class EstimateController extends AbstractController
         //get EstimateProduct by estimate and product
         try {
             $estimateProduct = $this->dao->getOneBy(EstimateProduct::class, ['estimate' => $estimate, 'product' => $product]);
-            if ($estimateProduct==null) {
+            if ($estimateProduct == null) {
                 $this->request->handleErrorAndQuit(404, new Exception('EstimateProduct not found'));
-            }else{
-                if ($estimateProduct->getQuantity()>1) {
-                    $estimateProduct->setQuantity($estimateProduct->getQuantity()-1);
+            } else {
+                if ($estimateProduct->getQuantity() > 1) {
+                    $estimateProduct->setQuantity($estimateProduct->getQuantity() - 1);
                     $this->dao->update($estimateProduct);
-                }else{
+                } else {
                     $this->dao->delete($estimateProduct);
                 }
             }
@@ -598,7 +648,6 @@ class EstimateController extends AbstractController
 
         $this->request->handleSuccessAndQuit(200, 'Product removed from Estimate');
     }
-
 
 
     /**

@@ -41,10 +41,10 @@ use Service\Request;
  */
 class ProjectController extends AbstractController
 {
-    
+
+    private const REQUIRED_FIELDS = ['name', 'description', 'company', 'creator', 'customer', 'projectStatus'];
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['name', 'description', 'company', 'creator', 'customer', 'projectStatus'];
 
     public function __construct(DAO $dao, Request $request)
     {
@@ -244,7 +244,6 @@ class ProjectController extends AbstractController
     }
 
 
-
     /**
      * @OA\Get(
      *     path="/project/{id}",
@@ -280,7 +279,7 @@ class ProjectController extends AbstractController
     {
         // get the project by id
         try {
-            $project= $this->dao->getOneBy(Project::class, ['id' => $id]);
+            $project = $this->dao->getOneBy(Project::class, ['id' => $id]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -424,8 +423,48 @@ class ProjectController extends AbstractController
 
     }
 
-    //add user to project
-    public function addUserToProject(int $projectId, int $userId) : void {
+    /**
+     * @OA\Put(
+     *     path="/project/{projectId}/addUser/{userId}",
+     *     tags={"Project"},
+     *     summary="Add user to project",
+     *     description="Adds a user to a project",
+     *     @OA\Parameter(
+     *         name="projectId",
+     *         in="path",
+     *         description="ID of the project",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="userId",
+     *         in="path",
+     *         description="ID of the user",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Project or User not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+    public function addUserToProject(int $projectId, int $userId): void
+    {
         // get the Project by id
         try {
             $project = $this->dao->getOneBy(Project::class, ['id' => $projectId]);
@@ -453,8 +492,48 @@ class ProjectController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'User added to project');
     }
 
-    //remove user from project
-    public function removeUserFromProject(int $projectId, int $userId) : void {
+    /**
+     * @OA\Put(
+     *     path="/project/{projectId}/removeUser/{userId}",
+     *     tags={"Project"},
+     *     summary="Remove user from project",
+     *     description="Removes a user from a project",
+     *     @OA\Parameter(
+     *         name="projectId",
+     *         in="path",
+     *         description="ID of the project",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="userId",
+     *         in="path",
+     *         description="ID of the user",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Project or User not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+    public function removeUserFromProject(int $projectId, int $userId): void
+    {
         // get the Project by id
         try {
             $project = $this->dao->getOneBy(Project::class, ['id' => $projectId]);

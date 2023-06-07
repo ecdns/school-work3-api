@@ -20,51 +20,32 @@ class SupplierFixture extends AbstractFixture implements OrderedFixtureInterface
         $manager->flush();
     }
 
-
     public function addSupplier1(ObjectManager $manager): void
     {
-        //get company
         $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Aubade']);
 
-
-        //generate customer
         $supplier = new Supplier('LtileMarcel', 'Jean-Luc', 'Mélancon', 'jeanluc.mélancon@lagauchecestcool.fr', '1 rue de la paix', 'Paris', 'France', '75000', '0606060606', $company);
 
-        //persist customer
         $manager->persist($supplier);
-
     }
 
-    //add second supplier
     public function addSupplier2(ObjectManager $manager): void
     {
-        //get company
         $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Bubulle']);
 
-
-        //generate customer
         $supplier = new Supplier('PenMaker', 'Marine', 'LePen', 'marin.lepen@penmaker.fr', '1 rue de la paix', 'Paris', 'France', '75000', '0606060606', $company);
 
-        //persist customer
         $manager->persist($supplier);
     }
-
-    //add third supplier
 
     public function addSupplier3(ObjectManager $manager): void
     {
-        //get company
         $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Cocorico']);
-
-        //generate customer
 
         $supplier = new Supplier('Zeubi', 'Assane', 'Fatou', 'assane.fatou@zeubi.de', '1 rue de la paix', 'Paris', 'France', '75000', '0606060606', $company);
 
-        //persist customer
         $manager->persist($supplier);
-
     }
-
 
     public function getOrder(): int
     {

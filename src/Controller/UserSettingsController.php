@@ -33,9 +33,9 @@ use Service\Request;
 class UserSettingsController extends AbstractController
 {
 
+    private const REQUIRED_FIELDS = ['theme', 'language', 'user-id'];
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['theme', 'language', 'user-id'];
 
     public function __construct(DAO $dao, Request $request)
     {
@@ -130,7 +130,6 @@ class UserSettingsController extends AbstractController
         $this->request->handleSuccessAndQuit(201, 'User settings created successfully');
 
     }
-
 
 
     /**

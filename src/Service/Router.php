@@ -62,6 +62,8 @@ class Router
                 $r->addRoute('POST', '/user', [UserController::class, 'addUser']);
                 $r->addRoute('GET', '/user/all', [UserController::class, 'getUsers']);
                 $r->addRoute('GET', '/user/{id:\d+}', [UserController::class, 'getUserById']);
+                $r->addRoute('GET', '/user/project/{projectId:\d+}', [UserController::class, 'getUsersByProject']);
+                $r->addRoute('GET', '/user/company/{companyId:\d+}', [UserController::class, 'getUsersByCompany']);
                 $r->addRoute('PUT', '/user/{id:\d+}', [UserController::class, 'updateUser']);
                 $r->addRoute('DELETE', '/user/{id:\d+}', [UserController::class, 'deleteUser']);
                 $r->addRoute('GET', '/user/me', [UserController::class, 'getMe']);
@@ -118,6 +120,7 @@ class Router
                 $r->addRoute('POST', '/productFamily', [ProductFamilyController::class, 'addProductFamily']);
                 $r->addRoute('GET', '/productFamily/all', [ProductFamilyController::class, 'getProductFamilies']);
                 $r->addRoute('GET', '/productFamily/{id:\d+}', [ProductFamilyController::class, 'getProductFamilyById']);
+                $r->addRoute('GET', '/productFamily/company/{companyId:\d+}', [ProductFamilyController::class, 'getProductFamiliesByCompany']);
                 $r->addRoute('PUT', '/productFamily/{id:\d+}', [ProductFamilyController::class, 'updateProductFamily']);
                 $r->addRoute('DELETE', '/productFamily/{id:\d+}', [ProductFamilyController::class, 'deleteProductFamily']);
 
@@ -132,6 +135,7 @@ class Router
                 $r->addRoute('POST', '/product', [ProductController::class, 'addProduct']);
                 $r->addRoute('GET', '/product/all', [ProductController::class, 'getProducts']);
                 $r->addRoute('GET', '/product/company/{id:\d+}', [ProductController::class, 'getProductsByCompanyId']);
+                $r->addRoute('GET', '/product/productFamily/{productFamilyId:\d+}', [ProductController::class, 'getProductsByProductFamily']);
                 $r->addRoute('GET', '/product/{id:\d+}', [ProductController::class, 'getProductById']);
                 $r->addRoute('PUT', '/product/{id:\d+}', [ProductController::class, 'updateProduct']);
                 $r->addRoute('DELETE', '/product/{id:\d+}', [ProductController::class, 'deleteProduct']);
@@ -190,7 +194,8 @@ class Router
                 $r->addRoute('POST', '/estimate/{estimateId:\d+}/remove/{productId:\d+}', [EstimateController::class, 'removeProductsFromEstimate']);
                 $r->addRoute('GET', '/estimate/all', [EstimateController::class, 'getEstimates']);
                 $r->addRoute('GET', '/estimate/{id:\d+}', [EstimateController::class, 'getEstimateById']);
-                $r->addRoute('GET', '/estimate/project/{id:\d+}', [EstimateController::class, 'getEstimatesByProject']);
+                $r->addRoute('GET', '/estimate/project/{projectId:\d+}', [EstimateController::class, 'getEstimatesByProject']);
+                $r->addRoute('GET', '/estimate/company/{companyId:\d+}', [EstimateController::class, 'getEstimatesByCompany']);
                 $r->addRoute('PUT', '/estimate/{id:\d+}', [EstimateController::class, 'updateEstimate']);
                 $r->addRoute('DELETE', '/estimate/{id:\d+}', [EstimateController::class, 'deleteEstimate']);
 
@@ -207,7 +212,8 @@ class Router
                 $r->addRoute('POST', '/invoice/{invoiceId:\d+}/remove/{productId:\d+}', [InvoiceController::class, 'removeProductsFromInvoice']);
                 $r->addRoute('GET', '/invoice/all', [InvoiceController::class, 'getInvoices']);
                 $r->addRoute('GET', '/invoice/{id:\d+}', [InvoiceController::class, 'getInvoiceById']);
-                $r->addRoute('GET', '/invoice/project/{id:\d+}', [InvoiceController::class, 'getInvoicesByProject']);
+                $r->addRoute('GET', '/invoice/project/{projectId:\d+}', [InvoiceController::class, 'getInvoicesByProject']);
+                $r->addRoute('GET', '/invoice/company/{companyId:\d+}', [InvoiceController::class, 'getInvoicesByCompany']);
                 $r->addRoute('PUT', '/invoice/{id:\d+}', [InvoiceController::class, 'updateInvoice']);
                 $r->addRoute('DELETE', '/invoice/{id:\d+}', [InvoiceController::class, 'deleteInvoice']);
 
@@ -217,7 +223,8 @@ class Router
                 $r->addRoute('POST', '/orderForm/{orderFormId:\d+}/remove/{productId:\d+}', [OrderFormController::class, 'removeProductsFromOrderForm']);
                 $r->addRoute('GET', '/orderForm/all', [OrderFormController::class, 'getOrderForms']);
                 $r->addRoute('GET', '/orderForm/{id:\d+}', [OrderFormController::class, 'getOrderFormById']);
-                $r->addRoute('GET', '/orderForm/project/{id:\d+}', [OrderFormController::class, 'getOrderFormsByProject']);
+                $r->addRoute('GET', '/orderForm/project/{projectId:\d+}', [OrderFormController::class, 'getOrderFormsByProject']);
+                $r->addRoute('GET', '/orderForm/company/{companyId:\d+}', [OrderFormController::class, 'getOrderFormsByCompany']);
                 $r->addRoute('PUT', '/orderForm/{id:\d+}', [OrderFormController::class, 'updateOrderForm']);
                 $r->addRoute('DELETE', '/orderForm/{id:\d+}', [OrderFormController::class, 'deleteOrderForm']);
 
@@ -225,7 +232,7 @@ class Router
                 $r->addRoute('POST', '/message', [MessageController::class, 'addMessage']);
                 $r->addRoute('GET', '/message/all', [MessageController::class, 'getMessages']);
                 $r->addRoute('GET', '/message/{id:\d+}', [MessageController::class, 'getMessageById']);
-                $r->addRoute('GET', '/message/project/{id:\d+}', [MessageController::class, 'getMessagesByProject']);
+                $r->addRoute('GET', '/message/project/{projectId:\d+}', [MessageController::class, 'getMessagesByProject']);
                 $r->addRoute('PUT', '/message/{id:\d+}', [MessageController::class, 'updateMessage']);
                 $r->addRoute('DELETE', '/message/{id:\d+}', [MessageController::class, 'deleteMessage']);
 
@@ -254,7 +261,7 @@ class Router
      * @throws NotFoundException
      * @throws Exception
      */
-    public function trigRequest(array $requestInfo): void
+    public function trigResponse(array $requestInfo): void
     {
         switch ($requestInfo[0]) {
             case Dispatcher::NOT_FOUND:

@@ -30,9 +30,9 @@ use Service\Request;
 class QuantityUnitController extends AbstractController
 {
 
+    private const REQUIRED_FIELDS = ['name', 'unit', 'description'];
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['name', 'unit', 'description'];
 
     public function __construct(DAO $dao, Request $request)
     {

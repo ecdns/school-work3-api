@@ -33,4 +33,4 @@ $router = $container->get(Router::class);
 
 // Récupération des informations de la route correspondant à la méthode et à l'URI et déclenchement de la requête
 $requestInfo = $router->fetchRequestInfo($requestMethod, $uri);
-$router->trigRequest($requestInfo);
+$router->trigResponse($requestInfo);

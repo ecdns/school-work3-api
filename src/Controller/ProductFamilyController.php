@@ -31,10 +31,10 @@ use Service\Request;
 class ProductFamilyController extends AbstractController
 {
 
+    private const REQUIRED_FIELDS = ['name', 'description', 'company'];
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['name', 'description', 'company'];
-    
+
     public function __construct(DAO $dao, Request $request)
     {
         $this->dao = $dao;
@@ -43,7 +43,7 @@ class ProductFamilyController extends AbstractController
 
     /**
      * @OA\Post(
-     *     path="/product-family",
+     *     path="/productFamily",
      *     tags={"ProductFamily"},
      *     summary="Add a new ProductFamily",
      *     description="Add a new ProductFamily",
@@ -128,7 +128,7 @@ class ProductFamilyController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/product-family/all",
+     *     path="/productFamily/all",
      *     tags={"ProductFamily"},
      *     summary="Get all ProductFamilies",
      *     description="Get all ProductFamilies",
@@ -168,7 +168,7 @@ class ProductFamilyController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/product-family/{id}",
+     *     path="/productFamily/{id}",
      *     tags={"ProductFamily"},
      *     summary="Get a ProductFamily by ID",
      *     description="Get a ProductFamily by ID",
@@ -218,9 +218,75 @@ class ProductFamilyController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'ProductFamily found', $response);
     }
 
+    //getProductFamiliesByCompany
+    /**
+     * @OA\Get(
+     *     path="/productFamily/company/{companyId}",
+     *     tags={"ProductFamily"},
+     *     summary="Get all ProductFamilies by Company",
+     *     description="Get all ProductFamilies by Company",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the Company to get ProductFamilies from",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="ProductFamilies found",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/ProductFamilyResponse")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="ProductFamilies not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
+    public function getProductFamiliesByCompany(int $companyId): void
+    {
+        // get the company from the database by its id
+        try {
+            $company = $this->dao->getOneBy(Company::class, ['id' => $companyId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // if the company is not found
+        if (!$company) {
+            $this->request->handleErrorAndQuit(404, new Exception('Company not found'));
+        }
+
+        // get the productFamilies from the database by its company
+        try {
+            $productFamilies = $this->dao->getBy(ProductFamily::class, ['company' => $company]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // set the response
+        $response = [];
+        foreach ($productFamilies as $productFamily) {
+            $response[] = $productFamily->toArray();
+        }
+
+        // handle the response
+        $this->request->handleSuccessAndQuit(200, 'ProductFamilies found', $response);
+    }
+
     /**
      * @OA\Put(
-     *     path="/product-family/{id}",
+     *     path="/productFamily/{id}",
      *     tags={"ProductFamily"},
      *     summary="Update a ProductFamily by ID",
      *     description="Update a ProductFamily by ID",
@@ -331,7 +397,7 @@ class ProductFamilyController extends AbstractController
 
     /**
      * @OA\Delete(
-     *     path="/product-family/{id}",
+     *     path="/productFamily/{id}",
      *     tags={"ProductFamily"},
      *     summary="Delete a ProductFamily by ID",
      *     description="Delete a ProductFamily by ID",

@@ -30,9 +30,9 @@ use Service\Request;
 class RoleController extends AbstractController
 {
 
+    private const REQUIRED_FIELDS = ['name', 'description'];
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['name', 'description'];
 
     public function __construct(DAO $dao, Request $request)
     {
@@ -153,7 +153,6 @@ class RoleController extends AbstractController
         // handle the response
         $this->request->handleSuccessAndQuit(200, 'Roles found', $response);
     }
-
 
 
     /**

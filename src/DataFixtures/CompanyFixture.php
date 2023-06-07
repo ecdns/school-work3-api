@@ -23,6 +23,7 @@ class CompanyFixture extends AbstractFixture implements OrderedFixtureInterface
         $license = $manager->getRepository(License::class)->findOneBy(['name' => 'premium']);
 
         $company = new Company('Aubade', 'rue de la paix', 'Paris', 'France', '75000', '0145879652', 'La vie est belle', 'logo.png', $license , new \DateTime('2021-12-31'), 'fr', true);
+
         $manager->persist($company);
     }
 
