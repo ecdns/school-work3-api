@@ -15,7 +15,7 @@ use Service\Request;
 /**
  * @OA\Schema (
  *     schema="CustomerRequest",
- *     required={"firstName", "lastName", "email", "address", "city", "country", "zipCode", "phone", "company", "user", "status"},
+ *     required={"firstName", "lastName", "email", "address", "city", "country", "zipCode", "phone", "company", "status"},
  *     @OA\Property(property="firstName", type="string", example="John"),
  *     @OA\Property(property="lastName", type="string", example="Doe"),
  *     @OA\Property(property="email", type="string", format="email", example="john-doe@gmail.com"),
@@ -25,7 +25,6 @@ use Service\Request;
  *     @OA\Property(property="zipCode", type="string", example="75000"),
  *     @OA\Property(property="phone", type="string", example="0123456789"),
  *     @OA\Property(property="company", type="integer", example="1"),
- *     @OA\Property(property="user", type="integer", example="1"),
  *     @OA\Property(property="status", type="integer", example="1")
  * )
  * @OA\Schema (
@@ -40,7 +39,6 @@ use Service\Request;
  *     @OA\Property(property="zipCode", type="string", example="75000"),
  *     @OA\Property(property="phone", type="string", example="0123456789"),
  *     @OA\Property(property="company", type="object", ref="#/components/schemas/CompanyResponse"),
- *     @OA\Property(property="user", type="object", ref="#/components/schemas/UserResponse"),
  *     @OA\Property(property="status", type="object", ref="#/components/schemas/CustomerStatusResponse"),
  *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
  *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00")
@@ -51,7 +49,7 @@ class CustomerController extends AbstractController
 
     private DAO $dao;
     private Request $request;
-    private const REQUIRED_FIELDS = ['name','firstName', 'lastName', 'email', 'job', 'address', 'city', 'country', 'zipCode', 'phone', 'company', 'user', 'status'];
+    private const REQUIRED_FIELDS = ['name','firstName', 'lastName', 'email', 'job', 'address', 'city', 'country', 'zipCode', 'phone', 'company', 'status'];
 
     public function __construct(DAO $dao, Request $request)
     {
@@ -131,16 +129,14 @@ class CustomerController extends AbstractController
         $zipCode = $requestBody['zipCode'];
         $phone = $requestBody['phone'];
         $company = $requestBody['company'];
-        $user = $requestBody['user'];
         $status = $requestBody['status'];
 
         // get the company from the database by its id
         try {
             $companyObject = $this->dao->getOneBy(Company::class, ['id' => $company]);
-            $userObject = $this->dao->getOneBy(User::class, ['id' => $user]);
             $customerStatusObject = $this->dao->getOneBy(CustomerStatus::class, ['id' => $status]);
 
-            if (!$companyObject || !$userObject || !$customerStatusObject) {
+            if (!$companyObject || !$customerStatusObject) {
                 $this->request->handleErrorAndQuit(404, new Exception('Company, User or CustomerStatus not found'));
             }
 
@@ -150,7 +146,7 @@ class CustomerController extends AbstractController
 
 
         // create a new Customer
-        $customer = new Customer($name, $firstName, $lastName, $email, $job, $address, $city, $country, $zipCode, $phone, $companyObject, $userObject, $customerStatusObject);
+        $customer = new Customer($name, $firstName, $lastName, $email, $job, $address, $city, $country, $zipCode, $phone, $companyObject, $customerStatusObject);
 
         // add the customer to the database
         try {
@@ -410,16 +406,14 @@ class CustomerController extends AbstractController
         $zipCode = $requestBody['zipCode'] ?? $customer->getZipCode();
         $phone = $requestBody['phone'] ?? $customer->getPhone();
         $company = $requestBody['company'] ?? $customer->getCompany()->getId();
-        $user = $requestBody['user'] ?? $customer->getUser()->getId();
         $status = $requestBody['status'] ?? $customer->getStatus()->getId();
 
         // get the controller from the database by its name
         try {
             $companyObject = $this->dao->getOneBy(Company::class, ['id' => $company]);
-            $userObject = $this->dao->getOneBy(User::class, ['id' => $user]);
             $customerStatusObject = $this->dao->getOneBy(CustomerStatus::class, ['id' => $status]);
 
-            if (!$companyObject || !$userObject || !$customerStatusObject) {
+            if (!$companyObject || !$customerStatusObject) {
                 $this->request->handleErrorAndQuit(404, new Exception('Company, User or CustomerStatus not found'));
             }
 
@@ -439,7 +433,6 @@ class CustomerController extends AbstractController
         $customer->setZipCode($zipCode);
         $customer->setPhone($phone);
         $customer->setCompany($companyObject);
-        $customer->setUser($userObject);
         $customer->setStatus($customerStatusObject);
 
         // update the customer
