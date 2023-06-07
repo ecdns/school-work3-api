@@ -84,8 +84,8 @@ class Router
                 $r->addRoute('GET', '/company/{companyId:\d+}/totalBuyPriceByMonth', [CompanyController::class, 'getTotalBuyPriceByMonth']);
                 $r->addRoute('GET', '/company/{companyId:\d+}/totalAmountWithVatByMonth', [CompanyController::class, 'getTotalAmountWithVatByMonth']);
                 $r->addRoute('GET', '/company/{companyId:\d+}/totalBuyPriceWithVatByMonth', [CompanyController::class, 'getTotalBuyPriceWithVatByMonth']);
-                $r->addRoute('GET', '/company/{companyId:\d+}/totalBenefitByMonth', [CompanyController::class, 'getTotalProfitByMonth']);
-                $r->addRoute('GET', '/company/{companyId:\d+}/totalBenefitWithVatByMonth', [CompanyController::class, 'getTotalProfitWithVatByMonth']);
+                $r->addRoute('GET', '/company/{companyId:\d+}/totalProfitByMonth', [CompanyController::class, 'getTotalProfitByMonth']);
+                $r->addRoute('GET', '/company/{companyId:\d+}/totalProfitWithVatByMonth', [CompanyController::class, 'getTotalProfitWithVatByMonth']);
                 $r->addRoute('PUT', '/company/{id:\d+}', [CompanyController::class, 'updateCompany']);
                 $r->addRoute('DELETE', '/company/{id:\d+}', [CompanyController::class, 'deleteCompany']);
 
