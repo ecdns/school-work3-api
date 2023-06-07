@@ -2196,6 +2196,33 @@ paths:
                   $ref: '#/components/schemas/ProjectResponse'
         '500':
           description: 'Internal server error'
+  '/project/projectStatus/{projectStatusId}':
+    get:
+      tags:
+        - Project
+      summary: 'Get all projects by status'
+      description: 'Returns an array of all projects by status'
+      operationId: a06706bf9245c93ffdcf255f8273cd81
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the status'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectResponse'
+        '500':
+          description: 'Internal server error'
   '/project/{projectId}/addUser/{userId}':
     put:
       tags:
