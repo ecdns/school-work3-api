@@ -73,6 +73,34 @@ class InvoiceProduct implements EntityInterface
         return json_encode($this->toArray());
     }
 
+    public function getTotalAmount(): float
+    {
+        if ($this->getProduct()->getIsDiscount()) {
+            return $this->getProduct()->getSellPriceWithVatAndDiscount() * $this->getQuantity();
+        } else {
+            return $this->getProduct()->getSellPriceWithVat() * $this->getQuantity();
+        }
+    }
+
+    public function getTotalAmountWithoutVat(): float
+    {
+        if ($this->getProduct()->getIsDiscount()) {
+            return $this->getProduct()->getSellPriceWithDiscount() * $this->getQuantity();
+        } else {
+            return $this->getProduct()->getSellPrice() * $this->getQuantity();
+        }
+    }
+
+    public function getTotalBuyPrice(): float
+    {
+        return $this->getProduct()->getBuyPriceWithVat() * $this->getQuantity();
+    }
+
+    public function getTotalBuyPriceWithoutVat(): float
+    {
+        return $this->getProduct()->getBuyPrice() * $this->getQuantity();
+    }
+
     //to array
     public function toArray(): array
     {

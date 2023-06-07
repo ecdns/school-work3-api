@@ -80,6 +80,12 @@ class Router
                 $r->addRoute('GET', '/company/all', [CompanyController::class, 'getCompanies']);
                 $r->addRoute('GET', '/company/{id:\d+}', [CompanyController::class, 'getCompanyById']);
                 $r->addRoute('GET', '/company/{name}', [CompanyController::class, 'getCompanyByName']);
+                $r->addRoute('GET', '/company/{companyId:\d+}/totalAmountByMonth', [CompanyController::class, 'getTotalAmountByMonth']);
+                $r->addRoute('GET', '/company/{companyId:\d+}/totalBuyPriceByMonth', [CompanyController::class, 'getTotalBuyPriceByMonth']);
+                $r->addRoute('GET', '/company/{companyId:\d+}/totalAmountWithVatByMonth', [CompanyController::class, 'getTotalAmountWithVatByMonth']);
+                $r->addRoute('GET', '/company/{companyId:\d+}/totalBuyPriceWithVatByMonth', [CompanyController::class, 'getTotalBuyPriceWithVatByMonth']);
+                $r->addRoute('GET', '/company/{companyId:\d+}/totalBenefitByMonth', [CompanyController::class, 'getTotalProfitByMonth']);
+                $r->addRoute('GET', '/company/{companyId:\d+}/totalBenefitWithVatByMonth', [CompanyController::class, 'getTotalProfitWithVatByMonth']);
                 $r->addRoute('PUT', '/company/{id:\d+}', [CompanyController::class, 'updateCompany']);
                 $r->addRoute('DELETE', '/company/{id:\d+}', [CompanyController::class, 'deleteCompany']);
 

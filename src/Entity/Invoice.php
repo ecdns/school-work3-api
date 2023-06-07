@@ -121,6 +121,41 @@ class Invoice implements EntityInterface
         $this->invoiceProducts->removeElement($product);
     }
 
+    public function getTotalAmount(): float
+    {
+        $total = 0;
+        foreach ($this->invoiceProducts as $invoiceProduct) {
+            $total += $invoiceProduct->getTotalAmountWithoutVat();
+        }
+        return $total;
+    }
+
+    public function getTotalAmountWithVat(): float
+    {
+        $total = 0;
+        foreach ($this->invoiceProducts as $invoiceProduct) {
+            $total += $invoiceProduct->getTotalAmount();
+        }
+        return $total;
+    }
+
+    public function getTotalBuyPrice(): float
+    {
+        $total = 0;
+        foreach ($this->invoiceProducts as $invoiceProduct) {
+            $total += $invoiceProduct->getTotalBuyPriceWithoutVat();
+        }
+        return $total;
+    }
+
+    public function getTotalBuyPriceWithVat(): float
+    {
+        $total = 0;
+        foreach ($this->invoiceProducts as $invoiceProduct) {
+            $total += $invoiceProduct->getTotalBuyPrice();
+        }
+        return $total;
+    }
 
     public function toArray(): array
     {

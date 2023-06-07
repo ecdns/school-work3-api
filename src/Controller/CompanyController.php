@@ -44,6 +44,13 @@ use Service\Request;
  *     @OA\Property(property="createdAt", type="string", format="date-time", example="2021-01-01 00:00:00"),
  *     @OA\Property(property="updatedAt", type="string", format="date-time", example="2021-01-01 00:00:00")
  * )
+ * @OA\Schema (
+ *     schema="TotalByMonthResponse",
+ *     @OA\Property(property="06-2020", type="string", format="date-time", example="3656.00"),
+ *     @OA\Property(property="07-2020", type="string", format="date-time", example="3756.00"),
+ *     @OA\Property(property="08-2020", type="string", format="date-time", example="3856.00"),
+ *     @OA\Property(property="09-2020", type="string", format="date-time", example="3956.00"),
+ * )
  */
 class CompanyController extends AbstractController
 {
@@ -325,7 +332,318 @@ class CompanyController extends AbstractController
 
     }
 
+    /**
+     * @OA\Get(
+     *     path="/company/{companyId}/totalAmountByMonth",
+     *     tags={"Company"},
+     *     summary="Get total amount by month for a company",
+     *     description="Returns the total amount by month for a company",
+     *     @OA\Parameter(
+     *         name="companyId",
+     *         in="path",
+     *         description="ID of the company to get the total amount by month for",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/TotalByMonthResponse")
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Company not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+    public function getTotalAmountByMonth(int $companyId): void
+    {
+        // get the company from the database by its id
+        try {
+            $company = $this->dao->getOneBy(Company::class, ['id' => $companyId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
 
+        // if the company is not found, return an error
+        if (!$company) {
+            $this->request->handleErrorAndQuit(404, new Exception('Company not found'));
+        }
+
+        // construct the response with the company data
+        $response = $company->getTotalAmountByMonth();
+
+        // set the response
+        $this->request->handleSuccessAndQuit(200, 'OK', $response);
+
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/company/{companyId}/totalAmountWithVatByMonth",
+     *     tags={"Company"},
+     *     summary="Get total amount with VAT by month for a company",
+     *     description="Returns the total amount with VAT by month for a company",
+     *     @OA\Parameter(
+     *         name="companyId",
+     *         in="path",
+     *         description="ID of the company to get the total amount with VAT by month for",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/TotalByMonthResponse")
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Company not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+    public function getTotalAmountWithVatByMonth(int $companyId): void
+    {
+        // get the company from the database by its id
+        try {
+            $company = $this->dao->getOneBy(Company::class, ['id' => $companyId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // if the company is not found, return an error
+        if (!$company) {
+            $this->request->handleErrorAndQuit(404, new Exception('Company not found'));
+        }
+
+        // construct the response with the company data
+        $response = $company->getTotalAmountWithVatByMonth();
+
+        // set the response
+        $this->request->handleSuccessAndQuit(200, 'OK', $response);
+
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/company/{companyId}/totalBuyPriceByMonth",
+     *     tags={"Company"},
+     *     summary="Get total buy price by month for a company",
+     *     description="Returns the total buy price by month for a company",
+     *     @OA\Parameter(
+     *         name="companyId",
+     *         in="path",
+     *         description="ID of the company to get the total buy price by month for",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/TotalByMonthResponse")
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Company not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+    public function getTotalBuyPriceByMonth(int $companyId): void
+    {
+        // get the company from the database by its id
+        try {
+            $company = $this->dao->getOneBy(Company::class, ['id' => $companyId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // if the company is not found, return an error
+        if (!$company) {
+            $this->request->handleErrorAndQuit(404, new Exception('Company not found'));
+        }
+
+        // construct the response with the company data
+        $response = $company->getTotalBuyPriceByMonth();
+
+        // set the response
+        $this->request->handleSuccessAndQuit(200, 'OK', $response);
+
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/company/{companyId}/totalBuyPriceWithVatByMonth",
+     *     tags={"Company"},
+     *     summary="Get total buy price with VAT by month for a company",
+     *     description="Returns the total buy price with VAT by month for a company",
+     *     @OA\Parameter(
+     *         name="companyId",
+     *         in="path",
+     *         description="ID of the company to get the total buy price with VAT by month for",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/TotalByMonthResponse")
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Company not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+    public function getTotalBuyPriceWithVatByMonth(int $companyId): void
+    {
+        // get the company from the database by its id
+        try {
+            $company = $this->dao->getOneBy(Company::class, ['id' => $companyId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // if the company is not found, return an error
+        if (!$company) {
+            $this->request->handleErrorAndQuit(404, new Exception('Company not found'));
+        }
+
+        // construct the response with the company data
+        $response = $company->getTotalBuyPriceWithVatByMonth();
+
+        // set the response
+        $this->request->handleSuccessAndQuit(200, 'OK', $response);
+
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/company/{companyId}/totalProfitByMonth",
+     *     tags={"Company"},
+     *     summary="Get total profit by month for a company",
+     *     description="Returns the total profit by month for a company",
+     *     @OA\Parameter(
+     *         name="companyId",
+     *         in="path",
+     *         description="ID of the company to get the total profit by month for",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/TotalByMonthResponse")
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Company not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+    public function getTotalProfitByMonth(int $companyId): void
+    {
+        // get the company from the database by its id
+        try {
+            $company = $this->dao->getOneBy(Company::class, ['id' => $companyId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // if the company is not found, return an error
+        if (!$company) {
+            $this->request->handleErrorAndQuit(404, new Exception('Company not found'));
+        }
+
+        // construct the response with the company data
+        $response = $company->getTotalProfitByMonth();
+
+        // set the response
+        $this->request->handleSuccessAndQuit(200, 'OK', $response);
+
+    }
+
+    /**
+    * @OA\Get(
+    *     path="/company/{companyId}/totalProfitWithVatByMonth",
+    *     tags={"Company"},
+    *     summary="Get total profit with VAT by month for a company",
+    *     description="Returns the total profit with VAT by month for a company",
+    *     @OA\Parameter(
+    *         name="companyId",
+    *         in="path",
+    *         description="ID of the company to get the total profit with VAT by month for",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="integer"
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response="200",
+    *         description="Successful operation",
+    *         @OA\JsonContent(ref="#/components/schemas/TotalByMonthResponse")
+    *     ),
+    *     @OA\Response(
+    *         response="404",
+    *         description="Company not found"
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="Internal server error"
+    *     )
+    * )
+    */
+    public function getTotalProfitWithVatByMonth(int $companyId): void
+    {
+        // get the company from the database by its id
+        try {
+            $company = $this->dao->getOneBy(Company::class, ['id' => $companyId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // if the company is not found, return an error
+        if (!$company) {
+            $this->request->handleErrorAndQuit(404, new Exception('Company not found'));
+        }
+
+        // construct the response with the company data
+        $response = $company->getTotalProfitWithVatByMonth();
+
+        // set the response
+        $this->request->handleSuccessAndQuit(200, 'OK', $response);
+
+    }
+    
     /**
      * @OA\Put(
      *     path="/company/{id}",

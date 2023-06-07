@@ -208,8 +208,6 @@ class Project implements EntityInterface
         $this->estimates->removeElement($estimate);
     }
 
-
-
     public function addUser(User $user): void
     {
         $this->users->add($user);
@@ -247,6 +245,50 @@ class Project implements EntityInterface
         foreach ($tasks as $task) {
             $this->removeTask($task);
         }
+    }
+
+    public function getTotalAmountByMonth(): array
+    {
+        $totalAmountByMonth = [];
+        foreach ($this->invoices as $invoice) {
+            $month = $invoice->getCreatedAt()->format('m-Y');
+            $totalAmountByMonth[$month] = $totalAmountByMonth[$month] ?? 0;
+            $totalAmountByMonth[$month] += $invoice->getTotalAmount();
+        }
+        return $totalAmountByMonth;
+    }
+
+    public function getTotalAmountWithVatByMonth(): array
+    {
+        $totalAmountWithVatByMonth = [];
+        foreach ($this->invoices as $invoice) {
+            $month = $invoice->getCreatedAt()->format('m-Y');
+            $totalAmountWithVatByMonth[$month] = $totalAmountWithVatByMonth[$month] ?? 0;
+            $totalAmountWithVatByMonth[$month] += $invoice->getTotalAmountWithVat();
+        }
+        return $totalAmountWithVatByMonth;
+    }
+
+    public function getTotalBuyPriceByMonth(): array
+    {
+        $totalBuyPriceByMonth = [];
+        foreach ($this->invoices as $invoice) {
+            $month = $invoice->getCreatedAt()->format('m-Y');
+            $totalBuyPriceByMonth[$month] = $totalBuyPriceByMonth[$month] ?? 0;
+            $totalBuyPriceByMonth[$month] += $invoice->getTotalBuyPrice();
+        }
+        return $totalBuyPriceByMonth;
+    }
+
+    public function getTotalBuyPriceWithVatByMonth(): array
+    {
+        $totalBuyPriceWithVatByMonth = [];
+        foreach ($this->invoices as $invoice) {
+            $month = $invoice->getCreatedAt()->format('m-Y');
+            $totalBuyPriceWithVatByMonth[$month] = $totalBuyPriceWithVatByMonth[$month] ?? 0;
+            $totalBuyPriceWithVatByMonth[$month] += $invoice->getTotalBuyPriceWithVat();
+        }
+        return $totalBuyPriceWithVatByMonth;
     }
 
     public function toArray(): array

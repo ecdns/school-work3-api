@@ -338,7 +338,124 @@ class Company implements EntityInterface
         $this->projects = $projects;
     }
 
+    public function getTotalAmountByMonth(): array
+    {
+        $projectsTotalAmountByMonth = [];
+        foreach ($this->projects as $project) {
+            $projectsTotalAmountByMonth[] = $project->getTotalAmountByMonth();
+        }
+        // one projectTotalAmountByMonth is like this:
+        //  {
+        //    "06": 2532
+        //  }
+        // we need to merge all of them into one array with sum by month
+        $mergedProjectsTotalAmountByMonth = [];
+        foreach ($projectsTotalAmountByMonth as $projectTotalAmountByMonth) {
+            foreach ($projectTotalAmountByMonth as $month => $amount) {
+                if (isset($mergedProjectsTotalAmountByMonth[$month])) {
+                    $mergedProjectsTotalAmountByMonth[$month] += $amount;
+                } else {
+                    $mergedProjectsTotalAmountByMonth[$month] = $amount;
+                }
+            }
+        }
+        return $mergedProjectsTotalAmountByMonth;
+    }
 
+    public function getTotalAmountWithVatByMonth(): array
+    {
+        $projectsTotalAmountWithVatByMonth = [];
+        foreach ($this->projects as $project) {
+            $projectsTotalAmountWithVatByMonth[] = $project->getTotalAmountWithVatByMonth();
+        }
+        // one projectTotalAmountWithVatByMonth is like this:
+        //  {
+        //    "06": 2532
+        //  }
+        // we need to merge all of them into one array with sum by month
+        $mergedProjectsTotalAmountWithVatByMonth = [];
+        foreach ($projectsTotalAmountWithVatByMonth as $projectTotalAmountWithVatByMonth) {
+            foreach ($projectTotalAmountWithVatByMonth as $month => $amount) {
+                if (isset($mergedProjectsTotalAmountWithVatByMonth[$month])) {
+                    $mergedProjectsTotalAmountWithVatByMonth[$month] += $amount;
+                } else {
+                    $mergedProjectsTotalAmountWithVatByMonth[$month] = $amount;
+                }
+            }
+        }
+        return $mergedProjectsTotalAmountWithVatByMonth;
+    }
+
+    public function getTotalBuyPriceByMonth(): array
+    {
+        $projectsTotalBuyPriceByMonth = [];
+        foreach ($this->projects as $project) {
+            $projectsTotalBuyPriceByMonth[] = $project->getTotalBuyPriceByMonth();
+        }
+        // one projectTotalBuyPriceByMonth is like this:
+        //  {
+        //    "06": 2532
+        //  }
+        // we need to merge all of them into one array with sum by month
+        $mergedProjectsTotalBuyPriceByMonth = [];
+        foreach ($projectsTotalBuyPriceByMonth as $projectTotalBuyPriceByMonth) {
+            foreach ($projectTotalBuyPriceByMonth as $month => $buyPrice) {
+                if (isset($mergedProjectsTotalBuyPriceByMonth[$month])) {
+                    $mergedProjectsTotalBuyPriceByMonth[$month] += $buyPrice;
+                } else {
+                    $mergedProjectsTotalBuyPriceByMonth[$month] = $buyPrice;
+                }
+            }
+        }
+        return $mergedProjectsTotalBuyPriceByMonth;
+    }
+
+    public function getTotalBuyPriceWithVatByMonth(): array
+    {
+        $projectsTotalBuyPriceWithVatByMonth = [];
+        foreach ($this->projects as $project) {
+            $projectsTotalBuyPriceWithVatByMonth[] = $project->getTotalBuyPriceWithVatByMonth();
+        }
+        // one projectTotalBuyPriceWithVatByMonth is like this:
+        //  {
+        //    "06": 2532
+        //  }
+        // we need to merge all of them into one array with sum by month
+        $mergedProjectsTotalBuyPriceWithVatByMonth = [];
+        foreach ($projectsTotalBuyPriceWithVatByMonth as $projectTotalBuyPriceWithVatByMonth) {
+            foreach ($projectTotalBuyPriceWithVatByMonth as $month => $buyPrice) {
+                if (isset($mergedProjectsTotalBuyPriceWithVatByMonth[$month])) {
+                    $mergedProjectsTotalBuyPriceWithVatByMonth[$month] += $buyPrice;
+                } else {
+                    $mergedProjectsTotalBuyPriceWithVatByMonth[$month] = $buyPrice;
+                }
+            }
+        }
+        return $mergedProjectsTotalBuyPriceWithVatByMonth;
+    }
+
+    // using getProjectsTotalAmountByMonth() and getProjectsTotalBuyPriceByMonth(), we can calculate the profit by month
+    public function getTotalProfitByMonth(): array
+    {
+        $projectsTotalProfitByMonth = [];
+        $projectsTotalAmountByMonth = $this->getTotalAmountByMonth();
+        $projectsTotalBuyPriceByMonth = $this->getTotalBuyPriceByMonth();
+        foreach ($projectsTotalAmountByMonth as $month => $amount) {
+            $projectsTotalProfitByMonth[$month] = $amount - $projectsTotalBuyPriceByMonth[$month];
+        }
+        return $projectsTotalProfitByMonth;
+    }
+
+    public function getTotalProfitWithVatByMonth(): array
+    {
+        $projectsTotalProfitWithVatByMonth = [];
+        $projectsTotalAmountWithVatByMonth = $this->getTotalAmountWithVatByMonth();
+        $projectsTotalBuyPriceWithVatByMonth = $this->getTotalBuyPriceWithVatByMonth();
+        foreach ($projectsTotalAmountWithVatByMonth as $month => $amount) {
+            $projectsTotalProfitWithVatByMonth[$month] = $amount - $projectsTotalBuyPriceWithVatByMonth[$month];
+        }
+        return $projectsTotalProfitWithVatByMonth;
+    }
 
     public function toArray(): array
     {

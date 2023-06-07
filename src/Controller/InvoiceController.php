@@ -667,7 +667,6 @@ class InvoiceController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Product removed from Invoice');
     }
 
-
     /**
      * @OA\Delete(
      *     path="/invoice/{id}",
