@@ -55,14 +55,6 @@ class EstimateStatusFixture extends AbstractFixture implements OrderedFixtureInt
         $manager->persist($company);
     }
 
-
-
-
-
-
-
-
-
     public function getOrder(): int
     {
         return 3;

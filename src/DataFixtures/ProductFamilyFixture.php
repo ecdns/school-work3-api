@@ -16,6 +16,9 @@ class ProductFamilyFixture extends AbstractFixture implements OrderedFixtureInte
         $this->addProductFamily1($manager);
         $this->addProductFamily2($manager);
         $this->addProductFamily3($manager);
+        $this->addProductFamily4($manager);
+        $this->addProductFamily5($manager);
+        $this->addProductFamily6($manager);
         $manager->flush();
     }
 
@@ -72,9 +75,6 @@ class ProductFamilyFixture extends AbstractFixture implements OrderedFixtureInte
 
         $manager->persist($productFamily);
     }
-
-
-
 
     public function getOrder(): int
     {

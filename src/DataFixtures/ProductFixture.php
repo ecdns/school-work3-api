@@ -25,6 +25,8 @@ class ProductFixture extends AbstractFixture implements OrderedFixtureInterface
         $this->addProduct7($manager);
         $this->addProduct8($manager);
         $this->addProduct9($manager);
+        $this->addProduct10($manager);
+        $this->addProduct11($manager);
         $manager->flush();
     }
 
@@ -33,11 +35,11 @@ class ProductFixture extends AbstractFixture implements OrderedFixtureInterface
     {
         $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Aubade']);
         $supplier = $manager->getRepository(Supplier::class)->findOneBy(['name' => 'LtileMarcel']);
-        $quantityUnit = $manager->getRepository(QuantityUnit::class)->findOneBy(['name' => 'Mètre']);
+        $quantityUnit = $manager->getRepository(QuantityUnit::class)->findOneBy(['name' => 'Unitée']);
         $productFamily = $manager->getRepository(ProductFamily::class)->findOneBy(['name' => 'Salle de bain']);
         $vat = $manager->getRepository(Vat::class)->findOneBy(['name' => 'TVA 10%']);
 
-        $productFamily = new Product('Baignoire', 'Baignoire', 100, 100, 100, 100, 100, $productFamily, $vat, $company, $quantityUnit, $supplier);
+        $productFamily = new Product('Baignoire', 'Baignoire', 300, 600, 100, 10, false, $productFamily, $vat, $company, $quantityUnit, $supplier);
 
         $manager->persist($productFamily);
     }
@@ -46,16 +48,16 @@ class ProductFixture extends AbstractFixture implements OrderedFixtureInterface
     {
         $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Aubade']);
         $supplier = $manager->getRepository(Supplier::class)->findOneBy(['name' => 'LtileMarcel']);
-        $quantityUnit = $manager->getRepository(QuantityUnit::class)->findOneBy(['name' => 'Mètre']);
+        $quantityUnit = $manager->getRepository(QuantityUnit::class)->findOneBy(['name' => 'Unitée']);
         $productFamily = $manager->getRepository(ProductFamily::class)->findOneBy(['name' => 'Salle de bain']);
         $vat = $manager->getRepository(Vat::class)->findOneBy(['name' => 'TVA 20%']);
 
-        $productFamily = new Product('Lavabo', 'Lavabo', 100, 100, 100, 100, 100, $productFamily, $vat, $company, $quantityUnit, $supplier);
+        $productFamily = new Product('Lavabo', 'Lavabo', 45, 60, 130, 40, false, $productFamily, $vat, $company, $quantityUnit, $supplier);
 
         $manager->persist($productFamily);
     }
 
-    // add third poduct for company 1
+    // add third product for company 1
     public function addProduct3(ObjectManager $manager): void
     {
         $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Aubade']);
@@ -64,7 +66,7 @@ class ProductFixture extends AbstractFixture implements OrderedFixtureInterface
         $productFamily = $manager->getRepository(ProductFamily::class)->findOneBy(['name' => 'Salle de bain']);
         $vat = $manager->getRepository(Vat::class)->findOneBy(['name' => 'TVA 5.5%']);
 
-        $productFamily = new Product('Douche', 'Douche', 100, 100, 100, 100, 100, $productFamily, $vat, $company, $quantityUnit, $supplier);
+        $productFamily = new Product('Rideau de douche', 'Rideau de douche', 15, 30, 300, 20, true, $productFamily, $vat, $company, $quantityUnit, $supplier);
 
         $manager->persist($productFamily);
     }
@@ -73,11 +75,11 @@ class ProductFixture extends AbstractFixture implements OrderedFixtureInterface
     {
         $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Bubulle']);
         $supplier = $manager->getRepository(Supplier::class)->findOneBy(['name' => 'PenMaker']);
-        $quantityUnit = $manager->getRepository(QuantityUnit::class)->findOneBy(['name' => 'Grammes']);
+        $quantityUnit = $manager->getRepository(QuantityUnit::class)->findOneBy(['name' => 'Unitée']);
         $productFamily = $manager->getRepository(ProductFamily::class)->findOneBy(['name' => 'Cuisine']);
         $vat = $manager->getRepository(Vat::class)->findOneBy(['name' => 'TVA 20%']);
 
-        $productFamily = new Product('Casserole', 'Casserole', 100, 100, 100, 100, 100, $productFamily, $vat, $company, $quantityUnit, $supplier);
+        $productFamily = new Product('Casserole', 'Casserole', 10, 30, 100, 20, false, $productFamily, $vat, $company, $quantityUnit, $supplier);
 
         $manager->persist($productFamily);
     }
@@ -86,11 +88,11 @@ class ProductFixture extends AbstractFixture implements OrderedFixtureInterface
     {
         $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Bubulle']);
         $supplier = $manager->getRepository(Supplier::class)->findOneBy(['name' => 'PenMaker']);
-        $quantityUnit = $manager->getRepository(QuantityUnit::class)->findOneBy(['name' => 'Grammes']);
+        $quantityUnit = $manager->getRepository(QuantityUnit::class)->findOneBy(['name' => 'Unitée']);
         $productFamily = $manager->getRepository(ProductFamily::class)->findOneBy(['name' => 'Cuisine']);
         $vat = $manager->getRepository(Vat::class)->findOneBy(['name' => 'TVA 10%']);
 
-        $productFamily = new Product('Poêle', 'Poêle', 100, 100, 100, 100, 100, $productFamily, $vat, $company, $quantityUnit, $supplier);
+        $productFamily = new Product('Poêle', 'Poêle', 120, 150, 130, 30, true, $productFamily, $vat, $company, $quantityUnit, $supplier);
 
         $manager->persist($productFamily);
     }
@@ -99,11 +101,11 @@ class ProductFixture extends AbstractFixture implements OrderedFixtureInterface
     {
         $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Bubulle']);
         $supplier = $manager->getRepository(Supplier::class)->findOneBy(['name' => 'PenMaker']);
-        $quantityUnit = $manager->getRepository(QuantityUnit::class)->findOneBy(['name' => 'Grammes']);
+        $quantityUnit = $manager->getRepository(QuantityUnit::class)->findOneBy(['name' => 'Unitée']);
         $productFamily = $manager->getRepository(ProductFamily::class)->findOneBy(['name' => 'Cuisine']);
         $vat = $manager->getRepository(Vat::class)->findOneBy(['name' => 'TVA 5.5%']);
 
-        $productFamily = new Product('Couteau', 'Couteau', 100, 100, 100, 100, 100, $productFamily, $vat, $company, $quantityUnit, $supplier);
+        $productFamily = new Product('Couteau', 'Couteau', 130, 180, 360, 20, true, $productFamily, $vat, $company, $quantityUnit, $supplier);
 
         $manager->persist($productFamily);
     }
@@ -112,11 +114,11 @@ class ProductFixture extends AbstractFixture implements OrderedFixtureInterface
     {
         $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Cocorico']);
         $supplier = $manager->getRepository(Supplier::class)->findOneBy(['name' => 'Zeubi']);
-        $quantityUnit = $manager->getRepository(QuantityUnit::class)->findOneBy(['name' => 'Litre']);
+        $quantityUnit = $manager->getRepository(QuantityUnit::class)->findOneBy(['name' => 'Unitée']);
         $productFamily = $manager->getRepository(ProductFamily::class)->findOneBy(['name' => 'Chambre']);
         $vat = $manager->getRepository(Vat::class)->findOneBy(['name' => 'TVA 20%']);
 
-        $productFamily = new Product('Pantalon', 'Pantalon', 100, 100, 100, 100, 100, $productFamily, $vat, $company, $quantityUnit, $supplier);
+        $productFamily = new Product('Armoire', 'Armoire', 80, 120, 1000, 20, false, $productFamily, $vat, $company, $quantityUnit, $supplier);
 
         $manager->persist($productFamily);
     }
@@ -125,11 +127,11 @@ class ProductFixture extends AbstractFixture implements OrderedFixtureInterface
     {
         $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Cocorico']);
         $supplier = $manager->getRepository(Supplier::class)->findOneBy(['name' => 'Zeubi']);
-        $quantityUnit = $manager->getRepository(QuantityUnit::class)->findOneBy(['name' => 'Litre']);
+        $quantityUnit = $manager->getRepository(QuantityUnit::class)->findOneBy(['name' => 'Unitée']);
         $productFamily = $manager->getRepository(ProductFamily::class)->findOneBy(['name' => 'Chambre']);
         $vat = $manager->getRepository(Vat::class)->findOneBy(['name' => 'TVA 10%']);
 
-        $productFamily = new Product('Chemise', 'Chemise', 100, 100, 100, 100, 100, $productFamily, $vat, $company, $quantityUnit, $supplier);
+        $productFamily = new Product('Table de nuit', 'Table de nuit', 110, 120, 250, 20, false, $productFamily, $vat, $company, $quantityUnit, $supplier);
 
         $manager->persist($productFamily);
     }
@@ -138,15 +140,40 @@ class ProductFixture extends AbstractFixture implements OrderedFixtureInterface
     {
         $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Cocorico']);
         $supplier = $manager->getRepository(Supplier::class)->findOneBy(['name' => 'Zeubi']);
-        $quantityUnit = $manager->getRepository(QuantityUnit::class)->findOneBy(['name' => 'Litre']);
+        $quantityUnit = $manager->getRepository(QuantityUnit::class)->findOneBy(['name' => 'Unitée']);
         $productFamily = $manager->getRepository(ProductFamily::class)->findOneBy(['name' => 'Chambre']);
         $vat = $manager->getRepository(Vat::class)->findOneBy(['name' => 'TVA 5.5%']);
 
-        $productFamily = new Product('Chaussure', 'Chaussure', 100, 100, 100, 100, 100, $productFamily, $vat, $company, $quantityUnit, $supplier);
+        $productFamily = new Product('Lit', 'Lit', 100, 150, 80, 20, true, $productFamily, $vat, $company, $quantityUnit, $supplier);
 
         $manager->persist($productFamily);
     }
 
+    public function addProduct10(ObjectManager $manager): void
+    {
+        $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Aubade']);
+        $supplier = $manager->getRepository(Supplier::class)->findOneBy(['name' => 'LtileMarcel']);
+        $quantityUnit = $manager->getRepository(QuantityUnit::class)->findOneBy(['name' => 'Unitée']);
+        $productFamily = $manager->getRepository(ProductFamily::class)->findOneBy(['name' => 'Salon']);
+        $vat = $manager->getRepository(Vat::class)->findOneBy(['name' => 'TVA 20%']);
+
+        $productFamily = new Product('Canapé', 'Canapé', 100, 140, 100, 20, true, $productFamily, $vat, $company, $quantityUnit, $supplier);
+
+        $manager->persist($productFamily);
+    }
+
+    public function addProduct11(ObjectManager $manager): void
+    {
+        $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Aubade']);
+        $supplier = $manager->getRepository(Supplier::class)->findOneBy(['name' => 'LtileMarcel']);
+        $quantityUnit = $manager->getRepository(QuantityUnit::class)->findOneBy(['name' => 'Unitée']);
+        $productFamily = $manager->getRepository(ProductFamily::class)->findOneBy(['name' => 'Cuisine']);
+        $vat = $manager->getRepository(Vat::class)->findOneBy(['name' => 'TVA 20%']);
+
+        $productFamily = new Product('Etagere', 'Etagère', 100, 180, 70, 20, false, $productFamily, $vat, $company, $quantityUnit, $supplier);
+
+        $manager->persist($productFamily);
+    }
 
 
 

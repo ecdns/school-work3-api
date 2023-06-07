@@ -55,7 +55,7 @@ class InvoiceFixture extends AbstractFixture implements OrderedFixtureInterface
  public function addProductToInvoice1(ObjectManager $manager): void
  {
         $estimate = $manager->getRepository(Invoice::class)->findOneBy(['name' => 'Facture pour Amandanas']);
-        $product = $manager->getRepository(Product::class)->findOneBy(['name' =>  'Douche']);
+        $product = $manager->getRepository(Product::class)->findOneBy(['name' =>  'Rideau de douche']);
 
         $estimateProduct = new InvoiceProduct($estimate, $product, 100);
 
@@ -81,8 +81,6 @@ class InvoiceFixture extends AbstractFixture implements OrderedFixtureInterface
 
         $manager->persist($estimateProduct);
     }
-
-
 
     public function getOrder(): int
     {

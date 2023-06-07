@@ -55,7 +55,7 @@ class OrderFormFixture extends AbstractFixture implements OrderedFixtureInterfac
     {
         $estimate = $manager->getRepository(OrderForm::class)->findOneBy(['name' => 'Bon de Commande pour Amandanas']);
 
-        $product = $manager->getRepository(Product::class)->findOneBy(['name' => 'Douche']);
+        $product = $manager->getRepository(Product::class)->findOneBy(['name' => 'Rideau de douche']);
 
         $estimateProduct = new OrderFormProduct($estimate, $product, 100);
 

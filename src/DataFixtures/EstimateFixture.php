@@ -59,7 +59,7 @@ class EstimateFixture extends AbstractFixture implements OrderedFixtureInterface
      public function addProductToEstimate1(ObjectManager $manager): void
      {
         $estimate = $manager->getRepository(Estimate::class)->findOneBy(['name' => 'Devis pour Amandanas']);
-        $product = $manager->getRepository(Product::class)->findOneBy(['name' =>  'Douche']);
+        $product = $manager->getRepository(Product::class)->findOneBy(['name' =>  'Rideau de douche']);
 
         $estimateProduct = new EstimateProduct($estimate, $product, 100);
 
@@ -85,8 +85,6 @@ class EstimateFixture extends AbstractFixture implements OrderedFixtureInterface
 
         $manager->persist($estimateProduct);
     }
-
-
 
     public function getOrder(): int
     {
