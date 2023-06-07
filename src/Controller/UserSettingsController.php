@@ -45,7 +45,7 @@ class UserSettingsController extends AbstractController
 
     /**
      * @OA\Post(
-     *     path="/user-settings",
+     *     path="/userSettings",
      *     tags={"User Settings"},
      *     summary="Add user settings",
      *     description="Add user settings",
@@ -134,7 +134,7 @@ class UserSettingsController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/user-settings/{id}",
+     *     path="/userSettings/{id}",
      *     tags={"User Settings"},
      *     summary="Get user settings by id",
      *     description="Get user settings by id",
@@ -187,7 +187,7 @@ class UserSettingsController extends AbstractController
 
     /**
      * @OA\Put(
-     *     path="/user-settings/{id}",
+     *     path="/userSettings/{id}",
      *     tags={"User Settings"},
      *     summary="Update user settings by id",
      *     description="Update user settings by id",
@@ -281,7 +281,7 @@ class UserSettingsController extends AbstractController
 
     /**
      * @OA\Delete(
-     *     path="/user-settings/{id}",
+     *     path="/userSettings/{id}",
      *     tags={"User Settings"},
      *     summary="Delete user settings by id",
      *     description="Delete user settings by id",

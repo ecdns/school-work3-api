@@ -41,7 +41,7 @@ class TaskStatusController extends AbstractController
 
     /**
      * @OA\Post(
-     *     path="/task-status",
+     *     path="/taskStatus",
      *     tags={"TaskStatus"},
      *     summary="Add a new TaskStatus",
      *     description="Add a new TaskStatus",
@@ -112,7 +112,7 @@ class TaskStatusController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/task-status/all",
+     *     path="/taskStatus/all",
      *     tags={"TaskStatus"},
      *     summary="Get all TaskStatuses",
      *     description="Get all TaskStatuses",
@@ -151,7 +151,7 @@ class TaskStatusController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/task-status/{id}",
+     *     path="/taskStatus/{id}",
      *     tags={"TaskStatus"},
      *     summary="Get TaskStatus by ID",
      *     description="Get TaskStatus by ID",
@@ -205,7 +205,7 @@ class TaskStatusController extends AbstractController
 
     /**
      * @OA\Put(
-     *     path="/task-status/{id}",
+     *     path="/taskStatus/{id}",
      *     tags={"TaskStatus"},
      *     summary="Update TaskStatus by ID",
      *     description="Update TaskStatus by ID",
@@ -304,7 +304,7 @@ class TaskStatusController extends AbstractController
 
     /**
      * @OA\Delete(
-     *     path="/task-status/{id}",
+     *     path="/taskStatus/{id}",
      *     tags={"TaskStatus"},
      *     summary="Delete TaskStatus by ID",
      *     description="Delete TaskStatus by ID",

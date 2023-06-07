@@ -154,12 +154,12 @@ paths:
           description: 'Company not found'
         '500':
           description: 'Internal server error'
-  /company-settings:
+  /companySettings:
     post:
       tags:
         - 'Company Settings'
       summary: 'Add company settings'
-      operationId: 94126c8d3844338dfdc29cb8671270ee
+      operationId: adf5c02d6adfb3788649272d2aede8cf
       requestBody:
         required: true
         content:
@@ -177,12 +177,12 @@ paths:
           description: 'Company settings already exist'
         '500':
           description: 'Company settings could not be created'
-  '/company-settings/{id}':
+  '/companySettings/{id}':
     get:
       tags:
         - 'Company Settings'
       summary: 'Get company settings by id'
-      operationId: 2aa66e75d711bc80b3eba526111660a5
+      operationId: dc642a7db7a60d86c1088a90203a8bde
       parameters:
         -
           name: id
@@ -207,7 +207,7 @@ paths:
       tags:
         - 'Company Settings'
       summary: 'Update company settings by id'
-      operationId: 0105213f6dcebc4348c3e38981bd8bfc
+      operationId: 7f6e8cf82b72dfe0f2fa38d27b3efcf9
       parameters:
         -
           name: id
@@ -239,7 +239,7 @@ paths:
       tags:
         - 'Company Settings'
       summary: 'Delete company settings by id'
-      operationId: 3733f4e95b12a9b46b849dc2f9683746
+      operationId: 99addc2a25de698e214b45974ae8b171
       parameters:
         -
           name: id
@@ -400,13 +400,13 @@ paths:
           description: 'Customers not found'
         '500':
           description: 'Internal server error'
-  /customer-status:
+  /customerStatus:
     post:
       tags:
         - CustomerStatus
       summary: 'Add a new CustomerStatus'
       description: 'Add a new CustomerStatus'
-      operationId: d7939a23c2d1913c51e406c3a80e85e5
+      operationId: 8c9c70dd7fd5aad33b4aa9ca0aeca7f1
       requestBody:
         description: 'CustomerStatus object that needs to be added'
         required: true
@@ -423,13 +423,13 @@ paths:
           description: 'CustomerStatus already exists'
         '500':
           description: 'Internal Server Error'
-  /customer-status/all:
+  /customerStatus/all:
     get:
       tags:
         - CustomerStatus
       summary: 'Get all CustomerStatuses'
       description: 'Get all CustomerStatuses'
-      operationId: 4a9af165a4b099a4901c67003c7b1700
+      operationId: 2e91e3f7a63c8570c749b80b2f07ff8e
       responses:
         '200':
           description: 'CustomerStatuses found'
@@ -441,13 +441,13 @@ paths:
                   $ref: '#/components/schemas/CustomerStatusResponse'
         '500':
           description: 'Internal Server Error'
-  '/customer-status/{id}':
+  '/customerStatus/{id}':
     get:
       tags:
         - CustomerStatus
       summary: 'Get a CustomerStatus by ID'
       description: 'Get a CustomerStatus by ID'
-      operationId: b816e7d0a30929f7f3cd3ae642527cba
+      operationId: 31b74378f82fccd568281ccfa86bab64
       parameters:
         -
           name: id
@@ -473,7 +473,7 @@ paths:
         - CustomerStatus
       summary: 'Update a CustomerStatus by ID'
       description: 'Update a CustomerStatus by ID'
-      operationId: 890f9c1bbb4f5b62b8d7a37553ede8c9
+      operationId: d01b3cddbeb81a537e48b6712b10eec1
       parameters:
         -
           name: id
@@ -506,7 +506,7 @@ paths:
         - CustomerStatus
       summary: 'Delete a CustomerStatus by ID'
       description: 'Delete a CustomerStatus by ID'
-      operationId: f21af2db7418bb0eef27b8540fc18ba7
+      operationId: e4cfc93184f80a429ef1af4803229c9e
       parameters:
         -
           name: id
@@ -762,13 +762,13 @@ paths:
           description: 'Estimate, Product or EstimateProduct not found'
         '500':
           description: 'Internal Server Error'
-  /estimate-status:
+  /estimateStatus:
     get:
       tags:
         - EstimateStatus
       summary: 'Get all EstimateStatus'
       description: 'Get all EstimateStatus'
-      operationId: cb27dec47671258bc4c14286bb6670ef
+      operationId: 7b3d73e84b903ff8c5d185f9fa92b4a5
       responses:
         '200':
           description: 'EstimateStatus found'
@@ -785,7 +785,7 @@ paths:
         - EstimateStatus
       summary: 'Add a new EstimateStatus'
       description: 'Add a new EstimateStatus'
-      operationId: d570ad717493d839eca3503fc400820f
+      operationId: ab365cc1a79f1d7f6950960d5a963b63
       requestBody:
         description: 'EstimateStatus object that needs to be added'
         required: true
@@ -802,13 +802,13 @@ paths:
           description: 'EstimateStatus already exists'
         '500':
           description: 'Internal Server Error'
-  '/estimate-status/{id}':
+  '/estimateStatus/{id}':
     get:
       tags:
         - EstimateStatus
       summary: 'Get EstimateStatus by ID'
       description: 'Get EstimateStatus by ID'
-      operationId: f282b3c66daff86043a12118b8eb343a
+      operationId: 604aeb66d7051cd56304e057d4483469
       parameters:
         -
           name: id
@@ -834,7 +834,7 @@ paths:
         - EstimateStatus
       summary: 'Update EstimateStatus by ID'
       description: 'Update EstimateStatus by ID'
-      operationId: 83dee5b52bf5ea08b9ea29612362ddb7
+      operationId: c7d287d7288ad92aea69c1860f2a6811
       parameters:
         -
           name: id
@@ -867,7 +867,7 @@ paths:
         - EstimateStatus
       summary: 'Delete EstimateStatus by ID'
       description: 'Delete EstimateStatus by ID'
-      operationId: fd299f1ce384127441da5b486ecf89ed
+      operationId: 98dacc585fc38de87ce2f3f7ececfbdc
       parameters:
         -
           name: id
@@ -1037,6 +1037,31 @@ paths:
           name: id
           in: path
           description: 'Company ID'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Invoices found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InvoiceResponse'
+        '500':
+          description: 'Internal server error'
+  '/invoice/customer/{customerId}':
+    get:
+      tags:
+        - Invoice
+      summary: 'Get all invoices by customer'
+      operationId: 21bc42baae51128f3946b5b94ee6acc3
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Customer ID'
           required: true
           schema:
             type: integer
@@ -1956,13 +1981,13 @@ paths:
                   $ref: '#/components/schemas/ProjectResponse'
         '500':
           description: 'Internal server error'
-  '/project/company/{id}':
+  '/project/company/{companyId}':
     get:
       tags:
         - Project
       summary: 'Get all projects by company'
       description: 'Returns an array of all projects by company'
-      operationId: 12c56853b256d9a79c5e1f23313f87d9
+      operationId: 9de762011ea201db22e5fb19412d8451
       parameters:
         -
           name: id
@@ -2065,6 +2090,60 @@ paths:
           description: 'Project not found'
         '500':
           description: 'Internal server error'
+  '/project/customer/{userId}':
+    get:
+      tags:
+        - Project
+      summary: 'Get all projects by user'
+      description: 'Returns an array of all projects by user'
+      operationId: bd2a1909aaa3cf37c1f4bb0ba47d6f92
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the user'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectResponse'
+        '500':
+          description: 'Internal server error'
+  '/project/customer/{customerId}':
+    get:
+      tags:
+        - Project
+      summary: 'Get all projects by customer'
+      description: 'Returns an array of all projects by customer'
+      operationId: 8835f0fe594ed175cb1da1ed7a1474f7
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the customer'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectResponse'
+        '500':
+          description: 'Internal server error'
   '/project/{projectId}/addUser/{userId}':
     put:
       tags:
@@ -2127,13 +2206,13 @@ paths:
           description: 'Project or User not found'
         '500':
           description: 'Internal server error'
-  /project-status:
+  /projectStatus:
     post:
       tags:
         - ProjectStatus
       summary: 'Add a new ProjectStatus'
       description: 'Add a new ProjectStatus'
-      operationId: 0fefaf16e5acb18be8768e515d6a8a1f
+      operationId: 5aed51b721744edd91420a3251abb269
       requestBody:
         description: 'ProjectStatus object that needs to be added'
         required: true
@@ -2150,13 +2229,13 @@ paths:
           description: 'ProjectStatus already exists'
         '500':
           description: 'Internal Server Error'
-  /project-status/all:
+  /projectStatus/all:
     get:
       tags:
         - ProjectStatus
       summary: 'Get all ProjectStatuses'
       description: 'Get all ProjectStatuses'
-      operationId: 1eedc4528a3f9a2f7b748a723e49eb08
+      operationId: dc6b7c114759944aeeb9ea51d523d749
       responses:
         '200':
           description: 'ProjectStatuses found'
@@ -2168,13 +2247,13 @@ paths:
                   $ref: '#/components/schemas/ProjectStatusResponse'
         '500':
           description: 'Internal Server Error'
-  '/project-status/{id}':
+  '/projectStatus/{id}':
     get:
       tags:
         - ProjectStatus
       summary: 'Get a ProjectStatus by ID'
       description: 'Get a ProjectStatus by ID'
-      operationId: 715c693baa7822fc4cd8026476b98fe8
+      operationId: f9be2c84b4e2dcf3dfeb673e6be3897c
       parameters:
         -
           name: id
@@ -2200,7 +2279,7 @@ paths:
         - ProjectStatus
       summary: 'Update a ProjectStatus by ID'
       description: 'Update a ProjectStatus by ID'
-      operationId: dcfdc5fc41489e0ed11ce0432359ed5f
+      operationId: f92283e5bdc2a5fb474bca8c899dfff6
       parameters:
         -
           name: id
@@ -2233,7 +2312,7 @@ paths:
         - ProjectStatus
       summary: 'Delete a ProjectStatus by ID'
       description: 'Delete a ProjectStatus by ID'
-      operationId: b82cc4646d77534aadd935052e28e065
+      operationId: 5c199f964e96bfdbbef696edac11c576
       parameters:
         -
           name: id
@@ -2246,13 +2325,13 @@ paths:
       responses:
         '200':
           description: 'ProjectStatus deleted'
-  /quantity-unit:
+  /quantityUnit:
     post:
       tags:
         - QuantityUnit
       summary: 'Add a new QuantityUnit'
       description: 'Add a new QuantityUnit'
-      operationId: 2975f8d0997293430fc84dbcccc66efb
+      operationId: e269b332c5dee28892f73ebe79a46010
       requestBody:
         description: 'QuantityUnit data'
         required: true
@@ -2269,13 +2348,13 @@ paths:
           description: 'QuantityUnit already exists'
         '500':
           description: 'Internal server error'
-  /quantity-unit/all:
+  /quantityUnit/all:
     get:
       tags:
         - QuantityUnit
       summary: 'Get all QuantityUnits'
       description: 'Get all QuantityUnits'
-      operationId: 03ffc7dd0906650b6b616a3aa4ce45b3
+      operationId: 445dd025ef1e956c15f06107c0d19a65
       responses:
         '200':
           description: 'QuantityUnits found'
@@ -2287,13 +2366,13 @@ paths:
                   $ref: '#/components/schemas/QuantityUnitResponse'
         '500':
           description: 'Internal server error'
-  '/quantity-unit/{id}':
+  '/quantityUnit/{id}':
     get:
       tags:
         - QuantityUnit
       summary: 'Get a QuantityUnit by ID'
       description: 'Get a QuantityUnit by ID'
-      operationId: 6ab6f16b25fc7a273305ebaf84e4ac25
+      operationId: 8894ebbbb0a890440fdaac2d409233ea
       parameters:
         -
           name: id
@@ -2319,7 +2398,7 @@ paths:
         - QuantityUnit
       summary: 'Update a QuantityUnit by ID'
       description: 'Update a QuantityUnit by ID'
-      operationId: 69719808ae317109b86fa647d2c69eb8
+      operationId: 0a5f0a7c5a8e9ba0b5df29d6586c18c9
       parameters:
         -
           name: id
@@ -2352,7 +2431,7 @@ paths:
         - QuantityUnit
       summary: 'Delete a QuantityUnit by ID'
       description: 'Delete a QuantityUnit by ID'
-      operationId: dbac2b47323338c213b64af20978aa99
+      operationId: 6d5c6b78f3a28373679205ddddea9481
       parameters:
         -
           name: id
@@ -2826,13 +2905,13 @@ paths:
           description: 'Task not found'
         '500':
           description: 'Internal server error'
-  /task-status:
+  /taskStatus:
     post:
       tags:
         - TaskStatus
       summary: 'Add a new TaskStatus'
       description: 'Add a new TaskStatus'
-      operationId: ef8c8f616d2bcd23a6c49dd795156a1f
+      operationId: 225571dfb0e0d5a07c96a9789c5d0d38
       requestBody:
         description: 'TaskStatus object that needs to be added'
         required: true
@@ -2849,13 +2928,13 @@ paths:
           description: 'TaskStatus already exists'
         '500':
           description: 'Internal server error'
-  /task-status/all:
+  /taskStatus/all:
     get:
       tags:
         - TaskStatus
       summary: 'Get all TaskStatuses'
       description: 'Get all TaskStatuses'
-      operationId: c04d0b1f407a615d95cc688ea4dd2807
+      operationId: 574512a785c0303a8126a87353d509eb
       responses:
         '200':
           description: 'TaskStatuses found'
@@ -2867,13 +2946,13 @@ paths:
                   $ref: '#/components/schemas/TaskStatusResponse'
         '500':
           description: 'Internal server error'
-  '/task-status/{id}':
+  '/taskStatus/{id}':
     get:
       tags:
         - TaskStatus
       summary: 'Get TaskStatus by ID'
       description: 'Get TaskStatus by ID'
-      operationId: 1d61214bdd7ad1723d4ddf345f35431f
+      operationId: 61695ff9439667497888b94e77feff07
       parameters:
         -
           name: id
@@ -2899,7 +2978,7 @@ paths:
         - TaskStatus
       summary: 'Update TaskStatus by ID'
       description: 'Update TaskStatus by ID'
-      operationId: 05004a72b708f5e83d27e6f9b71c2132
+      operationId: f746760afca944203e246657cdad8d8b
       parameters:
         -
           name: id
@@ -2932,7 +3011,7 @@ paths:
         - TaskStatus
       summary: 'Delete TaskStatus by ID'
       description: 'Delete TaskStatus by ID'
-      operationId: 4a5637ac882bd0ced2c453311ca831df
+      operationId: 3e4157a330b4f34621e17c330b6e2332
       parameters:
         -
           name: id
@@ -3312,13 +3391,13 @@ paths:
           description: 'No users found'
         '500':
           description: 'Internal server error'
-  /user-settings:
+  /userSettings:
     post:
       tags:
         - 'User Settings'
       summary: 'Add user settings'
       description: 'Add user settings'
-      operationId: d511abe11ef9e266a8418d13f56f590c
+      operationId: 39b42475c2f3d82f1c23e29e3ef9a93e
       requestBody:
         description: 'User settings object that needs to be added'
         required: true
@@ -3335,13 +3414,13 @@ paths:
           description: 'User not found'
         '500':
           description: 'Internal server error'
-  '/user-settings/{id}':
+  '/userSettings/{id}':
     get:
       tags:
         - 'User Settings'
       summary: 'Get user settings by id'
       description: 'Get user settings by id'
-      operationId: c0f65a513b8bad80a542881544ced283
+      operationId: 0009048bd562a5cfb45d035037f61237
       parameters:
         -
           name: id
@@ -3367,7 +3446,7 @@ paths:
         - 'User Settings'
       summary: 'Update user settings by id'
       description: 'Update user settings by id'
-      operationId: d65a245c3767f3d8836378ef21d2da73
+      operationId: 4b66fc6d9680246b589d54e174426a92
       parameters:
         -
           name: id
@@ -3398,7 +3477,7 @@ paths:
         - 'User Settings'
       summary: 'Delete user settings by id'
       description: 'Delete user settings by id'
-      operationId: a58226138a116773cd838555f388dc94
+      operationId: f4de6962b7a545047799bcf5cb51bfdd
       parameters:
         -
           name: id
@@ -3648,7 +3727,7 @@ components:
           type: string
           example: '#000000'
         company:
-          type: integer
+          type: id
           example: 1
       type: object
     CompanySettingsResponse:
@@ -3686,7 +3765,6 @@ components:
         - zipCode
         - phone
         - company
-        - user
         - status
       properties:
         firstName:
@@ -3715,9 +3793,6 @@ components:
           type: string
           example: '0123456789'
         company:
-          type: integer
-          example: '1'
-        user:
           type: integer
           example: '1'
         status:
@@ -3756,8 +3831,6 @@ components:
           example: '0123456789'
         company:
           $ref: '#/components/schemas/CompanyResponse'
-        user:
-          $ref: '#/components/schemas/UserResponse'
         status:
           $ref: '#/components/schemas/CustomerStatusResponse'
         createdAt:

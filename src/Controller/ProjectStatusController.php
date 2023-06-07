@@ -41,7 +41,7 @@ class ProjectStatusController extends AbstractController
 
     /**
      * @OA\Post(
-     *     path="/project-status",
+     *     path="/projectStatus",
      *     tags={"ProjectStatus"},
      *     summary="Add a new ProjectStatus",
      *     description="Add a new ProjectStatus",
@@ -112,7 +112,7 @@ class ProjectStatusController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/project-status/all",
+     *     path="/projectStatus/all",
      *     tags={"ProjectStatus"},
      *     summary="Get all ProjectStatuses",
      *     description="Get all ProjectStatuses",
@@ -152,7 +152,7 @@ class ProjectStatusController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/project-status/{id}",
+     *     path="/projectStatus/{id}",
      *     tags={"ProjectStatus"},
      *     summary="Get a ProjectStatus by ID",
      *     description="Get a ProjectStatus by ID",
@@ -207,7 +207,7 @@ class ProjectStatusController extends AbstractController
 
     /**
      * @OA\Put(
-     *     path="/project-status/{id}",
+     *     path="/projectStatus/{id}",
      *     tags={"ProjectStatus"},
      *     summary="Update a ProjectStatus by ID",
      *     description="Update a ProjectStatus by ID",
@@ -305,7 +305,7 @@ class ProjectStatusController extends AbstractController
 
     /**
      * @OA\Delete(
-     *     path="/project-status/{id}",
+     *     path="/projectStatus/{id}",
      *     tags={"ProjectStatus"},
      *     summary="Delete a ProjectStatus by ID",
      *     description="Delete a ProjectStatus by ID",

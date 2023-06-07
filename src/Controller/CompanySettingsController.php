@@ -44,7 +44,7 @@ class CompanySettingsController extends AbstractController
 
     /**
      * @OA\Post(
-     *     path="/company-settings",
+     *     path="/companySettings",
      *     tags={"Company Settings"},
      *     summary="Add company settings",
      *     @OA\RequestBody(
@@ -136,7 +136,7 @@ class CompanySettingsController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/company-settings/{id}",
+     *     path="/companySettings/{id}",
      *     tags={"Company Settings"},
      *     summary="Get company settings by id",
      *     @OA\Parameter(
@@ -187,7 +187,7 @@ class CompanySettingsController extends AbstractController
 
     /**
      * @OA\Put(
-     *     path="/company-settings/{id}",
+     *     path="/companySettings/{id}",
      *     tags={"Company Settings"},
      *     summary="Update company settings by id",
      *     @OA\Parameter(
@@ -286,7 +286,7 @@ class CompanySettingsController extends AbstractController
 
     /**
      * @OA\Delete(
-     *     path="/company-settings/{id}",
+     *     path="/companySettings/{id}",
      *     tags={"Company Settings"},
      *     summary="Delete company settings by id",
      *     @OA\Parameter(

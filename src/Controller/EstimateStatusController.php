@@ -41,7 +41,7 @@ class EstimateStatusController extends AbstractController
 
     /**
      * @OA\Post(
-     *     path="/estimate-status",
+     *     path="/estimateStatus",
      *     tags={"EstimateStatus"},
      *     summary="Add a new EstimateStatus",
      *     description="Add a new EstimateStatus",
@@ -113,7 +113,7 @@ class EstimateStatusController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/estimate-status",
+     *     path="/estimateStatus",
      *     tags={"EstimateStatus"},
      *     summary="Get all EstimateStatus",
      *     description="Get all EstimateStatus",
@@ -153,7 +153,7 @@ class EstimateStatusController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/estimate-status/{id}",
+     *     path="/estimateStatus/{id}",
      *     tags={"EstimateStatus"},
      *     summary="Get EstimateStatus by ID",
      *     description="Get EstimateStatus by ID",
@@ -206,7 +206,7 @@ class EstimateStatusController extends AbstractController
 
     /**
      * @OA\Put(
-     *     path="/estimate-status/{id}",
+     *     path="/estimateStatus/{id}",
      *     tags={"EstimateStatus"},
      *     summary="Update EstimateStatus by ID",
      *     description="Update EstimateStatus by ID",
@@ -304,7 +304,7 @@ class EstimateStatusController extends AbstractController
 
     /**
      * @OA\Delete(
-     *     path="/estimate-status/{id}",
+     *     path="/estimateStatus/{id}",
      *     tags={"EstimateStatus"},
      *     summary="Delete EstimateStatus by ID",
      *     description="Delete EstimateStatus by ID",

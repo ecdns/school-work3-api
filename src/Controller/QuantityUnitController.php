@@ -42,7 +42,7 @@ class QuantityUnitController extends AbstractController
 
     /**
      * @OA\Post(
-     *     path="/quantity-unit",
+     *     path="/quantityUnit",
      *     tags={"QuantityUnit"},
      *     summary="Add a new QuantityUnit",
      *     description="Add a new QuantityUnit",
@@ -115,7 +115,7 @@ class QuantityUnitController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/quantity-unit/all",
+     *     path="/quantityUnit/all",
      *     tags={"QuantityUnit"},
      *     summary="Get all QuantityUnits",
      *     description="Get all QuantityUnits",
@@ -154,7 +154,7 @@ class QuantityUnitController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/quantity-unit/{id}",
+     *     path="/quantityUnit/{id}",
      *     tags={"QuantityUnit"},
      *     summary="Get a QuantityUnit by ID",
      *     description="Get a QuantityUnit by ID",
@@ -207,7 +207,7 @@ class QuantityUnitController extends AbstractController
 
     /**
      * @OA\Put(
-     *     path="/quantity-unit/{id}",
+     *     path="/quantityUnit/{id}",
      *     tags={"QuantityUnit"},
      *     summary="Update a QuantityUnit by ID",
      *     description="Update a QuantityUnit by ID",
@@ -309,7 +309,7 @@ class QuantityUnitController extends AbstractController
 
     /**
      * @OA\Delete(
-     *     path="/quantity-unit/{id}",
+     *     path="/quantityUnit/{id}",
      *     tags={"QuantityUnit"},
      *     summary="Delete a QuantityUnit by ID",
      *     description="Delete a QuantityUnit by ID",

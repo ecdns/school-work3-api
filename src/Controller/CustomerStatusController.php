@@ -39,7 +39,7 @@ class CustomerStatusController extends AbstractController
 
     /**
      * @OA\Post(
-     *     path="/customer-status",
+     *     path="/customerStatus",
      *     tags={"CustomerStatus"},
      *     summary="Add a new CustomerStatus",
      *     description="Add a new CustomerStatus",
@@ -111,7 +111,7 @@ class CustomerStatusController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/customer-status/all",
+     *     path="/customerStatus/all",
      *     tags={"CustomerStatus"},
      *     summary="Get all CustomerStatuses",
      *     description="Get all CustomerStatuses",
@@ -151,7 +151,7 @@ class CustomerStatusController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/customer-status/{id}",
+     *     path="/customerStatus/{id}",
      *     tags={"CustomerStatus"},
      *     summary="Get a CustomerStatus by ID",
      *     description="Get a CustomerStatus by ID",
@@ -204,7 +204,7 @@ class CustomerStatusController extends AbstractController
 
     /**
      * @OA\Put(
-     *     path="/customer-status/{id}",
+     *     path="/customerStatus/{id}",
      *     tags={"CustomerStatus"},
      *     summary="Update a CustomerStatus by ID",
      *     description="Update a CustomerStatus by ID",
@@ -303,7 +303,7 @@ class CustomerStatusController extends AbstractController
 
     /**
      * @OA\Delete(
-     *     path="/customer-status/{id}",
+     *     path="/customerStatus/{id}",
      *     tags={"CustomerStatus"},
      *     summary="Delete a CustomerStatus by ID",
      *     description="Delete a CustomerStatus by ID",
