@@ -330,6 +330,7 @@ class ProjectController extends AbstractController
     {
         try {
             $user = $this->dao->getOneBy(User::class, ['id' => $userId]);
+            $ownedProjects = $this->dao->getBy(Project::class, ['creator' => $user]);
             $projects = $user->getProjects();
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
@@ -337,6 +338,9 @@ class ProjectController extends AbstractController
 
         // set the response
         $response = [];
+        foreach ($ownedProjects as $project) {
+            $response[] = $project->toArray();
+        }
         foreach ($projects as $project) {
             $response[] = $project->toArray();
         }
