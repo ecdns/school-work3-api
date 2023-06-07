@@ -169,7 +169,6 @@ class Estimate implements EntityInterface
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
             'expiredAt' => $this->expiredAt?->format('Y-m-d H:i:s'),
             'estimateStatus' => $this->estimateStatus->toArray(),
-            //get estimate products
             'estimateProducts' => $this->estimateProduct->map(fn(EstimateProduct $product) => $product->toArray())->toArray()
         ];
     }

@@ -342,7 +342,6 @@ class InvoiceController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Invoices found', $response);
     }
 
-    //getInvoicesByCustomer
     /**
      * @OA\Get(
      *     path="/invoice/customer/{customerId}",
@@ -375,7 +374,12 @@ class InvoiceController extends AbstractController
     {
         // get all invoices by customer
         try {
-            $invoices = $this->dao->getBy(Invoice::class, ['customer' => $customerId]);
+           // get all projects of the customer
+            $projects = $this->dao->getBy(Project::class, ['customer' => $customerId]);
+            $invoices = [];
+            foreach ($projects as $project) {
+                $invoices = array_merge($invoices, $this->dao->getBy(Invoice::class, ['project' => $project->getId()]));
+            }
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

@@ -396,7 +396,12 @@ class EstimateController extends AbstractController
     public function getEstimatesByCustomer(int $customerId): void
     {
         try {
-            $estimates = $this->dao->getBy(Estimate::class, ['customer' => $customerId]);
+            // get all projects of the customer
+            $projects = $this->dao->getBy(Project::class, ['customer' => $customerId]);
+            $estimates = [];
+            foreach ($projects as $project) {
+                $estimates = array_merge($estimates, $this->dao->getBy(Estimate::class, ['project' => $project->getId()]));
+            }
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

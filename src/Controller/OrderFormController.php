@@ -379,7 +379,11 @@ class OrderFormController extends AbstractController
     public function getOrderFormsByCustomer(int $customerId): void
     {
         try {
-            $orderForms = $this->dao->getBy(OrderForm::class, ['customer' => $customerId]);
+            $projects = $this->dao->getBy(Project::class, ['customer' => $customerId]);
+            $orderForms = [];
+            foreach ($projects as $project) {
+                $orderForms = array_merge($orderForms, $this->dao->getBy(OrderForm::class, ['project' => $project->getId()]));
+            }
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
