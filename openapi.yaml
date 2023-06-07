@@ -701,6 +701,33 @@ paths:
                   $ref: '#/components/schemas/EstimateResponse'
         '500':
           description: 'Internal server error'
+  '/estimate/customer/{customerId}':
+    get:
+      tags:
+        - Estimate
+      summary: 'Get all estimates by customer'
+      description: 'Returns all estimates by customer'
+      operationId: b3169617f1d386c853150aa1aaf2cb43
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Customer id'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Estimates found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EstimateResponse'
+        '500':
+          description: 'Internal server error'
   '/estimate/{estimateId}/product/{productId}':
     post:
       tags:
@@ -1581,6 +1608,31 @@ paths:
           description: 'OrderForm deleted'
         '404':
           description: 'OrderForm not found'
+        '500':
+          description: 'Internal Server Error'
+  '/orderForm/customer/{customerId}':
+    get:
+      tags:
+        - OrderForm
+      summary: 'Get all OrderForms by customer'
+      operationId: b7aaf7217cc9d879779ac51f6ae212b9
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Customer ID'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'OrderForms found'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderFormResponse'
         '500':
           description: 'Internal Server Error'
   '/orderForm/{orderFormId}/product/{productId}':
