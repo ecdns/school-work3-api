@@ -19,6 +19,8 @@ class ProjectFixture extends AbstractFixture implements OrderedFixtureInterface
         $this->addProject2($manager);
         $this->addProject3($manager);
         $manager->flush();
+        $this->addUserToProject1($manager);
+        $this->addUserToProject2($manager);
     }
 
 
@@ -58,6 +60,26 @@ class ProjectFixture extends AbstractFixture implements OrderedFixtureInterface
         $project = new Project('Redook - Cuisine', 'Le projet conciste à construire la cuisine pour Redook', $company, $user, $customer, $projectStatus);
 
         $manager->persist($project);
+    }
+
+    public function addUserToProject1(ObjectManager $manager): void
+    {
+        $project = $manager->getRepository(Project::class)->findOneBy(['name' => 'Amandanas - Construction']);
+        $user = $manager->getRepository(User::class)->findOneBy(['email' => 'janedoe@gmail.com']);
+
+        $project->addUser($user);
+
+        $manager->flush($project);
+    }
+
+    public function addUserToProject2(ObjectManager $manager): void
+    {
+        $project = $manager->getRepository(Project::class)->findOneBy(['name' => 'Amandanas - Construction']);
+        $user = $manager->getRepository(User::class)->findOneBy(['email' => 'jhondoe@gmail.com']);
+
+        $project->addUser($user);
+
+        $manager->flush($project);
     }
 
     public function getOrder(): int
