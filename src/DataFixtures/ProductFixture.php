@@ -175,8 +175,6 @@ class ProductFixture extends AbstractFixture implements OrderedFixtureInterface
         $manager->persist($productFamily);
     }
 
-
-
     public function getOrder(): int
     {
         return 6;
