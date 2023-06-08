@@ -75,20 +75,14 @@ class InvoiceProduct implements EntityInterface
 
     public function getTotalAmount(): float
     {
-        if ($this->getProduct()->getIsDiscount()) {
-            return $this->getProduct()->getSellPriceWithVatAndDiscount() * $this->getQuantity();
-        } else {
-            return $this->getProduct()->getSellPriceWithVat() * $this->getQuantity();
-        }
+
+        return $this->getProduct()->getSellPriceWithVat() * $this->getQuantity();
+
     }
 
     public function getTotalAmountWithoutVat(): float
     {
-        if ($this->getProduct()->getIsDiscount()) {
-            return $this->getProduct()->getSellPriceWithDiscount() * $this->getQuantity();
-        } else {
-            return $this->getProduct()->getSellPrice() * $this->getQuantity();
-        }
+        return $this->getProduct()->getSellPrice() * $this->getQuantity();
     }
 
     public function getTotalBuyPrice(): float
