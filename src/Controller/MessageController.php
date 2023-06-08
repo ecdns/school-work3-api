@@ -215,13 +215,12 @@ class MessageController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'Message found', $response);
     }
 
-    //getMessageByProjectId
     /**
      * @OA\Get(
      *     path="/message/project/{messageId}",
      *     tags={"Message"},
-     *     summary="Get a message by project id",
-     *     description="Get a message by project id",
+     *     summary="Get messages by project id",
+     *     description="Get messages by project id",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -250,11 +249,11 @@ class MessageController extends AbstractController
      *     )
      * )
      */
-    public function getMessageByProject(int $messageId): void
+    public function getMessagesByProject(int $projectId): void
     {
         // get the license from the database by its id
         try {
-            $messages = $this->dao->getBy(Message::class, ['project' => $messageId]);
+            $messages = $this->dao->getBy(Message::class, ['project' => $projectId]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
