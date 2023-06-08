@@ -1313,13 +1313,51 @@ paths:
           description: 'Invoice not found'
         '500':
           description: 'Internal server error'
-  '/invoice/{id}/product/{productId}':
+  '/invoice/{invoiceId}/product/{productId}/quantity/{quantity}':
+    put:
+      tags:
+        - InvoiceProduct
+      summary: 'Update the quantity of a product in an invoice'
+      description: 'Update the quantity of a product in an invoice'
+      operationId: 73b687bd5eb4fe0a37ce7ec3c588b614
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the invoice to update'
+          required: true
+          schema:
+            type: integer
+            format: int64
+        -
+          name: productId
+          in: path
+          description: 'ID of the product to update'
+          required: true
+          schema:
+            type: integer
+            format: int64
+        -
+          name: quantity
+          in: path
+          description: 'New quantity of the product in the invoice'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Product quantity updated in Invoice'
+        '404':
+          description: 'Invoice or Product not found'
+        '500':
+          description: 'Internal server error'
     post:
       tags:
         - InvoiceProduct
       summary: 'Add products to an invoice'
       description: 'Add products to an invoice'
-      operationId: ce7862c3ca919b971b96697bff509227
+      operationId: d8d41e867bfe436a24a6ea8939ddf544
       parameters:
         -
           name: id
@@ -1349,7 +1387,7 @@ paths:
         - InvoiceProduct
       summary: 'Remove products from an invoice'
       description: 'Remove products from an invoice'
-      operationId: 74a452e5f196c94bd6147e64dcc03b89
+      operationId: 52125b700d91f6d1f14e22f9e93ca04c
       parameters:
         -
           name: id
@@ -4076,7 +4114,7 @@ components:
           type: string
           example: '#000000'
         company:
-          type: id
+          type: integer
           example: 1
       type: object
     CompanySettingsResponse:

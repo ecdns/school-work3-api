@@ -634,7 +634,7 @@ class InvoiceController extends AbstractController
 
     /**
      * @OA\Post(
-     *     path="/invoice/{id}/product/{productId}",
+     *     path="/invoice/{invoiceId}/product/{productId}/quantity/{quantity}",
      *     tags={"InvoiceProduct"},
      *     summary="Add products to an invoice",
      *     description="Add products to an invoice",
@@ -672,7 +672,7 @@ class InvoiceController extends AbstractController
      *     )
      * )
      */
-    public function addProductsToInvoice(int $invoiceId, int $productId): void
+    public function addProductsToInvoice(int $invoiceId, int $productId, int $quantity): void
     {
 
         // get the invoice by id
@@ -693,12 +693,12 @@ class InvoiceController extends AbstractController
         try {
             $invoiceProduct = $this->dao->getOneBy(InvoiceProduct::class, ['invoice' => $invoice, 'product' => $product]);
             if ($invoiceProduct == null) {
-                $invoiceProduct = new InvoiceProduct($invoice, $product, 1);
+                $invoiceProduct = new InvoiceProduct($invoice, $product, $quantity);
                 $this->dao->add($invoiceProduct);
                 $invoice->addInvoiceProduct($invoiceProduct);
                 $this->dao->update($invoice);
             } else {
-                $invoiceProduct->setQuantity($invoiceProduct->getQuantity() + 1);
+                $invoiceProduct->setQuantity($invoiceProduct->getQuantity() + $quantity);
                 $this->dao->update($invoiceProduct);
             }
 
@@ -706,6 +706,92 @@ class InvoiceController extends AbstractController
             $this->request->handleErrorAndQuit(500, $e);
         }
 
+        $this->request->handleSuccessAndQuit(200, 'Product added to Invoice');
+    }
+
+    /**
+    * @OA\Put(
+    *     path="/invoice/{invoiceId}/product/{productId}/quantity/{quantity}",
+    *     tags={"InvoiceProduct"},
+    *     summary="Update the quantity of a product in an invoice",
+    *     description="Update the quantity of a product in an invoice",
+    *     @OA\Parameter(
+    *         name="id",
+    *         in="path",
+    *         description="ID of the invoice to update",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="integer",
+    *             format="int64"
+    *         )
+    *     ),
+    *     @OA\Parameter(
+    *         name="productId",
+    *         in="path",
+    *         description="ID of the product to update",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="integer",
+    *             format="int64"
+    *         )
+    *     ),
+    *     @OA\Parameter(
+    *         name="quantity",
+    *         in="path",
+    *         description="New quantity of the product in the invoice",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="integer",
+    *             format="int64"
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response="200",
+    *         description="Product quantity updated in Invoice"
+    *     ),
+    *     @OA\Response(
+    *         response="404",
+    *         description="Invoice or Product not found"
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="Internal server error"
+    *     )
+    * )
+    */
+    public function updateInvoiceProduct(int $invoiceId, int $productId, int $quantity): void
+    {
+
+        // get the invoice by id
+        try {
+            $invoice = $this->dao->getOneBy(Invoice::class, ['id' => $invoiceId]);
+
+            $product = $this->dao->getOneBy(Product::class, ['id' => $productId]);
+
+            //if the invoice is not found
+            if (!$invoice || !$product) {
+                $this->request->handleErrorAndQuit(404, new Exception('Invoice or Product not found'));
+            }
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        //get InvoiceProduct by invoice and product
+        try {
+            $invoiceProduct = $this->dao->getOneBy(InvoiceProduct::class, ['invoice' => $invoice, 'product' => $product]);
+            if ($invoiceProduct == null) {
+                $invoiceProduct = new InvoiceProduct($invoice, $product, $quantity);
+                $this->dao->add($invoiceProduct);
+                $invoice->addInvoiceProduct($invoiceProduct);
+                $this->dao->update($invoice);
+            } else {
+                $invoiceProduct->setQuantity($quantity);
+                $this->dao->update($invoiceProduct);
+            }
+
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
 
         $this->request->handleSuccessAndQuit(200, 'Product added to Invoice');
     }
@@ -713,7 +799,7 @@ class InvoiceController extends AbstractController
 
     /**
      * @OA\Delete(
-     *     path="/invoice/{id}/product/{productId}",
+     *     path="/invoice/{invoiceId}/product/{productId}/quantity/{quantity}",
      *     tags={"InvoiceProduct"},
      *     summary="Remove products from an invoice",
      *     description="Remove products from an invoice",
@@ -751,16 +837,14 @@ class InvoiceController extends AbstractController
      *     )
      * )
      */
-    public function removeProductsFromInvoice(int $invoiceId, int $productId): void
+    public function removeProductsFromInvoice(int $invoiceId, int $productId, int $quantity): void
     {
 
         // get the invoice by id
         try {
             $invoice = $this->dao->getOneBy(Invoice::class, ['id' => $invoiceId]);
-
             $product = $this->dao->getOneBy(Product::class, ['id' => $productId]);
 
-            //if the invoice is not found
             if (!$invoice || !$product) {
                 $this->request->handleErrorAndQuit(404, new Exception('Invoice or Product not found'));
             }
@@ -768,15 +852,18 @@ class InvoiceController extends AbstractController
             $this->request->handleErrorAndQuit(500, $e);
         }
 
-        //get InvoiceProduct by invoice and product
         try {
             $invoiceProduct = $this->dao->getOneBy(InvoiceProduct::class, ['invoice' => $invoice, 'product' => $product]);
             if ($invoiceProduct == null) {
                 $this->request->handleErrorAndQuit(404, new Exception('InvoiceProduct not found'));
             } else {
                 if ($invoiceProduct->getQuantity() > 1) {
-                    $invoiceProduct->setQuantity($invoiceProduct->getQuantity() - 1);
-                    $this->dao->update($invoiceProduct);
+                    if ($invoiceProduct->getQuantity() < $quantity) {
+                        $this->dao->delete($invoiceProduct);
+                    } else {
+                        $invoiceProduct->setQuantity($invoiceProduct->getQuantity() - $quantity);
+                        $this->dao->update($invoiceProduct);
+                    }
                 } else {
                     $this->dao->delete($invoiceProduct);
                 }

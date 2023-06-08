@@ -220,8 +220,9 @@ class Router
 
                 //Invoice routes
                 $r->addRoute('POST', '/invoice', [InvoiceController::class, 'addInvoice']);
-                $r->addRoute('POST', '/invoice/{invoiceId:\d+}/add/{productId:\d+}', [InvoiceController::class, 'addProductsToInvoice']);
-                $r->addRoute('POST', '/invoice/{invoiceId:\d+}/remove/{productId:\d+}', [InvoiceController::class, 'removeProductsFromInvoice']);
+                $r->addRoute('POST', '/invoice/{invoiceId:\d+}/product/{productId:\d+}/quantity/{quantity:\d+}', [InvoiceController::class, 'addProductsToInvoice']);
+                $r->addRoute('PUT', '/invoice/{invoiceId:\d+}/product/{productId:\d+}/quantity/{quantity:\d+}', [InvoiceController::class, 'updateInvoiceProduct']);
+                $r->addRoute('DELETE', '/invoice/{invoiceId:\d+}/product/{productId:\d+}/quantity/{quantity:\d+}', [InvoiceController::class, 'removeProductsFromInvoice']);
                 $r->addRoute('GET', '/invoice/all', [InvoiceController::class, 'getInvoices']);
                 $r->addRoute('GET', '/invoice/{id:\d+}', [InvoiceController::class, 'getInvoiceById']);
                 $r->addRoute('GET', '/invoice/project/{projectId:\d+}', [InvoiceController::class, 'getInvoicesByProject']);
