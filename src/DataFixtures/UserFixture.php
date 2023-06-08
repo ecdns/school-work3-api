@@ -78,6 +78,17 @@ class UserFixture extends AbstractFixture implements OrderedFixtureInterface
         $manager->persist($user);
     }
 
+    public function addUser6(ObjectManager $manager): void
+    {
+        $role = $manager->getRepository('Entity\Role')->findOneBy(['name' => 'Administrateur']);
+        $company = $manager->getRepository('Entity\Company')->findOneBy(['name' => 'Aubade']);
+        $password = Auth::hashPassword('123456');
+
+        $user = new User('Léo', 'Paillard', 'leo.paillard@gmail.com', $password, $role, 'Développeur', '0606060606', $company, true);
+
+        $manager->persist($user);
+    }
+
     public function getOrder(): int
     {
         return 4;
