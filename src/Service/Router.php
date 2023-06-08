@@ -136,6 +136,7 @@ class Router
                 $r->addRoute('GET', '/supplier/all', [SupplierController::class, 'getSuppliers']);
                 $r->addRoute('GET', '/supplier/{id:\d+}', [SupplierController::class, 'getSupplierById']);
                 $r->addRoute('PUT', '/supplier/{id:\d+}', [SupplierController::class, 'updateSupplier']);
+                $r->addRoute('GET', '/supplier/company/{companyId:\d+}', [SupplierController::class, 'getSuppliersByCompany']);
                 $r->addRoute('DELETE', '/supplier/{id:\d+}', [SupplierController::class, 'deleteSupplier']);
 
                 // Supplier routes
