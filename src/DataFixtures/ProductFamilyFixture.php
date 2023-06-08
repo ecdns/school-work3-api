@@ -19,6 +19,7 @@ class ProductFamilyFixture extends AbstractFixture implements OrderedFixtureInte
         $this->addProductFamily4($manager);
         $this->addProductFamily5($manager);
         $this->addProductFamily6($manager);
+        $this->addProductFamily7($manager);
         $manager->flush();
     }
 
@@ -72,6 +73,15 @@ class ProductFamilyFixture extends AbstractFixture implements OrderedFixtureInte
         $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Aubade']);
 
         $productFamily = new ProductFamily('Salon', 'Produits de salon', $company);
+
+        $manager->persist($productFamily);
+    }
+
+    public function addProductFamily7(ObjectManager $manager): void
+    {
+        $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Aubade']);
+
+        $productFamily = new ProductFamily('Expertise Marketing', 'Produits de expertise marketing', $company);
 
         $manager->persist($productFamily);
     }

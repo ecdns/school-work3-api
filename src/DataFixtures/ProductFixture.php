@@ -27,6 +27,8 @@ class ProductFixture extends AbstractFixture implements OrderedFixtureInterface
         $this->addProduct9($manager);
         $this->addProduct10($manager);
         $this->addProduct11($manager);
+        $this->addProduct12($manager);
+        $this->addProduct13($manager);
         $manager->flush();
     }
 
@@ -171,6 +173,32 @@ class ProductFixture extends AbstractFixture implements OrderedFixtureInterface
         $vat = $manager->getRepository(Vat::class)->findOneBy(['name' => 'TVA 20%']);
 
         $productFamily = new Product('Etagere', 'Etagère', 100, 180, 70, 20, false, $productFamily, $vat, $company, $quantityUnit, $supplier);
+
+        $manager->persist($productFamily);
+    }
+
+    public function addProduct12(ObjectManager $manager): void
+    {
+        $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Aubade']);
+        $supplier = $manager->getRepository(Supplier::class)->findOneBy(['name' => 'LtileMarcel']);
+        $quantityUnit = $manager->getRepository(QuantityUnit::class)->findOneBy(['name' => 'Unitée']);
+        $productFamily = $manager->getRepository(ProductFamily::class)->findOneBy(['name' => 'Expertise Marketing']);
+        $vat = $manager->getRepository(Vat::class)->findOneBy(['name' => 'TVA 20%']);
+
+        $productFamily = new Product('Campagne 1 mois', "Prestation marketing d'un mois", 8000, 8000, 1, 10, true, $productFamily, $vat, $company, $quantityUnit, $supplier);
+
+        $manager->persist($productFamily);
+    }
+
+    public function addProduct13(ObjectManager $manager): void
+    {
+        $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Aubade']);
+        $supplier = $manager->getRepository(Supplier::class)->findOneBy(['name' => 'LtileMarcel']);
+        $quantityUnit = $manager->getRepository(QuantityUnit::class)->findOneBy(['name' => 'Unitée']);
+        $productFamily = $manager->getRepository(ProductFamily::class)->findOneBy(['name' => 'Expertise Marketing']);
+        $vat = $manager->getRepository(Vat::class)->findOneBy(['name' => 'TVA 20%']);
+
+        $productFamily = new Product('Campagne Évènement Spécial', "Prestation marketing de deux mois", 10000, 10000, 1, 20, false, $productFamily, $vat, $company, $quantityUnit, $supplier);
 
         $manager->persist($productFamily);
     }

@@ -18,9 +18,11 @@ class ProjectFixture extends AbstractFixture implements OrderedFixtureInterface
         $this->addProject1($manager);
         $this->addProject2($manager);
         $this->addProject3($manager);
+        $this->addProject4($manager);
         $manager->flush();
         $this->addUserToProject1($manager);
         $this->addUserToProject2($manager);
+        $this->addUserToProject3($manager);
     }
 
 
@@ -62,6 +64,18 @@ class ProjectFixture extends AbstractFixture implements OrderedFixtureInterface
         $manager->persist($project);
     }
 
+    public function addProject4(ObjectManager $manager): void
+    {
+        $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Aubade']);
+        $user = $manager->getRepository(User::class)->findOneBy(['email' => 'leo.paillard@gmail.com']);
+        $projectStatus = $manager->getRepository(ProjectStatus::class)->findOneBy(['name' => 'En cours']);
+        $customer = $manager->getRepository(Customer::class)->findOneBy(['firstName' => 'Jean']);
+
+        $project = new Project('Campagne Marketing', 'Campagne marketing Septembre', $company, $user, $customer, $projectStatus);
+
+        $manager->persist($project);
+    }
+
     public function addUserToProject1(ObjectManager $manager): void
     {
         $project = $manager->getRepository(Project::class)->findOneBy(['name' => 'Amandanas - Construction']);
@@ -75,6 +89,16 @@ class ProjectFixture extends AbstractFixture implements OrderedFixtureInterface
     public function addUserToProject2(ObjectManager $manager): void
     {
         $project = $manager->getRepository(Project::class)->findOneBy(['name' => 'Amandanas - Construction']);
+        $user = $manager->getRepository(User::class)->findOneBy(['email' => 'clement@getinov.com']);
+
+        $project->addUser($user);
+
+        $manager->flush($project);
+    }
+
+    public function addUserToProject3(ObjectManager $manager): void
+    {
+        $project = $manager->getRepository(Project::class)->findOneBy(['name' => 'Campagne Marketing']);
         $user = $manager->getRepository(User::class)->findOneBy(['email' => 'clement@getinov.com']);
 
         $project->addUser($user);

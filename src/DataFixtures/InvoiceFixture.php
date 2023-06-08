@@ -17,12 +17,15 @@ class InvoiceFixture extends AbstractFixture implements OrderedFixtureInterface
         $this->addInvoice1($manager);
         $this->addInvoice2($manager);
         $this->addInvoice3($manager);
+        $this->addInvoice4($manager);
         $manager->flush();
         $this->addProductToInvoice1($manager);
         $this->addProductToInvoice2($manager);
         $this->addProductToInvoice3($manager);
         $this->addProductToInvoice4($manager);
         $this->addProductToInvoice5($manager);
+        $this->addProductToInvoice6($manager);
+        $this->addProductToInvoice7($manager);
         $manager->flush();
     }
 
@@ -49,6 +52,15 @@ class InvoiceFixture extends AbstractFixture implements OrderedFixtureInterface
         $project = $manager->getRepository(Project::class)->findOneBy(['name' =>  'Redook - Cuisine']);
 
         $estimate = new Invoice('Facture pour Redook - Cuisine', 'La facture conciste à construire la cuisine pour Redook', $project);
+
+        $manager->persist($estimate);
+    }
+
+    public function addInvoice4(ObjectManager $manager): void
+    {
+        $project = $manager->getRepository(Project::class)->findOneBy(['name' =>  'Campagne Marketing']);
+
+        $estimate = new Invoice('Campagne Marketing Septembre', 'Facture campagne marketing septembre', $project);
 
         $manager->persist($estimate);
     }
@@ -99,6 +111,26 @@ class InvoiceFixture extends AbstractFixture implements OrderedFixtureInterface
         $product = $manager->getRepository(Product::class)->findOneBy(['name' =>  'Baignoire']);
 
         $estimateProduct = new InvoiceProduct($estimate, $product, 70);
+
+        $manager->persist($estimateProduct);
+    }
+
+    public function addProductToInvoice6(ObjectManager $manager): void
+    {
+        $estimate = $manager->getRepository(Invoice::class)->findOneBy(['name' => 'Campagne Marketing Septembre']);
+        $product = $manager->getRepository(Product::class)->findOneBy(['name' =>  'Campagne 1 mois']);
+
+        $estimateProduct = new InvoiceProduct($estimate, $product, 2);
+
+        $manager->persist($estimateProduct);
+    }
+
+    public function addProductToInvoice7(ObjectManager $manager): void
+    {
+        $estimate = $manager->getRepository(Invoice::class)->findOneBy(['name' => 'Campagne Marketing Septembre']);
+        $product = $manager->getRepository(Product::class)->findOneBy(['name' =>  'Campagne Évènement Spécial']);
+
+        $estimateProduct = new InvoiceProduct($estimate, $product, 1);
 
         $manager->persist($estimateProduct);
     }
