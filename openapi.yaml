@@ -1624,9 +1624,9 @@ paths:
     get:
       tags:
         - Message
-      summary: 'Get a message by project id'
-      description: 'Get a message by project id'
-      operationId: 2dfb44514f17b7c86c8cc625a73660ce
+      summary: 'Get messages by project id'
+      description: 'Get messages by project id'
+      operationId: ed8947c3379fc9ab71d4ac20dd99a24c
       parameters:
         -
           name: id
@@ -2379,13 +2379,13 @@ paths:
           description: 'Project not found'
         '500':
           description: 'Internal server error'
-  '/project/customer/{userId}':
+  '/project/user/{userId}':
     get:
       tags:
         - Project
       summary: 'Get all projects by user'
       description: 'Returns an array of all projects by user'
-      operationId: bd2a1909aaa3cf37c1f4bb0ba47d6f92
+      operationId: 24516933bf20169b473047056251d061
       parameters:
         -
           name: id
@@ -4076,7 +4076,7 @@ components:
           type: string
           example: '#000000'
         company:
-          type: integer
+          type: id
           example: 1
       type: object
     CompanySettingsResponse:
