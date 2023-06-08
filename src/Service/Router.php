@@ -139,10 +139,10 @@ class Router
                 $r->addRoute('GET', '/supplier/company/{companyId:\d+}', [SupplierController::class, 'getSuppliersByCompany']);
                 $r->addRoute('DELETE', '/supplier/{id:\d+}', [SupplierController::class, 'deleteSupplier']);
 
-                // Supplier routes
+                // Product routes
                 $r->addRoute('POST', '/product', [ProductController::class, 'addProduct']);
                 $r->addRoute('GET', '/product/all', [ProductController::class, 'getProducts']);
-                $r->addRoute('GET', '/product/company/{id:\d+}', [ProductController::class, 'getProductsByCompanyId']);
+                $r->addRoute('GET', '/product/company/{companyId:\d+}', [ProductController::class, 'getProductsByCompany']);
                 $r->addRoute('GET', '/product/productFamily/{productFamilyId:\d+}', [ProductController::class, 'getProductsByProductFamily']);
                 $r->addRoute('GET', '/product/{id:\d+}', [ProductController::class, 'getProductById']);
                 $r->addRoute('PUT', '/product/{id:\d+}', [ProductController::class, 'updateProduct']);
@@ -176,14 +176,14 @@ class Router
                 $r->addRoute('PUT', '/customer/{id:\d+}', [CustomerController::class, 'updateCustomer']);
                 $r->addRoute('DELETE', '/customer/{id:\d+}', [CustomerController::class, 'deleteCustomer']);
 
-                //CustomerStatus routes
+                // CustomerStatus routes
                 $r->addRoute('POST', '/customerStatus', [CustomerStatusController::class, 'addCustomerStatus']);
                 $r->addRoute('GET', '/customerStatus/all', [CustomerStatusController::class, 'getCustomerStatuses']);
                 $r->addRoute('GET', '/customerStatus/{id:\d+}', [CustomerStatusController::class, 'getCustomerStatusById']);
                 $r->addRoute('PUT', '/customerStatus/{id:\d+}', [CustomerStatusController::class, 'updateCustomerStatus']);
                 $r->addRoute('DELETE', '/customerStatus/{id:\d+}', [CustomerStatusController::class, 'deleteCustomerStatus']);
 
-                //Task routes
+                // Task routes
                 $r->addRoute('POST', '/task', [TaskController::class, 'addTask']);
                 $r->addRoute('GET', '/task/all', [TaskController::class, 'getTasks']);
                 $r->addRoute('GET', '/task/{id:\d+}', [TaskController::class, 'getTaskById']);

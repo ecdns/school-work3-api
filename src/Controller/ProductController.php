@@ -236,10 +236,10 @@ class ProductController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/product/{id}",
+     *     path="/product/company/{companyId}",
      *     tags={"Product"},
-     *     summary="Get a product by id",
-     *     description="Returns a product by id",
+     *     summary="Get a product by company",
+     *     description="Returns a product by company",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -265,12 +265,12 @@ class ProductController extends AbstractController
      *     )
      * )
      */
-    public function getProductsByCompany(int $id): void
+    public function getProductsByCompany(int $companyId): void
     {
         // get all roles
         try {
             //get all products by company
-            $products = $this->dao->getBy(Product::class, ['company' => $id]);
+            $products = $this->dao->getBy(Product::class, ['company' => $companyId]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -343,8 +343,8 @@ class ProductController extends AbstractController
      * @OA\Get(
      *     path="/product/productFamily/{productFamilyId}",
      *     tags={"Product"},
-     *     summary="Get a product by id",
-     *     description="Returns a product by id",
+     *     summary="Get a product by product family id",
+     *     description="Returns a product by product family id",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
