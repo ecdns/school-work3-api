@@ -395,6 +395,128 @@ class InvoiceController extends AbstractController
     }
 
     /**
+    * @OA\Get(
+    *     path="/invoice/totalAmount/{invoiceId}",
+    *     tags={"Invoice"},
+    *     summary="Get total amount of an invoice",
+    *     @OA\Parameter(
+    *         name="invoiceId",
+    *         in="path",
+    *         description="ID of the invoice",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="integer"
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response="200",
+    *         description="Invoice total amount found",
+    *         @OA\JsonContent(
+    *             type="object",
+    *             @OA\Property(
+    *                 property="totalAmount",
+    *                 type="number",
+    *                 format="float"
+    *             )
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response="404",
+    *         description="Invoice not found"
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="Internal server error"
+    *     )
+    * )
+    */
+    public function getTotalAmount(int $invoiceId): void
+    {
+        // get the invoice
+        try {
+            $invoice = $this->dao->getOneBy(Invoice::class, ['id' => $invoiceId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // if the invoice is not found
+        if (!$invoice) {
+            $this->request->handleErrorAndQuit(404, new Exception('Invoice not found'));
+        }
+
+        $response = $invoice->getTotalAmount();
+
+        // build the json response
+        $response = [
+            'totalAmount' => $response
+        ];
+
+        // handle the response
+        $this->request->handleSuccessAndQuit(200, 'Invoice total amount found', $response);
+    }
+
+    /**
+    * @OA\Get(
+    *     path="/invoice/totalAmountWithVat/{invoiceId}",
+    *     tags={"Invoice"},
+    *     summary="Get total amount with VAT of an invoice",
+    *     @OA\Parameter(
+    *         name="invoiceId",
+    *         in="path",
+    *         description="ID of the invoice",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="integer"
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response="200",
+    *         description="Invoice total amount with VAT found",
+    *         @OA\JsonContent(
+    *             type="object",
+    *             @OA\Property(
+    *                 property="totalAmountWithVat",
+    *                 type="number",
+    *                 format="float"
+    *             )
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response="404",
+    *         description="Invoice not found"
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="Internal server error"
+    *     )
+    * )
+    */
+    public function getTotalAmountWithVat(int $invoiceId): void
+    {
+        // get the invoice
+        try {
+            $invoice = $this->dao->getOneBy(Invoice::class, ['id' => $invoiceId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // if the invoice is not found
+        if (!$invoice) {
+            $this->request->handleErrorAndQuit(404, new Exception('Invoice not found'));
+        }
+
+        $response = $invoice->getTotalAmountWithVat();
+
+        // build the json response
+        $response = [
+            'totalAmountWithVat' => $response
+        ];
+
+        // handle the response
+        $this->request->handleSuccessAndQuit(200, 'Invoice total amount with vat found', $response);
+    }
+
+    /**
      * @OA\Put(
      *     path="/invoice/{id}",
      *     tags={"Invoice"},

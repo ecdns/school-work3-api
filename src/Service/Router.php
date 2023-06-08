@@ -226,6 +226,8 @@ class Router
                 $r->addRoute('GET', '/invoice/project/{projectId:\d+}', [InvoiceController::class, 'getInvoicesByProject']);
                 $r->addRoute('GET', '/invoice/company/{companyId:\d+}', [InvoiceController::class, 'getInvoicesByCompany']);
                 $r->addRoute('GET', '/invoice/customer/{customerId:\d+}', [InvoiceController::class, 'getInvoicesByCustomer']);
+                $r->addRoute('GET', '/invoice/totalAmount/{invoiceId:\d+}', [InvoiceController::class, 'getTotalAmount']);
+                $r->addRoute('GET', '/invoice/totalAmountWithVat/{invoiceId:\d+}', [InvoiceController::class, 'getTotalAmountWithVat']);
                 $r->addRoute('PUT', '/invoice/{id:\d+}', [InvoiceController::class, 'updateInvoice']);
                 $r->addRoute('DELETE', '/invoice/{id:\d+}', [InvoiceController::class, 'deleteInvoice']);
 
