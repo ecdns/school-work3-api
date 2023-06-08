@@ -17,6 +17,7 @@ class UserFixture extends AbstractFixture implements OrderedFixtureInterface
         $this->addUser3($manager);
         $this->addUser4($manager);
         $this->addUser5($manager);
+        $this->addUser6($manager);
         $manager->flush();
     }
 
