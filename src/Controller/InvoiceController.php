@@ -153,8 +153,8 @@ class InvoiceController extends AbstractController
             $this->request->handleErrorAndQuit(500, $e);
         }
 
-        // handle the response
-        $this->request->handleSuccessAndQuit(201, 'Invoice created');
+        // return the id of the new invoice in body
+        $this->request->handleSuccessAndQuit(201, 'Invoice created', ['id' => $invoice->getId()]);
     }
 
 
