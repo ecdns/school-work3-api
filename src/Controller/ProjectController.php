@@ -298,7 +298,7 @@ class ProjectController extends AbstractController
 
     /**
      * @OA\Get(
-     *     path="/project/customer/{userId}",
+     *     path="/project/user/{userId}",
      *     tags={"Project"},
      *     summary="Get all projects by user",
      *     description="Returns an array of all projects by user",
@@ -342,7 +342,9 @@ class ProjectController extends AbstractController
             $response[] = $project->toArray();
         }
         foreach ($projects as $project) {
-            $response[] = $project->toArray();
+            if (!in_array($project->toArray(), $response)) {
+                $response[] = $project->toArray();
+            }
         }
 
         // handle the response
