@@ -22,7 +22,7 @@ class CompanyFixture extends AbstractFixture implements OrderedFixtureInterface
     {
         $license = $manager->getRepository(License::class)->findOneBy(['name' => 'premium']);
 
-        $company = new Company('Aubade', 'rue de la paix', 'Paris', 'France', '75000', '0145879652', 'La vie est belle', 'logo.png', $license , new \DateTime('2021-12-31'), 'fr', true);
+        $company = new Company('Aubade', '3, rue de la paix', 'Paris', 'France', '75000', '0145879652', 'La vie est belle', 'logo.png', $license , new \DateTime('2021-12-31'), 'fr', true);
 
         $manager->persist($company);
     }
@@ -32,7 +32,7 @@ class CompanyFixture extends AbstractFixture implements OrderedFixtureInterface
     {
         $license = $manager->getRepository(License::class)->findOneBy(['name' => 'standard']);
 
-        $company = new Company('Bubulle', 'rue de la paix', 'Paris', 'France', '75000', '0145879652', 'La vie est belle', 'logo.png', $license , new \DateTime('2021-12-31'), 'fr', true);
+        $company = new Company('Bubulle', '2, rue de la paix', 'Paris', 'France', '75000', '0145879652', 'La vie est belle', 'logo.png', $license , new \DateTime('2021-12-31'), 'fr', true);
 
         $manager->persist($company);
     }
@@ -42,7 +42,7 @@ class CompanyFixture extends AbstractFixture implements OrderedFixtureInterface
     {
         $license = $manager->getRepository(License::class)->findOneBy(['name' => 'basic']);
 
-        $company = new Company('Cocorico', 'rue de la paix', 'Paris', 'France', '75000', '0145879652', 'La vie est belle', 'logo.png', $license , new \DateTime('2021-12-31'), 'fr', true);
+        $company = new Company('Cocorico', '4, rue de la paix', 'Paris', 'France', '75000', '0145879652', 'La vie est belle', 'logo.png', $license , new \DateTime('2021-12-31'), 'fr', true);
 
         $manager->persist($company);
     }
