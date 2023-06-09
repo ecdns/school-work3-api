@@ -31,6 +31,6 @@ $uri = rawurldecode($uri);
 // Création du routeur
 $router = $container->get(Router::class);
 
-// Récupération des informations de la route correspondant à la méthode et à l'URI et déclenchement de la requête
+// Récupération des informations de la route correspondant à la méthode et à l'URI et déclenchement de la réponse
 $requestInfo = $router->fetchRequestInfo($requestMethod, $uri);
 $router->trigResponse($requestInfo);
