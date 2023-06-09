@@ -302,7 +302,7 @@ class UserController extends AbstractController
      *     )
      * )
      */
-    public function getUsersByProjectId(int $projectId): void
+    public function getUsersByProject(int $projectId): void
     {
         // get the user from the database by its id
         try {
