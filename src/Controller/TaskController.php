@@ -46,7 +46,7 @@ use Service\Request;
 class TaskController extends AbstractController
 {
 
-    private const REQUIRED_FIELDS = ['title', 'description', 'location', 'dueDate', 'project', 'user', 'taskStatus', 'taskType'];
+    private const REQUIRED_FIELDS = ['title', 'description', 'location', 'dueDate', 'project', 'users', 'taskStatus', 'taskType'];
     private DAO $dao;
     private Request $request;
 
@@ -122,7 +122,7 @@ class TaskController extends AbstractController
         $location = $requestBody['location'];
         $dueDate = $requestBody['dueDate'];
         $project = $requestBody['project'];
-        $user = $requestBody['user'];
+        $user = $requestBody['users'];
         $taskStatus = $requestBody['taskStatus'];
         $taskType = $requestBody['taskType'];
 
@@ -456,7 +456,7 @@ class TaskController extends AbstractController
         $location = $requestBody['location'] ?? $task->getLocation();
         $dueDate = $requestBody['dueDate'] ?? $task->getDueDate();
         $project = $requestBody['project'] ?? $task->getProject()->getId();
-        $user = $requestBody['user'] ?? $task->getUsers()->getId();
+        $user = $requestBody['users'] ?? $task->getUsers()->getId();
         $taskStatus = $requestBody['taskStatus'] ?? $task->getTaskStatus()->getId();
         $taskType = $requestBody['taskType'] ?? $task->getTaskType()->getId();
 
