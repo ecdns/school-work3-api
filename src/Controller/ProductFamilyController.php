@@ -361,10 +361,10 @@ class ProductFamilyController extends AbstractController
         // get the ProductFamily data from the request body
         $name = $requestBody['name'] ?? $productFamily->getName();
         $description = $requestBody['description'] ?? $productFamily->getDescription();
-        $company = $requestBody['company'] ?? $productFamily->getCompany();
+        $company = $requestBody['company'] ?? $productFamily->getCompany()->getId();
 
         try {
-            $company = $this->dao->getOneBy(Company::class, ['id' => $company->getId()]);
+            $company = $this->dao->getOneBy(Company::class, ['id' => $company]);
 
             if (!$company) {
                 $this->request->handleErrorAndQuit(404, new Exception('Company not found'));

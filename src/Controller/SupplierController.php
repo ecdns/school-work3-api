@@ -384,10 +384,10 @@ class SupplierController extends AbstractController
         $country = $requestBody['country'] ?? $supplier->getCountry();
         $zipCode = $requestBody['zipCode'] ?? $supplier->getZipCode();
         $phone = $requestBody['phone'] ?? $supplier->getPhone();
-        $company = $requestBody['company'] ?? $supplier->getCompany();
+        $company = $requestBody['company'] ?? $supplier->getCompany()->getId();
 
         try {
-            $company = $this->dao->getOneBy(Company::class, ['id' => $company->getId()]);
+            $company = $this->dao->getOneBy(Company::class, ['id' => $company]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

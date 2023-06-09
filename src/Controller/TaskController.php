@@ -455,17 +455,17 @@ class TaskController extends AbstractController
         $description = $requestBody['description'] ?? $task->getDescription();
         $location = $requestBody['location'] ?? $task->getLocation();
         $dueDate = $requestBody['dueDate'] ?? $task->getDueDate();
-        $project = $requestBody['project'] ?? $task->getProject();
-        $user = $requestBody['user'] ?? $task->getUser();
-        $taskStatus = $requestBody['taskStatus'] ?? $task->getTaskStatus();
-        $taskType = $requestBody['taskType'] ?? $task->getTaskType();
+        $project = $requestBody['project'] ?? $task->getProject()->getId();
+        $user = $requestBody['user'] ?? $task->getUser()->getId();
+        $taskStatus = $requestBody['taskStatus'] ?? $task->getTaskStatus()->getId();
+        $taskType = $requestBody['taskType'] ?? $task->getTaskType()->getId();
 
 
         try {
-            $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project->getId()]);
-            $userObject = $this->dao->getOneBy(User::class, ['id' => $user->getId()]);
-            $taskStatusObject = $this->dao->getOneBy(TaskStatus::class, ['id' => $taskStatus->getId()]);
-            $taskTypeObject = $this->dao->getOneBy(TaskType::class, ['id' => $taskType->getId()]);
+            $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project]);
+            $userObject = $this->dao->getOneBy(User::class, ['id' => $user]);
+            $taskStatusObject = $this->dao->getOneBy(TaskStatus::class, ['id' => $taskStatus]);
+            $taskTypeObject = $this->dao->getOneBy(TaskType::class, ['id' => $taskType]);
 
             if (!$projectObject || !$userObject || !$taskStatusObject) {
                 $this->request->handleErrorAndQuit(404, new Exception('User, Project, TaskStatus or TaskType not found'));

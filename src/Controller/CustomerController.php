@@ -405,13 +405,13 @@ class CustomerController extends AbstractController
         $country = $requestBody['country'] ?? $customer->getCountry();
         $zipCode = $requestBody['zipCode'] ?? $customer->getZipCode();
         $phone = $requestBody['phone'] ?? $customer->getPhone();
-        $company = $requestBody['company'] ?? $customer->getCompany();
-        $status = $requestBody['status'] ?? $customer->getStatus();
+        $company = $requestBody['company'] ?? $customer->getCompany()->getId();
+        $status = $requestBody['status'] ?? $customer->getStatus()->getId();
 
         // get the controller from the database by its name
         try {
-            $companyObject = $this->dao->getOneBy(Company::class, ['id' => $company->getId()]);
-            $customerStatusObject = $this->dao->getOneBy(CustomerStatus::class, ['id' => $status->getId()]);
+            $companyObject = $this->dao->getOneBy(Company::class, ['id' => $company]);
+            $customerStatusObject = $this->dao->getOneBy(CustomerStatus::class, ['id' => $status]);
 
             if (!$companyObject || !$customerStatusObject) {
                 $this->request->handleErrorAndQuit(404, new Exception('Company, User or CustomerStatus not found'));

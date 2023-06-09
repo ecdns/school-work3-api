@@ -731,11 +731,11 @@ class CompanyController extends AbstractController
         $slogan = $requestBody['slogan'] ?? $company->getSlogan();
         $logoPath = $requestBody['logoPath'] ?? $company->getLogoPath();
         $language = $requestBody['language'] ?? $company->getLanguage();
-        $license = $requestBody['license'] ?? $company->getLicense();
+        $license = $requestBody['license'] ?? $company->getLicense()->getId();
 
         // get the license from the database by its name
         try {
-            $license = $this->dao->getOneBy(License::class, ['id' => $license->getId()]);
+            $license = $this->dao->getOneBy(License::class, ['id' => $license]);
             // if the license is not found, return an error
             if (!$license) {
                 $this->request->handleErrorAndQuit(404, new Exception('License not found'));

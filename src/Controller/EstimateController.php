@@ -497,15 +497,15 @@ class EstimateController extends AbstractController
         // get the estimate data from the request body
         $name = $requestBody['name'] ?? $estimate->getName();
         $description = $requestBody['description'] ?? $estimate->getDescription();
-        $project = $requestBody['project'] ?? $estimate->getProject();
+        $project = $requestBody['project'] ?? $estimate->getProject()->getId();
         $expiredAt = $requestBody['expiredAt'] ?? $estimate->getExpiredAt();
-        $estimateStatus = $requestBody['estimateStatus'] ?? $estimate->getEstimateStatus();
+        $estimateStatus = $requestBody['estimateStatus'] ?? $estimate->getEstimateStatus()->getId();
 
         try {
 
-            $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project->getId()]);
+            $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project]);
 
-            $estimateStatusObject = $this->dao->getOneBy(EstimateStatus::class, ['id' => $estimateStatus->getId()]);
+            $estimateStatusObject = $this->dao->getOneBy(EstimateStatus::class, ['id' => $estimateStatus]);
 
             if (gettype($expiredAt) == 'string') {
                 $expiredAt = DateTime::createFromFormat('Y-m-d', $expiredAt);

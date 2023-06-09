@@ -476,11 +476,10 @@ class OrderFormController extends AbstractController
         // get the orderForm data from the request body
         $name = $requestBody['name'] ?? $orderForm->getName();
         $description = $requestBody['description'] ?? $orderForm->getDescription();
-        $project = $requestBody['project'] ?? $orderForm->getProject();
+        $project = $requestBody['project'] ?? $orderForm->getProject()->getId();
         try {
 
-            $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project->getId()]);
-
+            $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project]);
 
             if (!$projectObject) {
                 $this->request->handleErrorAndQuit(404, new Exception('OrderFormStatus, Project or ExpiredDate not found'));

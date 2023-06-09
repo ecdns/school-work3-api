@@ -344,14 +344,14 @@ class MessageController extends AbstractController
         }
 
         // get the message data from the request body
-        $sender = $requestBody['sender'] ?? $message->getSender();
-        $project = $requestBody['project'] ?? $message->getProject();
+        $sender = $requestBody['sender'] ?? $message->getSender()->getId();
+        $project = $requestBody['project'] ?? $message->getProject()->getId();
         $message = $requestBody['message'] ?? $message->getMessage();
 
         //get the sender and project from the database
         try {
-            $sender = $this->dao->getOneBy(User::class, ['id' => $sender->getId()]);
-            $project = $this->dao->getOneBy(Project::class, ['id' => $project->getId()]);
+            $sender = $this->dao->getOneBy(User::class, ['id' => $sender]);
+            $project = $this->dao->getOneBy(Project::class, ['id' => $project]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

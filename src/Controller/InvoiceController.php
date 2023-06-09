@@ -594,11 +594,10 @@ class InvoiceController extends AbstractController
         // get the invoice data from the request body
         $name = $requestBody['name'] ?? $invoice->getName();
         $description = $requestBody['description'] ?? $invoice->getDescription();
-        $project = $requestBody['project'] ?? $invoice->getProject();
+        $project = $requestBody['project'] ?? $invoice->getProject()->getId();
         try {
 
-            $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project->getId()]);
-
+            $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project]);
 
             if (!$projectObject) {
                 $this->request->handleErrorAndQuit(404, new Exception('InvoiceStatus, Project or ExpiredDate not found'));
