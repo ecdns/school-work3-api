@@ -456,7 +456,7 @@ class TaskController extends AbstractController
         $location = $requestBody['location'] ?? $task->getLocation();
         $dueDate = $requestBody['dueDate'] ?? $task->getDueDate();
         $project = $requestBody['project'] ?? $task->getProject()->getId();
-        $user = $requestBody['user'] ?? $task->getUser()->getId();
+        $user = $requestBody['user'] ?? $task->getUsers()->getId();
         $taskStatus = $requestBody['taskStatus'] ?? $task->getTaskStatus()->getId();
         $taskType = $requestBody['taskType'] ?? $task->getTaskType()->getId();
 
