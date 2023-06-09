@@ -731,13 +731,13 @@ class CompanyController extends AbstractController
         $slogan = $requestBody['slogan'] ?? $company->getSlogan();
         $logoPath = $requestBody['logoPath'] ?? $company->getLogoPath();
         $language = $requestBody['language'] ?? $company->getLanguage();
-        $licenseId = $requestBody['license'] ?? $company->getLicense()->getName();
+        $license = $requestBody['license'] ?? $company->getLicense();
 
         // get the license from the database by its name
         try {
-            $licenseId = $this->dao->getOneBy(License::class, ['id' => $licenseId]);
+            $license = $this->dao->getOneBy(License::class, ['id' => $license->getId()]);
             // if the license is not found, return an error
-            if (!$licenseId) {
+            if (!$license) {
                 $this->request->handleErrorAndQuit(404, new Exception('License not found'));
             }
         } catch (Exception $e) {
@@ -749,7 +749,7 @@ class CompanyController extends AbstractController
 
         // add the validity period to the current date
         try {
-            $licenseExpirationDate->add(new DateInterval('P' . $licenseId->getValidityPeriod() . 'Y'));
+            $licenseExpirationDate->add(new DateInterval('P' . $license->getValidityPeriod() . 'Y'));
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }
@@ -770,7 +770,7 @@ class CompanyController extends AbstractController
         $company->setPhone($phone);
         $company->setSlogan($slogan);
         $company->setLogoPath($logoPath);
-        $company->setLicense($licenseId);
+        $company->setLicense($license);
         $company->setLanguage($language);
         $company->setIsEnabled($isEnabled);
 

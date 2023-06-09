@@ -364,7 +364,7 @@ class ProductFamilyController extends AbstractController
         $company = $requestBody['company'] ?? $productFamily->getCompany();
 
         try {
-            $company = $this->dao->getOneBy(Company::class, ['id' => $company]);
+            $company = $this->dao->getOneBy(Company::class, ['id' => $company->getId()]);
 
             if (!$company) {
                 $this->request->handleErrorAndQuit(404, new Exception('Company not found'));

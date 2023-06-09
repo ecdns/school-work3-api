@@ -350,8 +350,8 @@ class MessageController extends AbstractController
 
         //get the sender and project from the database
         try {
-            $sender = $this->dao->getOneBy(User::class, ['id' => $sender]);
-            $project = $this->dao->getOneBy(Project::class, ['id' => $project]);
+            $sender = $this->dao->getOneBy(User::class, ['id' => $sender->getId()]);
+            $project = $this->dao->getOneBy(Project::class, ['id' => $project->getId()]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

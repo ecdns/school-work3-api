@@ -476,10 +476,10 @@ class OrderFormController extends AbstractController
         // get the orderForm data from the request body
         $name = $requestBody['name'] ?? $orderForm->getName();
         $description = $requestBody['description'] ?? $orderForm->getDescription();
-        $project = $requestBody['project'] ?? $orderForm->getProject()->getId();
+        $project = $requestBody['project'] ?? $orderForm->getProject();
         try {
 
-            $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project]);
+            $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project->getId()]);
 
 
             if (!$projectObject) {

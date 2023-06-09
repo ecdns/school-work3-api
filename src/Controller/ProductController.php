@@ -480,19 +480,19 @@ class ProductController extends AbstractController
         $quantity = $requestBody['quantity'] ?? $product->getQuantity();
         $discount = $requestBody['discount'] ?? $product->getDiscount();
         $isDiscount = $requestBody['isDiscount'] ?? $product->getIsDiscount();
-        $productFamily = $requestBody['productFamily'] ?? $product->getProductFamily()->getId();
-        $vat = $requestBody['vat'] ?? $product->getVat()->getId();
-        $company = $requestBody['company'] ?? $product->getCompany()->getId();
-        $quantityUnit = $requestBody['quantityUnit'] ?? $product->getQuantityUnit()->getId();
-        $supplier = $requestBody['supplier'] ?? $product->getSupplier()->getId();
+        $productFamily = $requestBody['productFamily'] ?? $product->getProductFamily();
+        $vat = $requestBody['vat'] ?? $product->getVat();
+        $company = $requestBody['company'] ?? $product->getCompany();
+        $quantityUnit = $requestBody['quantityUnit'] ?? $product->getQuantityUnit();
+        $supplier = $requestBody['supplier'] ?? $product->getSupplier();
 
         try {
 
-            $productFamily = $this->dao->getOneBy(ProductFamily::class, ['id' => $productFamily]);
-            $vat = $this->dao->getOneBy(Vat::class, ['id' => $vat]);
-            $company = $this->dao->getOneBy(Company::class, ['id' => $company]);
-            $quantityUnit = $this->dao->getOneBy(QuantityUnit::class, ['id' => $quantityUnit]);
-            $supplier = $this->dao->getOneBy(Supplier::class, ['id' => $supplier]);
+            $productFamily = $this->dao->getOneBy(ProductFamily::class, ['id' => $productFamily->getId()]);
+            $vat = $this->dao->getOneBy(Vat::class, ['id' => $vat->getId()]);
+            $company = $this->dao->getOneBy(Company::class, ['id' => $company->getId()]);
+            $quantityUnit = $this->dao->getOneBy(QuantityUnit::class, ['id' => $quantityUnit->getId()]);
+            $supplier = $this->dao->getOneBy(Supplier::class, ['id' => $supplier->getId()]);
 
             if (!$productFamily || !$vat || !$company || !$quantityUnit || !$supplier) {
                 $this->request->handleErrorAndQuit(404, new Exception('Product family, vat, company, quantity unit or supplier not found'));

@@ -186,6 +186,9 @@ class Task implements EntityInterface
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
             'taskStatus' => $this->taskStatus->toArray(),
+            'taskTypes' => $this->taskType->toArray(),
+            'users' => $this->users->toArray(),
+            'project' => $this->project->toArray(),
         ];
     }
 
@@ -200,6 +203,7 @@ class Task implements EntityInterface
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt?->format('Y-m-d H:i:s'),
             'taskStatuses' => $this->taskStatus->toArray(),
+            'taskTypes' => $this->taskType->toArray(),
             'users' => $this->users->toArray(),
             'project' => $this->project->toArray(),
         ];

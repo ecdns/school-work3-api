@@ -464,13 +464,13 @@ class UserController extends AbstractController
         $password = $requestBody['password'] ?? $user->getPassword();
         $job = $requestBody['job'] ?? $user->getJob();
         $phone = $requestBody['phone'] ?? $user->getPhone();
-        $role = $requestBody['role'] ?? $user->getRole()->getName();
-        $company = $requestBody['company'] ?? $user->getCompany()->getName();
+        $role = $requestBody['role'] ?? $user->getRole();
+        $company = $requestBody['company'] ?? $user->getCompany();
 
         // get the company and role from the database
         try {
-            $role = $this->dao->getOneBy(Role::class, ['id' => $role]);
-            $company = $this->dao->getOneBy(Company::class, ['id' => $company]);
+            $role = $this->dao->getOneBy(Role::class, ['id' => $role->getId()]);
+            $company = $this->dao->getOneBy(Company::class, ['id' => $company->getId()]);
 
             if (!$role || !$company) {
                 $this->request->handleErrorAndQuit(404, new Exception('Role or company not found'));

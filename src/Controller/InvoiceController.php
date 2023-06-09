@@ -594,10 +594,10 @@ class InvoiceController extends AbstractController
         // get the invoice data from the request body
         $name = $requestBody['name'] ?? $invoice->getName();
         $description = $requestBody['description'] ?? $invoice->getDescription();
-        $project = $requestBody['project'] ?? $invoice->getProject()->getId();
+        $project = $requestBody['project'] ?? $invoice->getProject();
         try {
 
-            $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project]);
+            $projectObject = $this->dao->getOneBy(Project::class, ['id' => $project->getId()]);
 
 
             if (!$projectObject) {

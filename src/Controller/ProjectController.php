@@ -530,17 +530,17 @@ class ProjectController extends AbstractController
         // get the Project data from the request body
         $name = $requestBody['name'] ?? $project->getName();
         $description = $requestBody['description'] ?? $project->getDescription();
-        $company = $requestBody['company'] ?? $project->getCompany()->getId();
-        $creator = $requestBody['creator'] ?? $project->getCreator()->getId();
-        $customer = $requestBody['customer'] ?? $project->getCustomer()->getId();
-        $projectStatus = $requestBody['projectStatus'] ?? $project->getProjectStatus()->getId();
+        $company = $requestBody['company'] ?? $project->getCompany();
+        $creator = $requestBody['creator'] ?? $project->getCreator();
+        $customer = $requestBody['customer'] ?? $project->getCustomer();
+        $projectStatus = $requestBody['projectStatus'] ?? $project->getProjectStatus();
 
 
         try {
-            $companyObject = $this->dao->getOneBy(Company::class, ['id' => $company]);
-            $creatorObject = $this->dao->getOneBy(User::class, ['id' => $creator]);
-            $customerObject = $this->dao->getOneBy(Customer::class, ['id' => $customer]);
-            $projectStatusObject = $this->dao->getOneBy(ProjectStatus::class, ['id' => $projectStatus]);
+            $companyObject = $this->dao->getOneBy(Company::class, ['id' => $company->getId()]);
+            $creatorObject = $this->dao->getOneBy(User::class, ['id' => $creator->getId()]);
+            $customerObject = $this->dao->getOneBy(Customer::class, ['id' => $customer->getId()]);
+            $projectStatusObject = $this->dao->getOneBy(ProjectStatus::class, ['id' => $projectStatus->getId()]);
 
             if (!$companyObject || !$creatorObject || !$customerObject || !$projectStatusObject) {
                 $this->request->handleErrorAndQuit(404, new Exception('Company, User, Customer or ProjectStatus not found'));
