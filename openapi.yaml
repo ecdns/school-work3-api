@@ -3634,8 +3634,8 @@ paths:
     get:
       tags:
         - User
-      summary: 'Get user by ID'
-      description: 'Returns a user by ID'
+      summary: 'Get user by project ID'
+      description: 'Returns a user by project ID'
       operationId: f09a02fce3e535986ca003cf46aedcf2
       parameters:
         -
@@ -3661,8 +3661,8 @@ paths:
     get:
       tags:
         - User
-      summary: 'Get user by ID'
-      description: 'Returns a user by ID'
+      summary: 'Get user by company ID'
+      description: 'Returns a user by company ID'
       operationId: f4e0d307df580a19e3fad5bf42b98997
       parameters:
         -
@@ -4114,7 +4114,7 @@ components:
           type: string
           example: '#000000'
         company:
-          type: integer
+          type: id
           example: 1
       type: object
     CompanySettingsResponse:

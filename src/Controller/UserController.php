@@ -275,8 +275,8 @@ class UserController extends AbstractController
      * @OA\Get(
      *     path="/user/project/{projectId}",
      *     tags={"User"},
-     *     summary="Get user by ID",
-     *     description="Returns a user by ID",
+     *     summary="Get user by project ID",
+     *     description="Returns a user by project ID",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -328,8 +328,8 @@ class UserController extends AbstractController
      * @OA\Get(
      *     path="/user/company/{companyId}",
      *     tags={"User"},
-     *     summary="Get user by ID",
-     *     description="Returns a user by ID",
+     *     summary="Get user by company ID",
+     *     description="Returns a user by company ID",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
