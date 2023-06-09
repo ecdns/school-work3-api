@@ -78,10 +78,10 @@ class ProductFixture extends AbstractFixture implements OrderedFixtureInterface
         $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Bubulle']);
         $supplier = $manager->getRepository(Supplier::class)->findOneBy(['name' => 'PenMaker']);
         $quantityUnit = $manager->getRepository(QuantityUnit::class)->findOneBy(['name' => 'Unitée']);
-        $productFamily = $manager->getRepository(ProductFamily::class)->findOneBy(['name' => 'Cuisine']);
+        $productFamily = $manager->getRepository(ProductFamily::class)->findOneBy(['name' => 'Sport']);
         $vat = $manager->getRepository(Vat::class)->findOneBy(['name' => 'TVA 20%']);
 
-        $productFamily = new Product('Casserole', 'Casserole', 10, 30, 100, 20, false, $productFamily, $vat, $company, $quantityUnit, $supplier);
+        $productFamily = new Product('Raquette', 'Raquette', 10, 30, 100, 20, false, $productFamily, $vat, $company, $quantityUnit, $supplier);
 
         $manager->persist($productFamily);
     }
@@ -117,10 +117,10 @@ class ProductFixture extends AbstractFixture implements OrderedFixtureInterface
         $company = $manager->getRepository(Company::class)->findOneBy(['name' => 'Cocorico']);
         $supplier = $manager->getRepository(Supplier::class)->findOneBy(['name' => 'Zeubi']);
         $quantityUnit = $manager->getRepository(QuantityUnit::class)->findOneBy(['name' => 'Unitée']);
-        $productFamily = $manager->getRepository(ProductFamily::class)->findOneBy(['name' => 'Chambre']);
+        $productFamily = $manager->getRepository(ProductFamily::class)->findOneBy(['name' => 'Jardin']);
         $vat = $manager->getRepository(Vat::class)->findOneBy(['name' => 'TVA 20%']);
 
-        $productFamily = new Product('Armoire', 'Armoire', 80, 120, 1000, 20, false, $productFamily, $vat, $company, $quantityUnit, $supplier);
+        $productFamily = new Product('Table de jardin', 'Table de jardin', 80, 120, 1000, 20, false, $productFamily, $vat, $company, $quantityUnit, $supplier);
 
         $manager->persist($productFamily);
     }
