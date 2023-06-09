@@ -321,7 +321,6 @@ class UserController extends AbstractController
         $this->request->handleSuccessAndQuit(200, 'User found', $usersData);
     }
 
-    //getUsersByCompany
     /**
      * Get user by ID
      *
@@ -355,12 +354,64 @@ class UserController extends AbstractController
      *     )
      * )
      */
-
     public function getUsersByCompany(int $companyId): void
     {
         // get the user from the database by its id
         try {
             $users = $this->dao->getBy(User::class, ['company' => $companyId]);
+        } catch (Exception $e) {
+            $this->request->handleErrorAndQuit(500, $e);
+        }
+
+        // get the user data
+        $usersData = [];
+        foreach ($users as $user) {
+            $usersData[] = $user->toArray();
+        }
+
+        // handle the response
+        $this->request->handleSuccessAndQuit(200, 'User found', $usersData);
+    }
+
+    //getUsersByRole
+    /**
+     * Get user by role ID
+     *
+     * @OA\Get(
+     *     path="/user/role/{roleId}",
+     *     tags={"User"},
+     *     summary="Get user by role ID",
+     *     description="Returns a user by role ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the user to return",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="User found",
+     *         @OA\JsonContent(ref="#/components/schemas/UserResponse")
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="User not found"
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+    public function getUsersByRole(int $roleId): void
+    {
+        // get the user from the database by its role id
+        try {
+            $users = $this->dao->getBy(User::class, ['role' => $roleId]);
         } catch (Exception $e) {
             $this->request->handleErrorAndQuit(500, $e);
         }

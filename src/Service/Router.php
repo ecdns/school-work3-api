@@ -64,6 +64,7 @@ class Router
                 $r->addRoute('GET', '/user/{id:\d+}', [UserController::class, 'getUserById']);
                 $r->addRoute('GET', '/user/project/{projectId:\d+}', [UserController::class, 'getUsersByProject']);
                 $r->addRoute('GET', '/user/company/{companyId:\d+}', [UserController::class, 'getUsersByCompany']);
+                $r->addRoute('GET', '/user/role/{roleId:\d+}', [UserController::class, 'getUsersByRole']);
                 $r->addRoute('PUT', '/user/{id:\d+}', [UserController::class, 'updateUser']);
                 $r->addRoute('DELETE', '/user/{id:\d+}', [UserController::class, 'deleteUser']);
                 $r->addRoute('GET', '/user/token', [UserController::class, 'isTokenValid']);

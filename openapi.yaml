@@ -3636,7 +3636,7 @@ paths:
         - User
       summary: 'Get user by project ID'
       description: 'Returns a user by project ID'
-      operationId: f09a02fce3e535986ca003cf46aedcf2
+      operationId: 1d4c91ee07fa64f5d67c754d41b34c9b
       parameters:
         -
           name: id
@@ -3664,6 +3664,33 @@ paths:
       summary: 'Get user by company ID'
       description: 'Returns a user by company ID'
       operationId: f4e0d307df580a19e3fad5bf42b98997
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID of the user to return'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'User found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '404':
+          description: 'User not found'
+        '500':
+          description: 'Internal server error'
+  '/user/role/{roleId}':
+    get:
+      tags:
+        - User
+      summary: 'Get user by role ID'
+      description: 'Returns a user by role ID'
+      operationId: b19155c4ebbf9fc47de9a6c77652fc83
       parameters:
         -
           name: id
@@ -4114,7 +4141,7 @@ components:
           type: string
           example: '#000000'
         company:
-          type: id
+          type: integer
           example: 1
       type: object
     CompanySettingsResponse:
